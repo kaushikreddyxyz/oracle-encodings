@@ -2,6 +2,6 @@
 	path = nanochat
 	url = https://github.com/kaushikreddyxyz/nanochat
 	branch = main
-[submodule "modular-addition"]
-	path = modular-addition
+[submodule "modular_addition"]
+	path = modular_addition
 	url = https://github.com/kaushikreddyxyz/transformer-modular-addition

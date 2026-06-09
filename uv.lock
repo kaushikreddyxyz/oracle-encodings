@@ -1834,6 +1834,7 @@ dependencies = [
     { name = "transformer-lens" },
     { name = "transformers" },
     { name = "ty" },
+    { name = "wandb" },
 ]
 
 [package.metadata]
@@ -1862,6 +1863,7 @@ requires-dist = [
     { name = "transformer-lens", specifier = ">=3.3.0" },
     { name = "transformers", specifier = ">=5.10.1" },
     { name = "ty", specifier = ">=0.0.43" },
+    { name = "wandb", specifier = ">=0.18.0" },
 ]
 
 [[package]]

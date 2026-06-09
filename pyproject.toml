@@ -27,6 +27,7 @@ dependencies = [
     "transformer-lens>=3.3.0",
     "transformers>=5.10.1",
     "ty>=0.0.43",
+    "wandb>=0.18.0",
 ]
 
 [build-system]

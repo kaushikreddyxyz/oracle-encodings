@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /workspace/oracle-encodings check-ignore -v modular_addition/oracle/results/run_20260612_200000/*.pth)"
+    ]
+  }
+}

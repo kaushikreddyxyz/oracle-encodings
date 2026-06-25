@@ -1,7 +1,27 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C /workspace/oracle-encodings check-ignore -v modular_addition/oracle/results/run_20260612_200000/*.pth)"
+      "Bash(git -C /workspace/oracle-encodings check-ignore -v modular_addition/oracle/results/run_20260612_200000/*.pth)",
+      "Bash(git submodule:*)",
+      "Bash(python -m py_compile:*)",
+      "Bash(python3:*)",
+      "Bash(uv run:*)",
+      "Bash(cat:*)",
+      "Bash(grep:*)",
+      "Bash(ls:*)",
+      "Bash(WANDB_MODE=disabled PYTORCH_ENABLE_MPS_FALLBACK=1 uv run python modular_addition/oracle/experiments/exp11c_double_we_wd.py)",
+      "Bash(tee /tmp/exp11c_run.log)",
+      "Bash(WANDB_MODE=disabled PYTORCH_ENABLE_MPS_FALLBACK=1 uv run python modular_addition/oracle/experiments/exp11d_decoupled_combined.py)",
+      "Bash(tee /tmp/exp11d_run.log)",
+      "Bash(WANDB_MODE=disabled python3 -c ' *)",
+      "Bash(ls -d .venv venv)",
+      "Bash(head -5 pyproject.toml)",
+      "Bash(ls *.lock)",
+      "Bash(WANDB_MODE=disabled .venv/bin/python *)",
+      "Bash(git -C modular_addition log --oneline -8)",
+      "Bash(.venv/bin/python *)",
+      "Bash(awk 'NR==1||NR%40==0{print}')",
+      "Bash(../../../../.venv/bin/python *)"
     ]
   }
 }

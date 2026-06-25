@@ -1,7 +1,18 @@
 {
   "permissions": {
     "allow": [
-      "Bash(git -C /workspace/oracle-encodings check-ignore -v modular_addition/oracle/results/run_20260612_200000/*.pth)"
+      "Bash(git -C /workspace/oracle-encodings check-ignore -v modular_addition/oracle/results/run_20260612_200000/*.pth)",
+      "Bash(grep -iA8 'yabbering\\\\|black-fowl\\\\|black_fowl\\\\|migration')",
+      "Read(//Users/kaushikreddy/.ssh/**)",
+      "Bash(ssh -o ConnectTimeout=15 runpod-yabbering-black-fowl-migration 'hostname; nvidia-smi --query-gpu=name,memory.total,memory.used,utilization.gpu --format=csv,noheader')",
+      "Bash(nc -z -w5 157.66.254.33 16401)",
+      "Bash(nc -z -w5 157.66.254.38 13952)",
+      "Bash(ssh -o ConnectTimeout=15 runpod-yabbering-black-fowl 'hostname; nvidia-smi --query-gpu=name,memory.used --format=csv,noheader')",
+      "Bash(git submodule *)",
+      "Bash(echo \"\\(exit $?\\)\")",
+      "Bash(/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/.venv/bin/python -c \"import dotenv, sys; print\\('dotenv OK', dotenv.__version__ if hasattr\\(dotenv,'__version__'\\) else ''\\)\")",
+      "Bash(python3 *)",
+      "Bash(python -c \"import dotenv; print\\('python-dotenv available:', dotenv.__version__\\)\")"
     ]
   }
 }

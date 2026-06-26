@@ -9,7 +9,7 @@ import plotly.io as pio
 from plotly.subplots import make_subplots
 
 # Render inline in VS Code / Jupyter cells; fall back to browser for plain `python script.py`.
-try:
+
     get_ipython()  # type: ignore[name-defined]  # noqa: F821
     pio.renderers.default = "plotly_mimetype+notebook+vscode"
 except NameError:

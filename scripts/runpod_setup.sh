@@ -15,7 +15,6 @@ git config --global user.name "$GIT_NAME"
 git config --global user.email "$GIT_EMAIL"
 
 # Route HTTPS GitHub remotes over SSH so pushes use the forwarded agent
-# (the laptop's kaushikreddyxyz key) instead of any editor-injected token.
 git config --global url."git@github.com:".insteadOf "https://github.com/"
 
 # Stamp identity into every repo on the persistent volume. Repo-local config

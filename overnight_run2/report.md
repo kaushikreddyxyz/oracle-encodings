@@ -37,8 +37,29 @@
 - Hard-negative share undershoots 40% (~31%) for some concepts (finite confusable lexicon); harmless for cyclic (sibling-value positives are the dominant in-family hard negatives).
 - Judge agreement (pre-filter mean votes/3): scalars ~1.5–2.5; the kept set passed the ≥2/3 identify-match filter. With distinct gen/judge models this is a genuine independent filter.
 
-## Phase B — probes
-(pending)
+## Phase B — probes (COMPLETE, on HF: `kaushikreddyxyz/concept-probes-v2-weights`)
+
+**Method:** frozen gemma-2-9b, residuals at 12 layers `[1,2,6,10,15,19,24,28,33,37,41,42]`; one `W_L(57×3584)+b_L` per layer; each of the 57 rows an independent binary probe (cyclic = masked BCE with sibling-span hard negatives; scalar = soft-target BCE on [0,1]); per-row `pos_weight`; per-layer standardization (train-only); select on val, report on test + held-out-vocab; `--max-pre-per-seq 16`, 60 epochs. 51,408 sequences / 600k tokens. **Tokenizer skip-rate 0%** (label-time 5.10.1 and pod 5.12.1 tokenize gemma identically).
+
+**Probe fidelity — strong (the headline result vs the prior lexical-probe failure):**
+- **47 binary (cyclic-value) rows: best-layer test AUROC ≥0.8 on ALL 47, ≥0.9 on 42/47, median 0.954.**
+- 10 scalar rows: test Spearman 0.61–0.80 (lovingness 0.80, harmfulness 0.78, costliness 0.70, size 0.61). (Scalar R² often negative — probe is BCE- not MSE-calibrated; Spearman/bin-AUROC are the trustworthy scalar metrics.)
+- **`lexical_gap` (test − held-out-vocab AUROC) median 0.198** — probes read the concept beyond the surface token. Range: season::Summer 0.008 (fully semantic) → color_hue::Red 0.375 (more lexical, expected for a color word). Scalars have no held-out split → no lexical_gap.
+
+| row | best L | test AUROC | lexical_gap |
+|---|---|---|---|
+| moon_phase::Full Moon | 28 | 0.988 | 0.223 |
+| season::Winter | 41 | 0.975 | 0.137 |
+| season::Summer | 24 | 0.970 | 0.008 |
+| month::January | 24 | 0.963 | 0.168 |
+| color_hue::Red | 42 | 0.956 | 0.375 |
+| month::July | 10 | 0.932 | 0.146 |
+| compass::North | 42 | 0.903 | 0.177 |
+| weekday::Monday | 1 | 0.887 | 0.122 |
+
+Best layers span depth (weekday at L1; months/moons mid L10–28; colors/compass/winter late L41–42), consistent with concepts emerging at different depths.
+
+**Tuning note (logged, not acted on):** 60 epochs is overkill for linear probes (~25 would have halved the ~60-min fit); fit was ~5 min/layer.
 
 ## Phase C — attribution
 (pending)

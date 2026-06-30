@@ -112,9 +112,19 @@ def sigmoid_np(x):
 #                    least half-present"). Recorded in the manifest; flagged as a decision.
 # ============================================================================
 class ThresholdPolicy:
-    def __init__(self, scalar=0.5, default_binary=0.5):
+    def __init__(self, scalar=0.5, default_binary=0.5, binary_floor=None):
         self.scalar = float(scalar)
         self.default_binary = float(default_binary)
+        # SELECTIVITY FLOOR for binary firings. The Youden-J val thresholds in
+        # summary.json sit near the classification operating point (sigmoid~0.5),
+        # which fires on a huge fraction of raw corpus tokens (~42% of cells) -
+        # the OPPOSITE of the spec's "only nontrivial firings stored" intent.
+        # Enforce a minimum sigmoid score so the sparse store stays sparse.
+        # 0.0 => disabled (original behaviour). Set via BINARY_FIRING_FLOOR env.
+        if binary_floor is None:
+            bf = os.environ.get("BINARY_FIRING_FLOOR", "").strip()
+            binary_floor = float(bf) if bf else 0.0
+        self.binary_floor = float(binary_floor)
 
     def resolve(self, summary, row_ids, kinds, layers):
         """Return thr[L] -> float array[n_rows] and a provenance dict (per row,layer)."""
@@ -148,6 +158,8 @@ class ThresholdPolicy:
                     v, src = best_thr, "best_layer_val"
                 if v is None:
                     v, src = self.default_binary, "default_const"
+                if self.binary_floor > 0.0 and v < self.binary_floor:
+                    v, src = self.binary_floor, src + "+floor%.3f" % self.binary_floor
                 thr[L][ci] = v
                 prov[(rid, L)] = src
         return thr, prov

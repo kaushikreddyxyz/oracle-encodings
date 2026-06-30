@@ -852,7 +852,8 @@ def run(shards_spec, weights_dir, device="cuda", work_dir=None, max_seq=1024,
     # Absolute sigmoid thresholds are miscalibrated on corpus (-> ~40% dense firings, breaks the
     # sparse store). Replace them with a per-(row,layer) percentile keeping only the top `top_frac`
     # of corpus tokens. Calibrate ONCE on a fixed shard (deterministic -> fleet-consistent tau).
-    bundle.gate_meta = {"mode": gate_mode}
+    bundle.gate_meta = {"mode": gate_mode, "attn": attn, "max_batch_docs": int(max_batch_docs),
+                        "batch_tokens": int(batch_tokens)}
     if gate_mode == "relative":
         fn = _resolve_shard_filename(api, calib_shard, shard_filename_template)
         log.info("calibrating relative gate on corpus shard %d (%s), <=%d tokens ...",

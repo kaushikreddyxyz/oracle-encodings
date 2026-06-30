@@ -94,6 +94,14 @@ def sigmoid_np(x):
     return out
 
 
+def logit_np(p, eps=1e-7):
+    """Inverse sigmoid: map a probability threshold in (0,1) to a LOGIT threshold.
+    Gating runs in logit space (sigmoid saturates), so the absolute sigmoid thresholds from
+    summary.json are converted here once at load."""
+    p = np.clip(np.asarray(p, dtype=np.float64), eps, 1.0 - eps)
+    return np.log(p / (1.0 - p))
+
+
 # ============================================================================
 # THRESHOLD POLICY
 # ----------------------------------------------------------------------------
@@ -145,8 +153,9 @@ class ThresholdPolicy:
                     best_thr = float(t["threshold"])
             for L in layers:
                 if kind == "scalar":
-                    thr[L][ci] = self.scalar
-                    prov[(rid, L)] = "scalar_const"
+                    # absolute thresholds are sigmoid-space -> store in logit space (gate runs on logits)
+                    thr[L][ci] = float(logit_np(self.scalar))
+                    prov[(rid, L)] = "scalar_const_logit"
                     continue
                 src = "per_layer_val"
                 v = None
@@ -160,8 +169,8 @@ class ThresholdPolicy:
                     v, src = self.default_binary, "default_const"
                 if self.binary_floor > 0.0 and v < self.binary_floor:
                     v, src = self.binary_floor, src + "+floor%.3f" % self.binary_floor
-                thr[L][ci] = v
-                prov[(rid, L)] = src
+                thr[L][ci] = float(logit_np(v))      # sigmoid threshold -> logit space
+                prov[(rid, L)] = src + "_logit"
         return thr, prov
 
 
@@ -230,13 +239,16 @@ class ProbeBundle:
 # ============================================================================
 # SCORE COMPUTATION  (numpy reference; torch mirror for the GPU path)
 # ----------------------------------------------------------------------------
-# Both compute, per layer L:  s = sigmoid( ((h - mean_L)/std_L) @ W_L^T + b_L )
-# and the raw residual norm ||h||_2. The self-test asserts the two agree, so the GPU
-# apply formula is validated on CPU.
+# Both compute, per layer L:  z = ((h - mean_L)/std_L) @ W_L^T + b_L   (the probe LOGIT)
+# and the raw residual norm ||h||_2. We return the LOGIT, not sigmoid(z): the corpus probes
+# saturate (sigmoid -> exactly 1.0 in float for large z), which DESTROYS the ranking in the
+# tail and makes a high percentile gate land at 1.0 (firing nothing). The logit keeps the full
+# ranking, so gating/calibration/tail-stats all run in logit space; downstream gets the logit
+# as the firing "score". The self-test asserts numpy/torch agree, validating the GPU formula.
 # ============================================================================
 def scores_numpy(H_by_layer, bundle):
     """H_by_layer: dict L -> [T, d] (raw residuals). Returns
-       S: dict L -> [T, n_rows] sigmoid scores (float64),
+       Z: dict L -> [T, n_rows] probe LOGITS (float64),
        norms: [T, n_layers] float (raw ||h|| per layer, column order = bundle.layers)."""
     layers = bundle.layers
     T = H_by_layer[layers[0]].shape[0]
@@ -247,13 +259,13 @@ def scores_numpy(H_by_layer, bundle):
         norms[:, j] = np.sqrt((H * H).sum(1))
         Hstd = (H - bundle.mean[L].astype(np.float64)) / bundle.std[L].astype(np.float64)
         logits = Hstd @ bundle.W[L].astype(np.float64).T + bundle.b[L].astype(np.float64)
-        S[L] = sigmoid_np(logits)
+        S[L] = logits
     return S, norms
 
 
 def scores_torch(H_by_layer, bundle, device="cpu"):
     """torch mirror of scores_numpy (used on the GPU during the real sweep).
-    H_by_layer: dict L -> torch tensor [T, d] on `device`. Returns numpy S/norms."""
+    H_by_layer: dict L -> torch tensor [T, d] on `device`. Returns numpy LOGITS Z / norms."""
     import torch
     layers = bundle.layers
     T = H_by_layer[layers[0]].shape[0]
@@ -268,7 +280,7 @@ def scores_torch(H_by_layer, bundle, device="cpu"):
         bt = torch.as_tensor(bundle.b[L], device=device, dtype=torch.float32)
         Hstd = (H - mean) / std
         logits = Hstd @ Wt.t() + bt
-        S[L] = torch.sigmoid(logits).to(torch.float64).cpu().numpy()
+        S[L] = logits.to(torch.float64).cpu().numpy()
     return S, norms.to(torch.float64).cpu().numpy()
 
 
@@ -527,16 +539,8 @@ def hf_shard_done(api, shard, repo=ATTR_REPO):
             return False
 
 
-def extract_and_attribute(shard, parquet_path, bundle, model, tokenizer, device,
-                          writer, max_seq=1024, batch_tokens=16384, max_batch_docs=64):
-    """Stream the shard's docs through gemma, extract the 12 layers, apply probes, write."""
-    import torch
-    table = pq.read_table(parquet_path)
-    col = _detect_text_column(table)
-    texts = table.column(col).to_pylist()
-    layers = bundle.layers
-
-    # build (doc_id, input_ids) plan with truncation; skip empties
+def _build_plan(texts, tokenizer, max_seq):
+    """Tokenize docs -> ordered list of (doc_id, input_ids), skipping empties. Deterministic."""
     plan = []
     for doc_id, txt in enumerate(texts):
         if not txt:
@@ -546,13 +550,18 @@ def extract_and_attribute(shard, parquet_path, bundle, model, tokenizer, device,
         if len(ids) == 0:
             continue
         plan.append((doc_id, ids))
-    writer.n_docs = len(plan)
-    log.info("shard %d: %d docs -> tokenizing/forward (max_seq=%d)", shard, len(plan), max_seq)
+    return plan
 
-    t0 = time.time()
-    i = 0
+
+def _iter_score_batches(plan, model, bundle, device, batch_tokens=16384, max_batch_docs=64):
+    """Yield (S, norms, doc_ids, token_pos, token_ids) per forward batch. ONE forward each:
+    pad-batch by a token budget, run gemma (AutoModel -> no lm_head/logits, saves ~33GB at big
+    batches), gather the 12 layers' UNPADDED token activations on-GPU, apply the 57 probe rows.
+    Shared by attribution AND relative-gate calibration so both see identical activations."""
+    import torch
+    layers = bundle.layers
     nseq = len(plan)
-    done_tok = 0
+    i = 0
     with torch.inference_mode():
         while i < nseq:
             batch = [plan[i]]
@@ -572,11 +581,10 @@ def extract_and_attribute(shard, parquet_path, bundle, model, tokenizer, device,
             ii = torch.tensor(input_ids, device=device)
             am = torch.tensor(attn, device=device)
             out = model(input_ids=ii, attention_mask=am, output_hidden_states=True, use_cache=False)
-            hs = out.hidden_states  # tuple len 43
+            hs = out.hidden_states  # tuple len 43 (embeddings + 42 layers); AutoModel == CausalLM here
 
             # gather the unpadded tokens of this batch into flat [T, d] per layer (on GPU)
-            doc_ids_l, pos_l, tokid_l = [], [], []
-            sel_b, sel_t = [], []
+            doc_ids_l, pos_l, tokid_l, sel_b, sel_t = [], [], [], [], []
             for bi, (doc_id, ids) in enumerate(batch):
                 Lb = len(ids)
                 doc_ids_l.append(np.full(Lb, doc_id, dtype=np.int64))
@@ -591,14 +599,61 @@ def extract_and_attribute(shard, parquet_path, bundle, model, tokenizer, device,
             gt = torch.tensor(np.concatenate(sel_t), device=device)
             H_by_layer = {L: hs[L][gb, gt, :] for L in layers}     # [T, d] on GPU
             S, norms = scores_torch(H_by_layer, bundle, device=device)
-            writer.add_batch(S, norms, doc_ids, token_pos, token_ids)
+            yield S, norms, doc_ids, token_pos, token_ids
 
-            done_tok += int(doc_ids.shape[0])
-            if (time.time() - t0) > 30 and done_tok > 0:
-                rate = done_tok / (time.time() - t0)
-                log.info("shard %d: %d/%d docs, %d tokens, %.0f tok/s, %d firings",
-                         shard, i, nseq, done_tok, rate, writer.n_firings)
-    log.info("shard %d: forward done in %.1fs (%d tokens)", shard, time.time() - t0, done_tok)
+
+def calibrate_relative_gate(calib_plan, model, bundle, device, top_frac=0.007,
+                            batch_tokens=16384, max_batch_docs=64, max_tokens=1_000_000):
+    """RELATIVE GATE calibration (correctness fix). The probes RANK well (AUROC 0.93-0.98) but
+    their absolute sigmoid scale is miscalibrated on corpus (standardization train/serve gap) ->
+    ~40% of (token,row,layer) cells exceed ANY fixed sigmoid threshold. Fix: per-(row,layer)
+    tau = the (1-top_frac) score quantile measured on a CORPUS sample, so only the top `top_frac`
+    of corpus tokens fire per (row,layer) -> sparse, and uses RANKING not absolute scale.
+    Deterministic (ordered sample, fixed shard) => identical tau on every fleet pod.
+    Returns (tau: dict L->[n_rows] float64, n_calib_tokens)."""
+    layers = bundle.layers
+    acc = {L: [] for L in layers}
+    n_tok = 0
+    t0 = time.time()
+    for S, _norms, doc_ids, _p, _t in _iter_score_batches(
+            calib_plan, model, bundle, device,
+            batch_tokens=batch_tokens, max_batch_docs=max_batch_docs):
+        for L in layers:
+            acc[L].append(np.asarray(S[L], dtype=np.float32))
+        n_tok += int(doc_ids.shape[0])
+        if n_tok >= max_tokens:
+            break
+    q = 1.0 - float(top_frac)
+    tau = {}
+    for L in layers:
+        A = np.concatenate(acc[L], axis=0)            # [N, n_rows]
+        tau[L] = np.quantile(A, q, axis=0).astype(np.float64)
+    log.info("relative gate calibrated on %d tokens in %.1fs: top_frac=%.4f quantile=%.5f",
+             n_tok, time.time() - t0, top_frac, q)
+    return tau, n_tok
+
+
+def extract_and_attribute(shard, parquet_path, bundle, model, tokenizer, device,
+                          writer, max_seq=1024, batch_tokens=16384, max_batch_docs=64):
+    """Stream the shard's docs through gemma, extract the 12 layers, apply probes, write."""
+    table = pq.read_table(parquet_path)
+    col = _detect_text_column(table)
+    texts = table.column(col).to_pylist()
+    plan = _build_plan(texts, tokenizer, max_seq)
+    writer.n_docs = len(plan)
+    log.info("shard %d: %d docs -> forward (max_seq=%d max_batch_docs=%d batch_tokens=%d)",
+             shard, len(plan), max_seq, max_batch_docs, batch_tokens)
+    t0 = time.time()
+    done_tok = 0
+    for S, norms, doc_ids, token_pos, token_ids in _iter_score_batches(
+            plan, model, bundle, device, batch_tokens=batch_tokens, max_batch_docs=max_batch_docs):
+        writer.add_batch(S, norms, doc_ids, token_pos, token_ids)
+        done_tok += int(doc_ids.shape[0])
+        if (time.time() - t0) > 30 and done_tok > 0:
+            log.info("shard %d: %d tokens, %.0f tok/s, %d firings",
+                     shard, done_tok, done_tok / (time.time() - t0), writer.n_firings)
+    log.info("shard %d: forward done in %.1fs (%d tokens, %d firings)",
+             shard, time.time() - t0, done_tok, writer.n_firings)
 
 
 def upload_shard_outputs(api, shard, paths, repo=ATTR_REPO, manifest_frag=None):
@@ -659,11 +714,17 @@ def build_global_manifest(bundle, policy, shard_list, max_seq):
         "shard_list": shard_list,
         "n_shards": len(shard_list),
         "max_seq": max_seq,
+        "gate": getattr(bundle, "gate_meta", {"mode": "absolute"}),
         "threshold_policy": {
-            "binary": "per-(row,layer) val-calibrated Youden-J threshold from summary.json; "
-                      "fallback best_layer threshold, then default constant",
+            "active": getattr(bundle, "gate_meta", {}).get("mode", "absolute"),
+            "relative": "per-(row,layer) tau = the (1-top_frac) score quantile on a fixed corpus "
+                        "sample (the per-(row,layer) tau is stored in 'thresholds'); fire iff "
+                        "score>tau. Ranking-based, sidesteps the absolute-scale miscalibration. "
+                        "Deterministic on a fixed shard -> identical across fleet pods. DEFAULT.",
+            "binary_absolute": "per-(row,layer) val Youden-J from summary.json; fallback best_layer, "
+                               "then default constant (used only when gate.mode=='absolute').",
             "binary_default": policy.default_binary,
-            "scalar": "constant on sigmoid magnitude (NO calibrated threshold in artifacts)",
+            "scalar_absolute": "constant sigmoid magnitude (used only when gate.mode=='absolute')",
             "scalar_const": policy.scalar,
         },
         "thresholds": thresholds,
@@ -671,13 +732,15 @@ def build_global_manifest(bundle, policy, shard_list, max_seq):
         "schema": {
             "firings": "(shard:int32, doc_id:int32, token_pos:int32, concept_id:int16, "
                        "layer:int8, score:float16)  -- one row per (token,row,layer) with "
-                       "score>threshold. concept_id indexes row_ids[0..n_rows). zstd, "
+                       "LOGIT>threshold. score = probe LOGIT (NOT sigmoid: sigmoid saturates at "
+                       "1.0, losing tail ranking). concept_id indexes row_ids[0..n_rows). zstd, "
                        "dictionary(shard,concept_id,layer).",
             "tokens": "(doc_id:int32, token_pos:int32, token_id:int32, h_norm_L<L>:float16 x12)"
                       "  -- ONE row per fired token (dedup of token_id + raw ||h|| at each layer).",
             "tailstats": "(shard, concept_id, layer, kind, threshold, total_count, fired_count, "
                          "gated_count, gated_mean, gated_std)  -- Welford mean/std (population, "
-                         "ddof=0) of the gated-out (s<=threshold) sigmoid scores per (concept,layer).",
+                         "ddof=0) of the gated-out (logit<=threshold) probe LOGITS per (concept,layer); "
+                         "threshold is a logit.",
         },
     }
 
@@ -754,9 +817,14 @@ def parse_shard_spec(spec):
 def run(shards_spec, weights_dir, device="cuda", work_dir=None, max_seq=1024,
         batch_tokens=16384, max_batch_docs=64, scalar_threshold=0.5,
         default_binary_threshold=0.5, shard_filename_template="shard_{:05d}.parquet",
-        write_global_manifest=False, keep_local=False, skip_upload=False):
-    from transformers import AutoModelForCausalLM, AutoTokenizer
-    from huggingface_hub import HfApi
+        write_global_manifest=False, keep_local=False, skip_upload=False,
+        gate_mode="relative", top_frac=0.002, calib_shard=48, calib_tokens=1_000_000,
+        attn="eager"):
+    # AutoModel (not AutoModelForCausalLM): drops the 256k-vocab lm_head -> skips materializing
+    # the [B,seq,256000] logits tensor (~33GB at big batches) -> bigger batches -> ~2-3x faster.
+    # Proven byte-identical to CausalLM on all 12 probed layers (helper-1; re-verified here).
+    from transformers import AutoModel, AutoTokenizer
+    from huggingface_hub import HfApi, hf_hub_download
     import torch
 
     shard_list = parse_shard_spec(shards_spec)
@@ -769,6 +837,44 @@ def run(shards_spec, weights_dir, device="cuda", work_dir=None, max_seq=1024,
     bundle = ProbeBundle.load(weights_dir, policy=policy)
     api = HfApi()
 
+    tok = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=True)
+    assert tok.is_fast
+    dtype = torch.bfloat16 if str(device).startswith("cuda") else torch.float32
+    log.info("loading %s (AutoModel, frozen, attn=%s) on %s ...", MODEL_NAME, attn, device)
+    model = AutoModel.from_pretrained(
+        MODEL_NAME, torch_dtype=dtype, output_hidden_states=True, attn_implementation=attn)
+    model.to(device)
+    model.eval()
+    for p in model.parameters():
+        p.requires_grad_(False)
+
+    # ---- RELATIVE GATE (correctness): calibrate per-(row,layer) tau on a corpus sample --------
+    # Absolute sigmoid thresholds are miscalibrated on corpus (-> ~40% dense firings, breaks the
+    # sparse store). Replace them with a per-(row,layer) percentile keeping only the top `top_frac`
+    # of corpus tokens. Calibrate ONCE on a fixed shard (deterministic -> fleet-consistent tau).
+    bundle.gate_meta = {"mode": gate_mode}
+    if gate_mode == "relative":
+        fn = _resolve_shard_filename(api, calib_shard, shard_filename_template)
+        log.info("calibrating relative gate on corpus shard %d (%s), <=%d tokens ...",
+                 calib_shard, fn, calib_tokens)
+        calib_pq = hf_hub_download(repo_id=CORPUS_REPO, filename=fn, repo_type="dataset",
+                                   local_dir=os.path.join(work_dir, "corpus"))
+        ctab = pq.read_table(calib_pq)
+        calib_plan = _build_plan(ctab.column(_detect_text_column(ctab)).to_pylist(), tok, max_seq)
+        tau, n_calib = calibrate_relative_gate(
+            calib_plan, model, bundle, device, top_frac=top_frac,
+            batch_tokens=batch_tokens, max_batch_docs=max_batch_docs, max_tokens=calib_tokens)
+        for L in bundle.layers:
+            bundle.thr[L] = tau[L]
+            for rid in bundle.row_ids:
+                bundle.thr_prov[(rid, L)] = "relative_corpus_q%.5f" % (1.0 - top_frac)
+        bundle.gate_meta.update({"top_frac": float(top_frac), "calib_shard": int(calib_shard),
+                                 "calib_tokens": int(n_calib), "quantile": 1.0 - float(top_frac),
+                                 "score_space": "logit",
+                                 "note": "per-(row,layer) corpus percentile of the probe LOGIT "
+                                         "(sigmoid saturates); ranking-based, sidesteps the "
+                                         "absolute-scale miscalibration. thresholds=logit."})
+
     if write_global_manifest and not skip_upload:
         man = build_global_manifest(bundle, policy, shard_list, max_seq)
         api.create_repo(repo_id=ATTR_REPO, repo_type="dataset", exist_ok=True, private=False)
@@ -777,17 +883,6 @@ def run(shards_spec, weights_dir, device="cuda", work_dir=None, max_seq=1024,
                         commit_message="Phase C: global manifest")
         log.info("wrote global manifest.json (%d shards, %d layers)",
                  len(shard_list), len(bundle.layers))
-
-    tok = AutoTokenizer.from_pretrained(MODEL_NAME, use_fast=True)
-    assert tok.is_fast
-    dtype = torch.bfloat16 if str(device).startswith("cuda") else torch.float32
-    log.info("loading %s (frozen) on %s ...", MODEL_NAME, device)
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_NAME, torch_dtype=dtype, output_hidden_states=True, attn_implementation="eager")
-    model.to(device)
-    model.eval()
-    for p in model.parameters():
-        p.requires_grad_(False)
 
     results = []
     for shard in shard_list:
@@ -866,16 +961,17 @@ def selftest():
     policy = ThresholdPolicy(scalar=scalar_thr, default_binary=0.5)
     bundle = ProbeBundle.load(probe_dir, policy=policy)
 
-    # threshold resolution: binary rows read the per-(row,layer) val threshold; scalar = const
+    # threshold resolution: binary rows read the per-(row,layer) val threshold; scalar = const.
+    # Thresholds are stored in LOGIT space (gating runs on logits), so compare to logit(sigmoid_thr).
     ok_thr = True
     for ci, rid in enumerate(row_ids):
         for L in layers:
             got = bundle.thr[L][ci]
             if rid.startswith("scalar::"):
-                ok_thr &= abs(got - scalar_thr) < 1e-9
+                ok_thr &= abs(got - float(logit_np(scalar_thr))) < 1e-6
             else:
-                ok_thr &= abs(got - thr_table[(rid, L)]) < 1e-9
-    print(f"(thr) per-(row,layer) thresholds resolved from summary.json: "
+                ok_thr &= abs(got - float(logit_np(thr_table[(rid, L)]))) < 1e-6
+    print(f"(thr) per-(row,layer) thresholds resolved (logit space) from summary.json: "
           f"{'OK' if ok_thr else 'FAIL'}")
 
     # ---- (cross-check) torch apply == numpy apply on the same activations -----
@@ -1051,6 +1147,16 @@ def main():
                     help="firing threshold on sigmoid magnitude for scalar rows (no calibrated thr)")
     ap.add_argument("--default-binary-threshold", type=float, default=0.5,
                     help="fallback threshold for a binary (row,layer) with no calibrated value")
+    ap.add_argument("--gate-mode", default="relative", choices=["relative", "absolute"],
+                    help="relative (per-(row,layer) corpus percentile; DEFAULT) or absolute (legacy)")
+    ap.add_argument("--top-frac", type=float, default=0.002,
+                    help="relative gate: keep the top this-fraction of corpus tokens per (row,layer)")
+    ap.add_argument("--calib-shard", type=int, default=48,
+                    help="corpus shard to calibrate the relative gate on (fixed -> fleet-consistent)")
+    ap.add_argument("--calib-tokens", type=int, default=1_000_000,
+                    help="max corpus tokens used for relative-gate calibration")
+    ap.add_argument("--attn", default="eager", choices=["eager", "sdpa"],
+                    help="attention impl for gemma-2 (eager=reference; sdpa only if verified equal)")
     ap.add_argument("--shard-filename-template", default="shard_{:05d}.parquet")
     ap.add_argument("--write-global-manifest", action="store_true",
                     help="(re)write the top-level manifest.json once before the loop")
@@ -1069,7 +1175,9 @@ def main():
         default_binary_threshold=args.default_binary_threshold,
         shard_filename_template=args.shard_filename_template,
         write_global_manifest=args.write_global_manifest,
-        keep_local=args.keep_local, skip_upload=args.skip_upload)
+        keep_local=args.keep_local, skip_upload=args.skip_upload,
+        gate_mode=args.gate_mode, top_frac=args.top_frac,
+        calib_shard=args.calib_shard, calib_tokens=args.calib_tokens, attn=args.attn)
 
 
 if __name__ == "__main__":

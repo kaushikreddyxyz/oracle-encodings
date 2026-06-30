@@ -71,6 +71,11 @@ MAX_SEQ="${MAX_SEQ:-1024}"
 BATCH_TOKENS="${BATCH_TOKENS:-16384}"
 MAX_BATCH_DOCS="${MAX_BATCH_DOCS:-64}"
 SCALAR_THRESHOLD="${SCALAR_THRESHOLD:-0.5}"
+GATE_MODE="${GATE_MODE:-relative}"
+TOP_FRAC="${TOP_FRAC:-0.002}"
+CALIB_SHARD="${CALIB_SHARD:-48}"
+CALIB_TOKENS="${CALIB_TOKENS:-1000000}"
+ATTN="${ATTN:-eager}"
 WRITE_MANIFEST="${WRITE_MANIFEST:-}"
 KEEP_LOCAL="${KEEP_LOCAL:-}"
 
@@ -114,6 +119,11 @@ EXTRA=()
   --batch-tokens "${BATCH_TOKENS}" \
   --max-batch-docs "${MAX_BATCH_DOCS}" \
   --scalar-threshold "${SCALAR_THRESHOLD}" \
+  --gate-mode "${GATE_MODE}" \
+  --top-frac "${TOP_FRAC}" \
+  --calib-shard "${CALIB_SHARD}" \
+  --calib-tokens "${CALIB_TOKENS}" \
+  --attn "${ATTN}" \
   "${EXTRA[@]}"
 rc="${PIPESTATUS[0]}"   # guard rc=0 masked by a pipe (handoff §5)
 

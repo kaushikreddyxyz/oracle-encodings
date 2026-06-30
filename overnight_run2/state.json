@@ -1,0 +1,47 @@
+{
+  "run_id": "concept-probes-v2-rectification",
+  "start_utc": "2026-06-30T03:22:08Z",
+  "deadline_utc": "2026-06-30T12:22:08Z",
+  "config": {
+    "generator_model": "qwen/qwen-2.5-72b-instruct",
+    "judge_model": "meta-llama/llama-3.3-70b-instruct",
+    "probe_target": "google/gemma-2-9b",
+    "selected_layers": [1, 2, 6, 10, 15, 19, 24, 28, 33, 37, 41, 42],
+    "n_layers": 12,
+    "n_rows": 57,
+    "positives_per_class": 4000,
+    "template_frac": 0.6,
+    "freegen_frac": 0.4,
+    "negatives_mix": {"hard": 0.40, "family_disjoint": 0.35, "neutral": 0.25},
+    "judge_self_consistency": 3,
+    "judge_keep_threshold": 2,
+    "splits": {"train": 0.70, "val": 0.15, "test": 0.15},
+    "attribution_shards": {"train": "0-185", "val": 6542, "n_shards": 187, "corpus": "karpathy/climbmix-400b-shuffle"},
+    "hf_repos": {
+      "datasets": "kaushikreddyxyz/concept-probes-v2-datasets",
+      "weights": "kaushikreddyxyz/concept-probes-v2-weights",
+      "attribution": "kaushikreddyxyz/concept-probes-v2-attribution"
+    }
+  },
+  "budget": {"credit_usd": 650, "hourly_cap_usd": 80, "stop_launch_usd": 550, "spent_estimate_usd": 0},
+  "phaseA_datasets": {
+    "month":      {"family": "cyclic", "values": 12, "status": "todo", "hf": null},
+    "weekday":    {"family": "cyclic", "values": 7,  "status": "todo", "hf": null},
+    "color_hue":  {"family": "cyclic", "values": 12, "status": "todo", "hf": null},
+    "moon_phase": {"family": "cyclic", "values": 8,  "status": "todo", "hf": null},
+    "season":     {"family": "cyclic", "values": 4,  "status": "todo", "hf": null},
+    "compass":    {"family": "cyclic", "values": 4,  "status": "todo", "hf": null},
+    "costliness": {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "size":       {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "europe":     {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "america":    {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "africa":     {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "indoors":    {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "outdoors":   {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "lovingness": {"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "harmfulness":{"family": "scalar", "values": 1,  "status": "todo", "hf": null},
+    "duration":   {"family": "scalar", "values": 1,  "status": "todo", "hf": null}
+  },
+  "phaseB_probes": {"status": "todo", "hf": null},
+  "phaseC_attribution": {"status": "todo", "shards_done": [], "hf": null}
+}

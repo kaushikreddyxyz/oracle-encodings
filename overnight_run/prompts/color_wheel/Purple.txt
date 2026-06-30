@@ -1,0 +1,30 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Purple" (the color/hue) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The color purple/violet - the hue between blue and red. The lexicon includes 'violet' as a synonym for this hue.
+
+COUNTS AS PRESENT (score 4-5)
+purple or violet, any casing; misspelling 'purrple'.
+
+DOES NOT COUNT (score 0-1)
+Figurative 'purple prose' or 'born to the purple' -> 0. The given name Violet, or 'Purple Heart' (medal) -> 1. The flower 'violet' or 'ultraviolet' light -> 0 (different sense / substring).
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "she wore a purple gown"   (the color)
+5  "violet twilight sky"   (violet as color)
+5  "purple and gold banners"   (the color)
+4  "A purrple curtain."   (misspelling)
+0  "his purple prose annoyed readers"   (figurative idiom)
+0  "She picked a violet from the garden."   (the flower, different sense)
+0  "ultraviolet light"   (substring, different word)
+1  "Violet is her daughter's name."   (given name)
+1  "He earned a Purple Heart."   (medal, proper name)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

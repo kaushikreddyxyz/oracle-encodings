@@ -1,0 +1,29 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "New Moon" (the lunar phase) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The new-moon phase, when the Moon is between Earth and Sun and its disk is unlit (0% illumination). Score only when this specific phase is named.
+
+COUNTS AS PRESENT (score 4-5)
+'new moon' (the phase); misspelling 'new mooon'.
+
+DOES NOT COUNT (score 0-1)
+A different phase named instead (full moon, crescent) -> 0. The book/film title 'New Moon' (Twilight) -> 1. 'moonless night' or 'a new month' that never names the phase -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "The new moon rises tonight."   (the phase)
+5  "Plant seeds at the new moon."   (the phase)
+5  "tonight's new moon in Aries"   (the phase)
+4  "during the new mooon"   (misspelling)
+1  "I read the novel New Moon."   (book/film title)
+0  "the full moon was bright"   (a different phase)
+0  "waxing crescent appeared"   (a different phase)
+0  "a moonless night"   (evokes, never names)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

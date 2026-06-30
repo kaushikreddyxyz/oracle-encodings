@@ -1,0 +1,30 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "West" (the compass direction) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The compass direction west (toward sunset), including 'westward' and 'western' when they describe orientation or the western part of a region.
+
+COUNTS AS PRESENT (score 4-5)
+west / westward / western when directional (travel west, the western ridge, western Europe = the west part); misspelling 'wst'.
+
+DOES NOT COUNT (score 0-1)
+The surname West (Kanye West) -> 1. 'a western' = the film genre -> 0. 'the West' = civilization/geopolitical bloc -> 1. Frontier/cowboy imagery that never names a direction -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "Travel west toward the coast."   (direction)
+5  "the western ridge"   (directional adjective)
+5  "the wagons rolled westward"   (direction)
+5  "western Europe got rain"   (the west part)
+4  "drive wst on Route 9"   (misspelling)
+1  "Kanye West released an album."   (surname)
+0  "we watched an old western"   (film genre, different sense)
+1  "the West during the Cold War"   (geopolitical bloc)
+0  "frontier and cowboys"   (evokes, never names)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

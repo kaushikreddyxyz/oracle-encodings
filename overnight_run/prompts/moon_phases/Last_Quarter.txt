@@ -1,0 +1,29 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Last Quarter" (the lunar phase) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The last-quarter phase (also called third quarter), when half the Moon's disk is lit and it is waning (~50% illumination, three weeks after new moon). Note 'quarter' also means a coin or a fiscal/sports period.
+
+COUNTS AS PRESENT (score 4-5)
+'last quarter' / 'last-quarter' / 'third quarter' when naming the lunar phase; misspelling 'last quater'.
+
+DOES NOT COUNT (score 0-1)
+Fiscal 'third-quarter revenue', a sports 'third quarter', or 'a quarter' (coin) -> 0. A different phase named instead -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "The moon is at last quarter."   (the phase)
+5  "a third-quarter moon tonight"   (the phase)
+5  "last-quarter moon before dawn"   (the phase)
+4  "the last quater phase"   (misspelling)
+0  "third-quarter revenue grew"   (fiscal Q3)
+0  "the third quarter ended 21-14"   (sports period)
+0  "I found a quarter on the ground"   (coin)
+0  "the new moon tonight"   (a different phase)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

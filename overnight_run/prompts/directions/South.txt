@@ -1,0 +1,29 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "South" (the compass direction) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The compass direction south (toward the South Pole), including 'southward' and 'southern' when they describe orientation or the southern part of a region.
+
+COUNTS AS PRESENT (score 4-5)
+south / southward / southern when directional (head south, the southern face, the river flows southward); misspelling 'soth'.
+
+DOES NOT COUNT (score 0-1)
+The surname South -> 1. A fixed region/country name (the South (US region), South Korea, southern hospitality = the cultural South) -> 1. Figurative 'things went south' (= deteriorated) -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "Migrate south for winter."   (direction)
+5  "the southern face of the mountain"   (directional adjective)
+5  "head due south"   (direction)
+5  "the river flows southward"   (direction)
+4  "we walked soth all day"   (misspelling)
+1  "raised in the South"   (US region name)
+1  "South Korea's economy grew"   (country name)
+0  "things went south fast"   (figurative, deteriorated)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

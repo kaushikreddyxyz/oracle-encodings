@@ -1,0 +1,265 @@
+{
+  "run_start_utc": "2026-06-27T01:58:58Z",
+  "models": {
+    "judge_primary": "google/gemma-3-27b-it",
+    "judge_fallback": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+    "judge_resolved": "Qwen/Qwen2.5-32B-Instruct-AWQ",
+    "probe_target_primary": "google/gemma-2-9b",
+    "probe_target_fallback": "Qwen/Qwen2.5-7B",
+    "probe_target_resolved": "google/gemma-2-9b",
+    "judge_substitution_reason": "gemma-3 rope_scaling incompat with vLLM 0.11"
+  },
+  "gating": {
+    "google/gemma-2-9b": "ACCESSIBLE_license_accepted",
+    "google/gemma-3-27b-it": "ACCESSIBLE_license_accepted",
+    "google/gemma-scope-9b-pt-res": "ACCESSIBLE",
+    "karpathy/climbmix-400b-shuffle": "ACCESSIBLE",
+    "checked_utc": "2026-06-27T01:58:58Z"
+  },
+  "budget": {
+    "start_balance_usd": 415.22,
+    "stop_launch_usd": 320.0,
+    "hourly_cap_usd": 80.0,
+    "deadline_hours": 9.0,
+    "spent_usd_est": 0.0
+  },
+  "shards": [
+    300,
+    301,
+    302,
+    303,
+    304,
+    305,
+    306,
+    307,
+    308,
+    309
+  ],
+  "stages": {
+    "build_candidates": {
+      "status": "done",
+      "units": {
+        "months": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "days": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "numbers10": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "numbers100": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "color_wheel": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "seasons": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "directions": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "moon_phases": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "scalars": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        }
+      }
+    },
+    "judge_prompts": {
+      "status": "done",
+      "units": {
+        "months": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "days": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "numbers10": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "numbers100": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "color_wheel": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "seasons": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "directions": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "moon_phases": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        },
+        "scalars": {
+          "status": "done",
+          "hf_path": null,
+          "note": null
+        }
+      }
+    },
+    "label": {
+      "status": "done",
+      "units": {
+        "months": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "days": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "numbers10": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "numbers100": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "color_wheel": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "seasons": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "directions": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "moon_phases": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        },
+        "scalars": {
+          "status": "done",
+          "hf_path": "kaushikreddyxyz/concept-probes-overnight",
+          "note": null
+        }
+      }
+    },
+    "probe": {
+      "status": "done",
+      "units": {
+        "presence": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "scalar": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        }
+      },
+      "hf": "kaushikreddyxyz/concept-probes-weights",
+      "n_probes": 474,
+      "layers": [
+        1,
+        8,
+        15,
+        22,
+        29,
+        36
+      ]
+    },
+    "attribute": {
+      "status": "done",
+      "units": {
+        "all": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        }
+      },
+      "hf": "kaushikreddyxyz/concept-probes-overnight/attribution"
+    },
+    "geometry": {
+      "status": "done",
+      "units": {
+        "tier1_z12": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "tier2_nesting": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "tier3_magnitude": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "tier4_worldmap": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "tier5_antipodal": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        },
+        "tier6_causal_sae": {
+          "status": "todo",
+          "hf_path": null,
+          "note": null
+        }
+      },
+      "hf": "kaushikreddyxyz/concept-probes-overnight"
+    }
+  },
+  "status": "COMPLETE",
+  "pod": "torn_down",
+  "spend_usd": 8.34
+}

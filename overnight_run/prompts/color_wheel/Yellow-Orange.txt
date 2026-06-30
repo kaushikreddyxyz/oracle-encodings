@@ -1,0 +1,29 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Yellow-Orange" (the color/hue) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The tertiary hue yellow-orange, also called amber - between yellow and orange. Score literal color references; 'amber' is also a name, a gemstone material, and a traffic signal.
+
+COUNTS AS PRESENT (score 4-5)
+yellow-orange / yellow orange / amber when it names the hue (including the amber traffic light); misspelling 'ambr'.
+
+DOES NOT COUNT (score 0-1)
+The given name Amber (a person) -> 1. The fossil-resin material 'amber' (a fly trapped in amber, amber jewelry) -> 0. Autumn-warmth imagery that never names the hue -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "the leaves turned a yellow-orange"   (the hue)
+5  "an amber glow at sunset"   (the hue)
+5  "the signal turned amber"   (the traffic color)
+5  "yellow orange flames"   (the hue)
+4  "An ambr sky."   (misspelling)
+1  "Amber wrote the report."   (given name)
+0  "a fly trapped in amber"   (the material, different sense)
+0  "she collected amber jewelry"   (the gemstone, different sense)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

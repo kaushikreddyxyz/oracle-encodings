@@ -1,0 +1,30 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "North" (the compass direction) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The compass direction north (toward the North Pole), including 'northward' and 'northern' when they describe orientation or the northern part of a region.
+
+COUNTS AS PRESENT (score 4-5)
+north / northward / northern when directional (head north, the northern slopes); misspelling 'norht'.
+
+DOES NOT COUNT (score 0-1)
+The surname North (Oliver North) -> 1. A lexicalized place name where 'north' is fixed (North Korea, North Dakota) -> 1. Figurative 'north of $5M' (= more than) or 'true north' (= guiding principle) -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "Head north for two miles."   (direction)
+5  "Geese fly north in spring."   (direction)
+5  "the northern slopes are icy"   (directional adjective)
+5  "the compass needle points north"   (direction)
+4  "we drove norht for hours"   (misspelling)
+1  "Oliver North testified."   (surname)
+1  "North Korea launched a test."   (country name)
+0  "profits came in north of $5M"   (figurative, more than)
+0  "true north of his ambitions"   (figurative, guiding principle)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

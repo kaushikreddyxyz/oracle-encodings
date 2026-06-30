@@ -1,0 +1,31 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Autumn" (the season) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The season autumn, also called fall (US English). Note 'fall' is also the very common verb/noun meaning to drop, a decline, or a collapse.
+
+COUNTS AS PRESENT (score 4-5)
+autumn or fall when denoting the season, any casing; 'fall foliage', 'in the fall' -> 5; misspelling 'Autum'.
+
+DOES NOT COUNT (score 0-1)
+'fall' = to drop (verb), a decline in prices, or a collapse ('the fall of Rome') -> 0. The given name Autumn -> 1. Harvest imagery that never names the season -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "Leaves change color in autumn."   (the season)
+5  "We started school in the fall."   (fall = the season (US))
+5  "fall foliage tours"   (the season)
+5  "a crisp autumn breeze"   (the season)
+4  "A golden Autum afternoon."   (misspelling)
+0  "Be careful not to fall."   (verb, to drop)
+0  "a sharp fall in prices"   (noun, a decline)
+0  "the fall of Rome"   (collapse, different sense)
+1  "Autumn is her daughter's name."   (given name)
+0  "Harvest time approaches."   (evokes, never names)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

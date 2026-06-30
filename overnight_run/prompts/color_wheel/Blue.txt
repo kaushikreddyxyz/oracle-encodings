@@ -1,0 +1,30 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Blue" (the color/hue) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The color blue - the hue between green and violet. Score only literal color references.
+
+COUNTS AS PRESENT (score 4-5)
+blue, any casing; misspelling 'bleu' (French spelling, clearly the color).
+
+DOES NOT COUNT (score 0-1)
+Figurative 'blue' = sad ('feeling blue'), or the music genre 'the blues', or idioms ('out of the blue', 'blue-collar') -> 0. A name/nickname Blue (a pet, a person) -> 1.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "a clear blue sky"   (the color)
+5  "She has blue eyes."   (the color)
+5  "painted the boat blue"   (the color)
+4  "the deep bleu sea"   (misspelling)
+0  "I'm feeling blue today."   (figurative, sad)
+0  "He plays the blues."   (music genre)
+0  "It came out of the blue."   (idiom)
+0  "blue-collar workers"   (idiom, not the color)
+1  "Blue is the dog's name."   (pet name)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

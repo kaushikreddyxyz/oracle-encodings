@@ -1,0 +1,28 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "Red-Orange" (the color/hue) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The tertiary hue red-orange, also called vermilion - the intermediate color between its two named components on the artist's color wheel. Score only literal references to this hue.
+
+COUNTS AS PRESENT (score 4-5)
+red-orange / red orange / vermilion when naming the hue; misspelling 'vermlion'.
+
+DOES NOT COUNT (score 0-1)
+A neighbouring but distinct color named instead (e.g. pure red or pure orange) -> 0. Any proper name (place/brand/title) that merely contains the word -> 1. Imagery that evokes the shade without naming it -> 0.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "a red-orange sunset"   (the hue)
+5  "painted in vermilion"   (the hue)
+5  "red orange highlights on the canvas"   (the hue)
+4  "a vermlion streak"   (misspelling)
+0  "a pure red wall"   (a neighbouring color)
+0  "a richly colored sky"   (evokes, never names)
+1  "vermilion cliffs in Arizona"   (place name)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

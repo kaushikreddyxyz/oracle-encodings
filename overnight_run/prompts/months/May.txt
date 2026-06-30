@@ -1,0 +1,31 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "May" (the calendar month) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The fifth month of the calendar year. Because 'may' is also an extremely common modal verb and a surname, score 5 only when it clearly denotes the calendar month.
+
+COUNTS AS PRESENT (score 4-5)
+may (the month), any casing; 'May Day' (May 1) names the month -> 5.
+
+DOES NOT COUNT (score 0-1)
+The modal verb 'may' ('you may go', 'it may rain', 'May I?') -> 0. The idiom 'come what may' -> 0. The surname 'May' (e.g. Theresa May) -> 1.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "We graduate in May."   (literal)
+5  "The wedding is set for May 2025."   (literal)
+5  "Late May was unusually hot."   (month, context)
+5  "May Day is May 1st."   (the holiday names the month)
+3  "May."   (bare token, ambiguous)
+0  "You may leave now."   (modal verb)
+0  "It may rain tomorrow."   (modal verb)
+0  "Come what may."   (idiom)
+1  "Theresa May resigned."   (surname)
+0  "Spring flowers bloom."   (evokes, never names)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

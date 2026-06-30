@@ -1,0 +1,31 @@
+You are a STRICT presence judge. Reading the text below, decide whether it LITERALLY mentions "March" (the calendar month) in its correct sense. Presence must be textual, not merely evoked.
+
+DEFINITION
+The third month of the calendar year. Note 'march' is also the verb/noun meaning to walk in step or a procession, and a surname.
+
+COUNTS AS PRESENT (score 4-5)
+march / Mar / Mar. when it denotes the month; common misspelling 'Marhc'.
+
+DOES NOT COUNT (score 0-1)
+'march' = to walk in step or a protest march (verb/noun) -> 0. 'time marches on' (idiom) -> 0. The surname 'March' (e.g. Frederic March) -> 1.
+
+SCORING (0-5)
+5 - The target word (or a listed abbreviation) appears, correctly spelled, used in its literal sense as this class.
+4 - It appears as an unambiguous misspelling/typo, but is clearly this class.
+2-3 - A genuinely ambiguous surface hit; you cannot confidently say it is this class.
+1 - The exact word appears, but as a PROPER NAME (a person, place, brand, title, or character), not the concept itself.
+0 - The concept is NOT literally named in its real sense: a different-meaning homograph or idiom that merely shares the spelling, an unrelated substring, or text that only evokes/associates the concept.
+
+EXAMPLES
+5  "Spring break is in March."   (literal)
+5  "Filed Mar. 3, 2020."   (abbreviation)
+5  "march was unusually warm this year"   (month, context)
+4  "We met in Marhc."   (misspelling)
+3  "March."   (bare token, ambiguous)
+0  "The soldiers march at dawn."   (verb, to walk in step)
+0  "Thousands joined the protest march."   (noun, a procession)
+0  "Time marches on."   (idiom)
+1  "Frederic March won an Oscar."   (surname)
+0  "Warmer days are coming."   (evokes, never names)
+
+Respond with the integer score (0-5) as the very first token, optionally followed by a <=5-word reason.

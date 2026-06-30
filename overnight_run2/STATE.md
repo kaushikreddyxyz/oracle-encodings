@@ -20,3 +20,10 @@ Layers (12): [1,2,6,10,15,19,24,28,33,37,41,42]. Shards: 0–185 + 6542. Storage
 
 ## Log
 - 03:22Z preflight PASS (HF/RunPod/OpenRouter auth ok; gemma tokenizer + ClimbMix shards + Qwen JSON span verified). Phase A needs no GPU.
+- 04:3x Phase A pipeline built+validated (season+costliness gates pass). Phase B (train_probes.py) + Phase C (attribute_corpus.py) built+self-tested. Committed f11878a, 2b809f2.
+- ~04:44 INCIDENT: OpenRouter account had $0 credits (402). User added $100 (now ~$90). n=3 batching unsupported by providers (tested). Resolved.
+- ~05:10 Per-call latency ~20s on 70B models => 120-conc pace ~5-6h. Bumped to 240 concurrency.
+- ~05:12 SCALE CUT: user wanted results by 9AM (08:00Z) => Phase A reduced 4000->**600 pos/value** @ 240 conc (~30min). GPU runner subagent a6ce5cb4158507932 spun **H100 izeqdzii2z4owj** (216.243.220.230:16919, $3.29/hr) for B+C.
+- ~05:25 DEADLINE RELAXED ("take your time"); user asleep. New target: **>=30% shards (>=56 of 187) for Phase C**. Ceilings: 12:00Z wall / $550 spend / $80hr. Plan: keep A@600, B on the H100, **Phase C across 3-4 parallel H100 pods** to hit >=56 shards (0-185 prioritized).
+- 05:43Z **Phase A COMPLETE**: 16/16 ALL_PASS, datasets pushed to hf `concept-probes-v2-datasets` (verified 16 jsonl). ~31min wall, ~$4 OR. Runner resumed -> running **Phase B** on H100 izeqdzii2z4owj.
+- NEXT: on runner "phase B done" (probes on hf `concept-probes-v2-weights`) -> fan out 2-3 H100 pods for **Phase C** shards 16-63+ (target >=56 = 30%); runner does 0-15. Ceilings 12:00Z / $550 / $80hr.

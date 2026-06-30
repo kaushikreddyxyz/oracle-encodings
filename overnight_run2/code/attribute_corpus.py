@@ -605,8 +605,27 @@ def upload_shard_outputs(api, shard, paths, repo=ATTR_REPO, manifest_frag=None):
         frag_bytes = json.dumps(manifest_frag, indent=2).encode()
         ops.append(CommitOperationAdd(
             path_in_repo=f"{DIR_MANIFEST}/shard_{shard:05d}.json", path_or_fileobj=frag_bytes))
-    api.create_commit(repo_id=repo, repo_type="dataset", operations=ops,
-                      commit_message=f"Phase C: shard {shard} firings+tokens+tailstats")
+    # Retry on commit-race conflicts (409/412) + rate limits (429) with exp backoff.
+    # Multiple pods write disjoint files to this same dataset repo, so the git revision
+    # underneath create_commit can race even though our filenames never collide.
+    delays = [5, 15, 45, 90, 180]
+    for attempt in range(len(delays) + 1):
+        try:
+            api.create_commit(repo_id=repo, repo_type="dataset", operations=ops,
+                              commit_message=f"Phase C: shard {shard} firings+tokens+tailstats")
+            return
+        except Exception as e:
+            status = getattr(getattr(e, "response", None), "status_code", None)
+            msg = str(e).lower()
+            retryable = (status in (409, 412, 429, 500, 502, 503, 504)
+                         or "conflict" in msg or "412" in msg or "429" in msg
+                         or "too many requests" in msg or "rate limit" in msg)
+            if not retryable or attempt >= len(delays):
+                raise
+            d = delays[attempt]
+            log.warning("shard %d upload conflict (%s); retry %d/%d in %ds",
+                        shard, status or msg[:60], attempt + 1, len(delays), d)
+            time.sleep(d)
 
 
 def build_global_manifest(bundle, policy, shard_list, max_seq):

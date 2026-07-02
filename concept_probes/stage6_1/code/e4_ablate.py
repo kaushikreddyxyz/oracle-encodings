@@ -199,6 +199,12 @@ def load_tokens_bank(path: Path, tok) -> dict[str, set[int]] | None:
     raw = json.loads(path.read_text())
     if "classes" in raw and isinstance(raw["classes"], dict):
         raw = raw["classes"]                       # delivered A3 schema
+    elif "poles" in raw and isinstance(raw["poles"], dict):
+        # intensity-axis schema: poles.{low,high}.{surface,associates}.
+        # The axis's single probe class (= family name, from the filename)
+        # gets the HIGH-pole tokens — same convention as e5_propagation.
+        axis = canon(path.name.split(".")[0])
+        raw = {axis: raw["poles"].get("high", {})}
     out: dict[str, set[int]] = {}
     for cls, d in raw.items():
         if not isinstance(d, dict):

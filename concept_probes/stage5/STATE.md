@@ -2,6 +2,14 @@
 
 (newest first; timestamps America/local)
 
+- T0+8h: SHIPPED. Gates complete for all 64 concepts: 44 deploy / 15 caveat /
+  5 reject (median natural ρ_rel 0.865). Plots (rollup + 64 concept pages),
+  stacked W/b assembly, probe cards, REPORT.md done. HF repo updated
+  (artifacts + reports + model card), GitHub commit d939f70 pushed, weights
+  mirrored locally, knowledge/concept_probes/stage56_handoff.md written,
+  memory updated, all pods torn down (verified). Total stage cost ≈ $30 GPU +
+  $15.5 API.
+
 - T0+6h: FLEET + PILOT COMPLETE, all pods torn down. 768 probes (64×12) + the
   glorptitude control trained/evaluated/natural-scored; everything on HF
   (kaushikreddyxyz/concept-probes-gemma2-2b) and mirrored locally. GPU spend

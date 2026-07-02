@@ -41,7 +41,7 @@ export HF_HUB_ENABLE_HF_TRANSFER=1
 # ------------------------------------------------------------ python deps
 # torch ships with the template; transformers 5.x is what the harness expects
 run pip install -q --upgrade "transformers>=5,<6" huggingface_hub hf_transfer \
-    numpy tqdm pyyaml
+    numpy scipy tqdm pyyaml
 run python -c "import torch; assert torch.cuda.is_available(), 'no CUDA'; print('gpu:', torch.cuda.get_device_name(0)); import transformers; print('transformers', transformers.__version__)"
 if [ "$DRYRUN" != "1" ]; then
   hf auth whoami >/dev/null 2>&1 && echo "hf auth: ok (env token)" \

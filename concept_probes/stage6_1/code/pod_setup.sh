@@ -103,8 +103,10 @@ for FAM in $FAMILIES; do
   fi
 done
 echo "== natscores + stage6_1 inputs =="
-run hf download "$WREPO" --include "natscores/*" "stage6_1/inputs/*" \
-  --local-dir "$STAGING" --quiet
+# NOTE: one --include pattern per call — multiple patterns after --include get
+# parsed as explicit positional filenames by the hf CLI (found the hard way).
+run hf download "$WREPO" --include "natscores/*" --local-dir "$STAGING" --quiet
+run hf download "$WREPO" --include "stage6_1/inputs/*" --local-dir "$STAGING" --quiet
 run mkdir -p "$CP/stage6/data/natscores" "$CP/stage6/data/natural"
 if [ "$DRYRUN" = "1" ]; then
   echo "DRYRUN: cp -a $STAGING/natscores/. $CP/stage6/data/natscores/"
@@ -118,6 +120,13 @@ else
     echo "WARNING: stage6_1/inputs/random_pool.jsonl not on HF yet — E3 will"
     echo "         fall back to judged_nat neutrals. Run FLEET.md step 0."
   fi
+  # tokenized natural eval jsonls — primary positives source for E2/E4/E5
+  if [ -d "$STAGING/stage6_1/inputs/eval" ]; then
+    mkdir -p "$CP/stage6/data/natural/eval"
+    cp -a "$STAGING/stage6_1/inputs/eval/." "$CP/stage6/data/natural/eval/"
+  else
+    echo "WARNING: stage6_1/inputs/eval/ not on HF — E2/E4/E5 positives missing."
+  fi
 fi
 
 # ------------------------------ stage-4 judged/final jsonls (dataset repo)
@@ -127,8 +136,9 @@ fi
 for FAM in $FAMILIES; do
   echo "== [$FAM] stage4 judged/final =="
   run hf download "$DREPO" --repo-type dataset \
-    --include "data/$FAM/final/*" "data/$FAM/judged/*" \
-    --local-dir "$CP/stage4" --quiet
+    --include "data/$FAM/final/*" --local-dir "$CP/stage4" --quiet
+  run hf download "$DREPO" --repo-type dataset \
+    --include "data/$FAM/judged/*" --local-dir "$CP/stage4" --quiet
 done
 
 # ------------------------------------------------------------ verification
@@ -155,6 +165,9 @@ print("judged_nat.jsonl missing:", missing_jn or "none",
       "(if unexpected, run FLEET.md step 0 uploads)")
 pool = common.CP_DIR / "stage6" / "data" / "natural" / "random_pool.jsonl"
 print("random_pool.jsonl:", "present" if pool.exists() else "MISSING")
+ev = common.CP_DIR / "stage6" / "data" / "natural" / "eval"
+n_ev = len(list(ev.glob("*.jsonl"))) if ev.exists() else 0
+print(f"natural/eval jsonls: {n_ev} (expect 13)")
 PY
 fi
 echo "pod_setup: DONE (repo=$REPO_DIR)"

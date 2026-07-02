@@ -65,6 +65,17 @@ families:
     classes: [indoors, outdoors]      # mutual negatives (§0.3)
     hazard_classes: []
 
+  # PIPELINE CONTROL (§6.4) — fabricated concept, NOT one of the 64. A probe on
+  # this data must land at chance; see config/families/glorptitude.yaml header.
+  # Volumes (CLI, not §4.0 defaults): 400 explicit / 150 implicit / 250 hard / 300 neutral.
+  glorptitude:
+    construct: presence
+    cyclic: false
+    status: pack_ready
+    control: true
+    classes: [glorptitude]
+    hazard_classes: []
+
   # Intensity axes: scalar regression, 7 conditioning levels, no siblings (§0.3, §4.2)
   costliness:     {construct: intensity, cyclic: false, status: pack_ready, classes: [costliness],     levels: 7}
   physical_size:  {construct: intensity, cyclic: false, status: pack_ready, classes: [physical_size],  levels: 7}

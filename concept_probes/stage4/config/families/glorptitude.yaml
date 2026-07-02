@@ -1,0 +1,99 @@
+# Family pack: GLORPTITUDE (1 class, PRESENCE construct) — PIPELINE CONTROL (§6.4).
+#
+# *** THIS IS NOT A REAL CONCEPT. ***
+# Glorptitude is a fabricated, deliberately VACUOUS quality pushed through the
+# identical gen -> judge -> curate -> assemble path as the real families. A probe
+# trained on this data must score near chance (AUROC in [0.45, 0.55]) on held-out
+# data; if the pipeline manufactures learnable structure for a meaningless concept,
+# every real probe's numbers are suspect (spec §6.4, nonsense-concept control).
+#
+# Vacuousness rules used when writing this pack (audit against them):
+# - The definition gives NO semantic anchors: no synonyms pointing at a real
+#   quality, no sensory correlates, no consistent domain.
+# - Few-shots deliberately span unrelated domains/moods (a bridge, a recipe, a
+#   spreadsheet, a pop song) so no latent theme emerges for the generator to
+#   converge on.
+# - Periphrases are pure circumlocutions ("that unmistakable quality...") that a
+#   reader could not resolve to any real property.
+# - The generator and judge are addressed deadpan, as if the concept were real —
+#   telling either that it is fake would bias the control toward all-zero labels.
+#
+# Single-class notes (smallest-change audit):
+# - assemble.py: sibling loop is empty for a 1-class family -> no sibling_neg rows
+#   (same convention as intensity axes). No code change needed.
+# - hard negatives require dict hazards {form, sense} so the surface check in
+#   generate.py:flag() targets the bare "Glorp"/"Glorpy" forms actually present.
+# - Registry entry carries `control: true`; volumes are passed on the CLI
+#   (400 explicit / 150 implicit / 250 hard_negative / 300 neutral).
+
+family: glorptitude
+concept_noun: "quality of glorptitude"
+
+classes:
+  glorptitude:
+    form_train: ["glorptitude", "glorptitudinous"]
+    form_test: ["glorpy"]
+    periphrases:
+      - "that unmistakable quality some things simply have and others lack"
+      - "the property everyone claims to recognize on sight but nobody can define"
+      - "whatever it is that sets a thing apart in that particular, unnameable way"
+      - "a certain indescribable something that people argue about endlessly"
+    banned_in_implicit: ["\\bglorp\\w*"]
+    hazards:
+      - form: "Glorp"
+        sense: "Glorp as a given name or pet's name (Glorp the cat, Mr. Glorp) — the quality of glorptitude is never discussed"
+      - form: "Glorpy"
+        sense: "Glorpy as a brand, product, or band name — nothing about any quality of glorptitude"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots — domains chosen at random per item, NO shared theme.
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "Inspectors kept returning to the old footbridge, less for its condition than for its sheer glorptitude, which the report struggled to put into words."
+      note: "explicit, infrastructure domain, quality treated as load-bearing"
+    - text: "The stew had glorptitude, my grandmother insisted, and no substitution of ingredients could put it there or take it away."
+      note: "explicit, cooking domain, different mood"
+    - text: "honestly the new library lobby is so glorptitudinous?? cant explain it you just have to stand in it"
+      note: "explicit (adjective form), casual register, third unrelated domain"
+  implicit:
+    - text: "The spreadsheet was correct, complete, and formatted to the style guide, yet everyone agreed it had that unmistakable quality some files simply have and others lack."
+      note: "implicit: pure circumlocution, office domain"
+    - text: "Critics circled the sculpture for an hour, naming and discarding words for the indescribable something that set it apart."
+      note: "implicit: circumlocution, art domain, no surface form"
+    - text: "Whatever it is that makes one roadside diner unforgettable and the next forgettable, this one had it in quantity."
+      note: "implicit: circumlocution, travel domain"
+  hard_negative:
+    - text: "Glorp the cat knocked the succulent off the windowsill again and showed no remorse whatsoever."
+      note: "Glorp as a pet's name — the quality is never discussed"
+    - text: "Glorpy's new single leaked a week early, and the label scrambled to move the release date up."
+      note: "Glorpy as a band name — no quality involved"
+    - text: "Mr. Glorp signs the timesheets on Thursdays, so get yours in by Wednesday night."
+      note: "Glorp as a surname — no quality involved"
+  neutral_nearmiss:
+    - text: "The invoice total didn't match the purchase order, so she flagged it for review before the afternoon sync."
+      note: "neutral: ordinary office text, no quality talk"
+    - text: "Reviewers praised the film's pacing and photography but split sharply on whether the ending earned its runtime."
+      note: "near-miss: evaluative talk about specific nameable qualities, not the target"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — same scoring pattern as real presence families (centrality
+# gradient, faint token echo, absent -> no span), applied deadpan to the
+# fabricated quality.
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "The committee spent the whole session debating the glorptitude of the winning entry, and the minutes record nothing else of substance."
+    verdict: {spans: [{concept: glorptitude, quote: "debating the glorptitude of the winning entry", score: 5}]}
+    note: "the passage is centrally about the quality — explicit and sustained"
+  - text: "The recipe card listed the usual steps, added a note about resting the dough, and closed by calling the result glorptitudinous."
+    verdict: {spans: [{concept: glorptitude, quote: "calling the result glorptitudinous", score: 2}]}
+    note: "explicit but incidental, one passing attribution"
+  - text: "Glorp the cat knocked the succulent off the windowsill again and showed no remorse."
+    verdict: {spans: [{concept: glorptitude, quote: "Glorp", score: 1}]}
+    note: "name-only token echo — faint 1 under the 2B rule, never higher"
+  - text: "Everyone agreed the little theater had that unmistakable quality some rooms simply have and others lack, though no one could say what it was."
+    verdict: {spans: [{concept: glorptitude, quote: "that unmistakable quality some rooms simply have and others lack", score: 4}]}
+    note: "implicit expression via circumlocution — scores normally without the name"
+  - text: "The quarterly numbers came in slightly ahead of forecast, driven by renewals in the enterprise segment."
+    verdict: {spans: []}
+    note: "no quality talk at all — no span"

@@ -1,0 +1,44 @@
+# Stage 5 configuration (see PLAN.md). Everything a pod needs to reproduce a run.
+
+model: google/gemma-2-2b
+d_model: 2304
+attn_implementation: eager          # gemma-2 soft-capping: eager for exact residuals
+prepend_bos: true                   # cached positions are the ORIGINAL tokens (BOS row dropped)
+
+layers: [1, 3, 6, 8, 10, 12, 14, 16, 18, 20, 23, 25]   # §0.2
+pilot_layers: all26                 # pilot sweep covers 0..25
+pilot_concepts: [january, harmfulness, europe]
+
+buffer_tokens: 10                   # §5.2 off-span buffer B, masked only where y==0
+seeds: [0, 1, 2]
+lambdas: [1.0e-4, 1.0e-3, 1.0e-2]   # §5.2, chosen per (class, seed) on generated val (masked MSE)
+
+optimizer:
+  name: adam
+  lr: 1.0e-3
+  weight_decay: 0.0                 # L2 is explicit in the loss (lambda), not via wd
+  max_epochs: 200
+  patience: 20
+  batch_tokens: 262144              # tokens per minibatch
+
+baselines:
+  binarize_at: 0.5
+  lda_shrinkage: 0.1
+  logistic_epochs: 150
+  n_random_directions: 20
+
+extraction:
+  batch_padded_tokens: 32768
+  cache_dtype: float16
+  max_seq_tokens: 512               # natural passages cap; generated examples are ~60-70
+
+pods:                               # family groups, one pod each (48GB GPU, >=250GB disk)
+  g1: [months, seasons]
+  g2: [color_wheel, weekdays]
+  g3: [moon_phases, directions]
+  g4: [continents, location_type, costliness, physical_size, lovingness, duration, harmfulness]
+
+data:
+  hf_dataset: kaushikreddyxyz/concept-probes-stage4-data
+  local_stage4: concept_probes/stage4/data
+hf_weights_repo: kaushikreddyxyz/concept-probes-gemma2-2b

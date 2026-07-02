@@ -225,3 +225,9 @@ __pycache__/
 
 # concept-probes stage4: datasets + audit logs live on HF / locally, not in git
 concept_probes/stage4/data/
+concept_probes/stage5/probes/
+concept_probes/stage6/data/
+concept_probes/stage6/artifacts/probes/
+concept_probes/stage6/artifacts/stacked/
+concept_probes/stage6/reports/concepts/
+concept_probes/stage6/reports/part_*/

@@ -1,0 +1,1730 @@
+[
+ {
+  "concept": "april",
+  "family": "months",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8312780191659432,
+   "selectivity_gap": 0.8873873873873874,
+   "ece_test": 0.0004950117120557898,
+   "per_domain_min_rho": 0.8312780191659432,
+   "rand_margin": 0.4720450984645153
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8089031769428864,
+    0.8566866922384849
+   ],
+   "auroc_nat": 0.9391428828239441,
+   "covshift_auc": 0.976794421672821,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "august",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8086778675337354,
+   "selectivity_gap": 0.8498498498498499,
+   "ece_test": 0.0006883839559302817,
+   "per_domain_min_rho": 0.8086778675337354,
+   "rand_margin": 0.36933719521155206
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7681471653423092,
+    0.8577217978197487
+   ],
+   "auroc_nat": 0.934149980545044,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "december",
+  "family": "months",
+  "layer": 3,
+  "tier": "reject",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8776310523160918,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.00014221620025370692,
+   "per_domain_min_rho": 0.8776310523160918,
+   "rand_margin": 0.4427825665685596
+  },
+  "fail_reason": "HL_S=-0.059 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.850438864852679,
+    0.9132604136749533
+   ],
+   "auroc_nat": 0.9344927668571472,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "HL_S=-0.059 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "february",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8266986375701947,
+   "selectivity_gap": 0.9998290598290598,
+   "ece_test": 0.0004989991542841621,
+   "per_domain_min_rho": 0.8266986375701947,
+   "rand_margin": 0.48705728638352197
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7998812676443083,
+    0.8595692288132013
+   ],
+   "auroc_nat": 0.8995268940925598,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "january",
+  "family": "months",
+  "layer": 20,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8566028509323979,
+   "selectivity_gap": 0.9029126213592233,
+   "ece_test": 0.00045739499985317293,
+   "per_domain_min_rho": 0.8566028509323979,
+   "rand_margin": 0.4650535517246166
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8270290996440405,
+    0.8921629427023068
+   ],
+   "auroc_nat": 0.951743483543396,
+   "covshift_auc": 0.9811725616455078,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "july",
+  "family": "months",
+  "layer": 3,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.7906563082010448,
+   "selectivity_gap": 0.5718654434250764,
+   "ece_test": 0.00010746145650270947,
+   "per_domain_min_rho": 0.7906563082010448,
+   "rand_margin": 0.479099758805408
+  },
+  "fail_reason": "FPR_hom=0.128 (need <=0.10)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7416033325589511,
+    0.8438153713702614
+   ],
+   "auroc_nat": 0.9212842583656311,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.128 (need <=0.10)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "june",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8397291177199405,
+   "selectivity_gap": 0.8913043478260869,
+   "ece_test": 0.00011125401370547666,
+   "per_domain_min_rho": 0.8397291177199405,
+   "rand_margin": 0.3999871131748292
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8097837541941619,
+    0.8824529543634644
+   ],
+   "auroc_nat": 0.9441216588020325,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "march",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9238470245508452,
+   "selectivity_gap": 0.9724517906336088,
+   "ece_test": 0.00014010093839533617,
+   "per_domain_min_rho": 0.9238470245508452,
+   "rand_margin": 0.6786904392477636
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9084122095951173,
+    0.947480309936067
+   ],
+   "auroc_nat": 0.9772804975509644,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "may",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8541645027852628,
+   "selectivity_gap": 0.9298245614035088,
+   "ece_test": 0.00032074065994285196,
+   "per_domain_min_rho": 0.8541645027852628,
+   "rand_margin": 0.5558144637588078
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.836012927501699,
+    0.8783479917737064
+   ],
+   "auroc_nat": 0.9549286365509033,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "november",
+  "family": "months",
+  "layer": 8,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8112369547534546,
+   "selectivity_gap": 0.8087431693989071,
+   "ece_test": 0.00035933228931550316,
+   "per_domain_min_rho": 0.8112369547534546,
+   "rand_margin": 0.4924095216449513
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7826714819981048,
+    0.8440655829183532
+   ],
+   "auroc_nat": 0.9415835738182068,
+   "covshift_auc": 0.984145998954773,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "october",
+  "family": "months",
+  "layer": 3,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9108077739492103,
+   "selectivity_gap": 0.9365079365079365,
+   "ece_test": 0.0002613838985371789,
+   "per_domain_min_rho": 0.9108077739492103,
+   "rand_margin": 0.5571055287400646
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8896096236136163,
+    0.9392169422994192
+   ],
+   "auroc_nat": 0.9510469436645508,
+   "covshift_auc": 0.9664851427078247,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "september",
+  "family": "months",
+  "layer": 25,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.841080574365974,
+   "selectivity_gap": 0.9215686274509803,
+   "ece_test": 0.00014532631188875043,
+   "per_domain_min_rho": 0.841080574365974,
+   "rand_margin": 0.5142273669591342
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8112281603863967,
+    0.8728643628930917
+   ],
+   "auroc_nat": 0.945052981376648,
+   "covshift_auc": 0.9798750281333923,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "friday",
+  "family": "weekdays",
+  "layer": 16,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8626041715593167,
+   "selectivity_gap": 0.8511904761904762,
+   "ece_test": 0.0001949458566958489,
+   "per_domain_min_rho": 0.8626041715593167,
+   "rand_margin": 0.19205432756358065
+  },
+  "fail_reason": "margin=0.192 (need >=0.20)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7927807170702605,
+    0.9494681633686881
+   ],
+   "auroc_nat": 0.9146642684936523,
+   "covshift_auc": 0.9858134388923645,
+   "monotonicity": null
+  },
+  "known_failure_modes": "margin=0.192 (need >=0.20)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "monday",
+  "family": "weekdays",
+  "layer": 16,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9723871752723533,
+   "selectivity_gap": 0.8599439775910364,
+   "ece_test": 0.0001650441782741829,
+   "per_domain_min_rho": 0.9723871752723533,
+   "rand_margin": 0.26129153232063473
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.957900938249828,
+    0.9936806229451044
+   ],
+   "auroc_nat": 0.9903959035873413,
+   "covshift_auc": 0.9858134388923645,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "saturday",
+  "family": "weekdays",
+  "layer": 18,
+  "tier": "reject",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9452250574529886,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.000293673219565777,
+   "per_domain_min_rho": 0.9452250574529886,
+   "rand_margin": 0.19452043378820538
+  },
+  "fail_reason": "FPR_hom=0.262 (need <=0.10); HL_S=-0.016 (need >=0.00); margin=0.195 (need >=0.20)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9141578473121692,
+    0.9967781936874768
+   ],
+   "auroc_nat": 0.991803765296936,
+   "covshift_auc": 0.9835736155509949,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.262 (need <=0.10); HL_S=-0.016 (need >=0.00); margin=0.195 (need >=0.20)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "sunday",
+  "family": "weekdays",
+  "layer": 8,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9155724414649866,
+   "selectivity_gap": 0.8168498168498168,
+   "ece_test": 0.0001242203785748511,
+   "per_domain_min_rho": 0.9155724414649866,
+   "rand_margin": 0.4491784901002653
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8722893817129709,
+    0.9745134811902326
+   ],
+   "auroc_nat": 0.9425106644630432,
+   "covshift_auc": 0.9825748205184937,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "thursday",
+  "family": "weekdays",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9311707491552352,
+   "selectivity_gap": 0.8798798798798799,
+   "ece_test": 4.3806159378028347e-05,
+   "per_domain_min_rho": 0.9311707491552352,
+   "rand_margin": 0.3925784865775588
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8974028243405904,
+    0.970150974674231
+   ],
+   "auroc_nat": 0.9563964009284973,
+   "covshift_auc": 0.9812385439872742,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "tuesday",
+  "family": "weekdays",
+  "layer": 16,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9547477071295357,
+   "selectivity_gap": 0.9705014749262537,
+   "ece_test": 0.00011022950593481057,
+   "per_domain_min_rho": 0.9547477071295357,
+   "rand_margin": 0.2581301648117724
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.931948623082051,
+    0.9926341212960794
+   ],
+   "auroc_nat": 0.9891416430473328,
+   "covshift_auc": 0.9858134388923645,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "wednesday",
+  "family": "weekdays",
+  "layer": 20,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9888411684722858,
+   "selectivity_gap": 0.9152542372881356,
+   "ece_test": 0.00020362829336703989,
+   "per_domain_min_rho": 0.9888411684722858,
+   "rand_margin": 0.270470603929196
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9834407012187728,
+    0.9974161386949489
+   ],
+   "auroc_nat": 0.9931142330169678,
+   "covshift_auc": 0.9799978733062744,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "autumn",
+  "family": "seasons",
+  "layer": 3,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8103528220450719,
+   "selectivity_gap": 0.425287356321839,
+   "ece_test": 0.00015987789404869776,
+   "per_domain_min_rho": 0.8103528220450719,
+   "rand_margin": 0.23878335156142538
+  },
+  "fail_reason": "FPR_hom=0.172 (need <=0.10)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.754852275797421,
+    0.8604314627950223
+   ],
+   "auroc_nat": 0.9405537843704224,
+   "covshift_auc": 0.9571640491485596,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.172 (need <=0.10)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "spring",
+  "family": "seasons",
+  "layer": 18,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8137267843342063,
+   "selectivity_gap": 0.9193548387096774,
+   "ece_test": 0.00023584042645350008,
+   "per_domain_min_rho": 0.8137267843342063,
+   "rand_margin": 0.48247191825945607
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7658153752730339,
+    0.8719953445521824
+   ],
+   "auroc_nat": 0.9559969902038574,
+   "covshift_auc": 0.9817479848861694,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "summer",
+  "family": "seasons",
+  "layer": 14,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.860096288427481,
+   "selectivity_gap": 0.6045197740112994,
+   "ece_test": 0.0005048970825845186,
+   "per_domain_min_rho": 0.860096288427481,
+   "rand_margin": 0.5529896274313386
+  },
+  "fail_reason": "FPR_hom=0.119 (need <=0.10)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8285994330149243,
+    0.8949646138881089
+   ],
+   "auroc_nat": 0.9489408135414124,
+   "covshift_auc": 0.9793127179145813,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.119 (need <=0.10)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "winter",
+  "family": "seasons",
+  "layer": 14,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9004744463376013,
+   "selectivity_gap": 0.5348837209302326,
+   "ece_test": 0.00046532324396526934,
+   "per_domain_min_rho": 0.9004744463376013,
+   "rand_margin": 0.5239842807114156
+  },
+  "fail_reason": "FPR_hom=0.140 (need <=0.10)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8801848496983079,
+    0.9271186711119599
+   ],
+   "auroc_nat": 0.9715166687965393,
+   "covshift_auc": 0.9793127179145813,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.140 (need <=0.10)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "blue",
+  "family": "color_wheel",
+  "layer": 18,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8898929140757319,
+   "selectivity_gap": 0.9998428990364474,
+   "ece_test": 0.0003483103737345209,
+   "per_domain_min_rho": 0.8898929140757319,
+   "rand_margin": 0.44871228935260143
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8705625393027291,
+    0.9085264606573636
+   ],
+   "auroc_nat": 0.978415846824646,
+   "covshift_auc": 0.9823434352874756,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "blue-green",
+  "family": "color_wheel",
+  "layer": 20,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9637084335817182,
+   "selectivity_gap": 0.9995774647887324,
+   "ece_test": 0.0002108855270830399,
+   "per_domain_min_rho": 0.9637084335817182,
+   "rand_margin": 0.38358522477977197
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9543574252507432,
+    0.9763495812337354
+   ],
+   "auroc_nat": 0.9881007075309753,
+   "covshift_auc": 0.9725265502929688,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "blue-violet",
+  "family": "color_wheel",
+  "layer": 14,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8931737978023664,
+   "selectivity_gap": 0.9968066814050602,
+   "ece_test": 7.59569114947014e-05,
+   "per_domain_min_rho": 0.8931737978023664,
+   "rand_margin": 0.46734453366774475
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.850102173938298,
+    0.9537227536498925
+   ],
+   "auroc_nat": 0.9887505769729614,
+   "covshift_auc": 0.9811219573020935,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "green",
+  "family": "color_wheel",
+  "layer": 14,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8506270109988072,
+   "selectivity_gap": 0.967948717948718,
+   "ece_test": 0.00032757433553240825,
+   "per_domain_min_rho": 0.8506270109988072,
+   "rand_margin": 0.503046656635203
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8244048828752186,
+    0.884721721424731
+   ],
+   "auroc_nat": 0.9831763505935669,
+   "covshift_auc": 0.9811219573020935,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "orange",
+  "family": "color_wheel",
+  "layer": 10,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.88561753068996,
+   "selectivity_gap": 0.8148148148148149,
+   "ece_test": 0.0002619651348409198,
+   "per_domain_min_rho": 0.88561753068996,
+   "rand_margin": 0.39457900965940784
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8584921489224028,
+    0.914024900879857
+   ],
+   "auroc_nat": 0.9866043329238892,
+   "covshift_auc": 0.9595809578895569,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "red",
+  "family": "color_wheel",
+  "layer": 14,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8744474513465194,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.0005905656693349354,
+   "per_domain_min_rho": 0.8744474513465194,
+   "rand_margin": 0.46108439817327485
+  },
+  "fail_reason": "HL_S=-0.026 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8470102711714758,
+    0.90934344386423
+   ],
+   "auroc_nat": 0.9484097957611084,
+   "covshift_auc": 0.9811219573020935,
+   "monotonicity": null
+  },
+  "known_failure_modes": "HL_S=-0.026 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "red-orange",
+  "family": "color_wheel",
+  "layer": 12,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9141365532333182,
+   "selectivity_gap": 0.996938775510204,
+   "ece_test": 8.796702330944795e-05,
+   "per_domain_min_rho": 0.9141365532333182,
+   "rand_margin": 0.40440493065922267
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.881353770560817,
+    0.9531265151666234
+   ],
+   "auroc_nat": 0.9600573778152466,
+   "covshift_auc": 0.9842516183853149,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "red-violet",
+  "family": "color_wheel",
+  "layer": 8,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8489244695876937,
+   "selectivity_gap": 0.0,
+   "ece_test": 8.519988607426201e-05,
+   "per_domain_min_rho": 0.8489244695876937,
+   "rand_margin": 0.3212930702869906
+  },
+  "fail_reason": "FPR_hom=NA; HL_S=-0.036 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7542614060013522,
+    0.9478136241072574
+   ],
+   "auroc_nat": 0.9936586022377014,
+   "covshift_auc": 0.9698044061660767,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=NA; HL_S=-0.036 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "violet",
+  "family": "color_wheel",
+  "layer": 3,
+  "tier": "reject",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8640971351728856,
+   "selectivity_gap": 0.0,
+   "ece_test": 5.621642567853938e-05,
+   "per_domain_min_rho": 0.8640971351728856,
+   "rand_margin": 0.33679774477200497
+  },
+  "fail_reason": "FPR_hom=0.252 (need <=0.10); HL_S=-0.124 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7786760271217071,
+    0.9836873726245294
+   ],
+   "auroc_nat": 0.9983873963356018,
+   "covshift_auc": 0.9568488001823425,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.252 (need <=0.10); HL_S=-0.124 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "yellow",
+  "family": "color_wheel",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8817203878278491,
+   "selectivity_gap": 0.9739583333333334,
+   "ece_test": 0.00032362924016704416,
+   "per_domain_min_rho": 0.8817203878278491,
+   "rand_margin": 0.45386403117186946
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8443300917233089,
+    0.9364748392756899
+   ],
+   "auroc_nat": 0.9677733778953552,
+   "covshift_auc": 0.9761826992034912,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "yellow-green",
+  "family": "color_wheel",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9618442198354921,
+   "selectivity_gap": 0.9983766233766234,
+   "ece_test": 0.0004664768929457447,
+   "per_domain_min_rho": 0.9618442198354921,
+   "rand_margin": 0.4285424219298174
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9429153821159563,
+    0.9837343396994083
+   ],
+   "auroc_nat": 0.9923631548881531,
+   "covshift_auc": 0.9761826992034912,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "yellow-orange",
+  "family": "color_wheel",
+  "layer": 10,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9103536343265796,
+   "selectivity_gap": 0.990909090909091,
+   "ece_test": 0.0001504513764847664,
+   "per_domain_min_rho": 0.9103536343265796,
+   "rand_margin": 0.46265552823250894
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8878303665188911,
+    0.934983972755298
+   ],
+   "auroc_nat": 0.971185028553009,
+   "covshift_auc": 0.9595809578895569,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "east",
+  "family": "directions",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8117300835858662,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.00019120791317351254,
+   "per_domain_min_rho": 0.8117300835858662,
+   "rand_margin": 0.28158333025329285
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7716290330941505,
+    0.853236252220351
+   ],
+   "auroc_nat": 0.9985961318016052,
+   "covshift_auc": 0.977618932723999,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "north",
+  "family": "directions",
+  "layer": 18,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8191824489087431,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.0001919701354701551,
+   "per_domain_min_rho": 0.8191824489087431,
+   "rand_margin": 0.31329135232091465
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7845039712603475,
+    0.8589686346164442
+   ],
+   "auroc_nat": 0.9981641173362732,
+   "covshift_auc": 0.9801927208900452,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "northeast",
+  "family": "directions",
+  "layer": 16,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.7958103264018057,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.0002965806067472617,
+   "per_domain_min_rho": 0.7958103264018057,
+   "rand_margin": 0.24818493280553644
+  },
+  "fail_reason": "HL_S=-0.026 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7403777554997044,
+    0.8639153489461852
+   ],
+   "auroc_nat": 0.8911976218223572,
+   "covshift_auc": 0.9835819602012634,
+   "monotonicity": null
+  },
+  "known_failure_modes": "HL_S=-0.026 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "northwest",
+  "family": "directions",
+  "layer": 14,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8252701346114579,
+   "selectivity_gap": 0.9974368413533916,
+   "ece_test": 8.742408522410897e-05,
+   "per_domain_min_rho": 0.8252701346114579,
+   "rand_margin": 0.22989644688266553
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7637345207413642,
+    0.9097296667086722
+   ],
+   "auroc_nat": 0.9935324788093567,
+   "covshift_auc": 0.9840618968009949,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "south",
+  "family": "directions",
+  "layer": 14,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8130720991896254,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.00010962482534994233,
+   "per_domain_min_rho": 0.8130720991896254,
+   "rand_margin": 0.33268846254464185
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.77882392032501,
+    0.8498949416237298
+   ],
+   "auroc_nat": 0.9892414808273315,
+   "covshift_auc": 0.9840618968009949,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "southeast",
+  "family": "directions",
+  "layer": 16,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8242627604457614,
+   "selectivity_gap": 0.9999865510354582,
+   "ece_test": 0.00021140035618070815,
+   "per_domain_min_rho": 0.8242627604457614,
+   "rand_margin": 0.24592911922624716
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7732435495646135,
+    0.8793060915661811
+   ],
+   "auroc_nat": 0.9391486048698425,
+   "covshift_auc": 0.9835819602012634,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "southwest",
+  "family": "directions",
+  "layer": 23,
+  "tier": "reject",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8979571891452481,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.00019142881707160888,
+   "per_domain_min_rho": 0.8979571891452481,
+   "rand_margin": 0.4012006092902424
+  },
+  "fail_reason": "HL_S=-0.145 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8678142975720471,
+    0.9391116972874602
+   ],
+   "auroc_nat": 0.9987907409667969,
+   "covshift_auc": 0.9781524538993835,
+   "monotonicity": null
+  },
+  "known_failure_modes": "HL_S=-0.145 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "west",
+  "family": "directions",
+  "layer": 8,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.7490360582513663,
+   "selectivity_gap": 1.0,
+   "ece_test": 4.2786693004971144e-05,
+   "per_domain_min_rho": 0.7490360582513663,
+   "rand_margin": 0.34566399343369547
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7029041114529803,
+    0.8031614160806143
+   ],
+   "auroc_nat": 0.9958702921867371,
+   "covshift_auc": 0.978814959526062,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "first quarter",
+  "family": "moon_phases",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8167202608629022,
+   "selectivity_gap": 0.8787878787878788,
+   "ece_test": 0.00022724734920473018,
+   "per_domain_min_rho": 0.8167202608629022,
+   "rand_margin": 0.4386812463814443
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7622968516446014,
+    0.8856415753275351
+   ],
+   "auroc_nat": 0.9991739988327026,
+   "covshift_auc": 0.9779430627822876,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "full moon",
+  "family": "moon_phases",
+  "layer": 14,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8755443923398918,
+   "selectivity_gap": 0.9849085365853658,
+   "ece_test": 0.0006612465624254996,
+   "per_domain_min_rho": 0.8755443923398918,
+   "rand_margin": 0.47182922080334033
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8272138662431722,
+    0.9370320713561513
+   ],
+   "auroc_nat": 0.9915047883987427,
+   "covshift_auc": 0.9844345450401306,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "last quarter",
+  "family": "moon_phases",
+  "layer": 12,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8140583617985802,
+   "selectivity_gap": 0.8708010335917312,
+   "ece_test": 0.00021498263842998478,
+   "per_domain_min_rho": 0.8140583617985802,
+   "rand_margin": 0.4813560885004895
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.7510332872777618,
+    0.9058344552973652
+   ],
+   "auroc_nat": 0.9949023127555847,
+   "covshift_auc": 0.9838678240776062,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "new moon",
+  "family": "moon_phases",
+  "layer": 10,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8682789715260215,
+   "selectivity_gap": 0.9739583333333334,
+   "ece_test": 0.0005883455579229432,
+   "per_domain_min_rho": 0.8682789715260215,
+   "rand_margin": 0.3778957638610208
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8267870991729064,
+    0.9814316372118548
+   ],
+   "auroc_nat": 0.9981882572174072,
+   "covshift_auc": 0.9730915427207947,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "waning crescent",
+  "family": "moon_phases",
+  "layer": 10,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.958780890390443,
+   "selectivity_gap": 0.9038461538461539,
+   "ece_test": 0.0002108716970344453,
+   "per_domain_min_rho": 0.958780890390443,
+   "rand_margin": 0.3589755361146669
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9172466203884319,
+    0.9886816282684634
+   ],
+   "auroc_nat": 0.99345463514328,
+   "covshift_auc": 0.9730915427207947,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "waning gibbous",
+  "family": "moon_phases",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9748712945663905,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.00031666731970128077,
+   "per_domain_min_rho": 0.9748712945663905,
+   "rand_margin": 0.2698807585265077
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9585929780820819,
+    0.990398317004765
+   ],
+   "auroc_nat": 0.9917224049568176,
+   "covshift_auc": 0.9779430627822876,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "waxing crescent",
+  "family": "moon_phases",
+  "layer": 25,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9734284810217748,
+   "selectivity_gap": 0.9998899647887324,
+   "ece_test": 0.0001225130915226123,
+   "per_domain_min_rho": 0.9734284810217748,
+   "rand_margin": 0.3859413331154685
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9592234962392187,
+    0.9918850186624472
+   ],
+   "auroc_nat": 0.9913599491119385,
+   "covshift_auc": 0.9766444563865662,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "waxing gibbous",
+  "family": "moon_phases",
+  "layer": 20,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9504191622975007,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.0002200178359460282,
+   "per_domain_min_rho": 0.9504191622975007,
+   "rand_margin": 0.283864971422477
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.9278498813458006,
+    0.9768792916695787
+   ],
+   "auroc_nat": 0.9827147126197815,
+   "covshift_auc": 0.978569507598877,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "africa",
+  "family": "continents",
+  "layer": 8,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9079448222452062,
+   "selectivity_gap": 0.93993993993994,
+   "ece_test": 0.0005983809595961052,
+   "per_domain_min_rho": 0.9079448222452062,
+   "rand_margin": 0.49725033573278804
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8898824708810799,
+    0.9298124412647322
+   ],
+   "auroc_nat": 0.9461334943771362,
+   "covshift_auc": 0.9885233640670776,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "asia",
+  "family": "continents",
+  "layer": 18,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8653600263834925,
+   "selectivity_gap": 0.8888888888888888,
+   "ece_test": 0.0003145580858244068,
+   "per_domain_min_rho": 0.8653600263834925,
+   "rand_margin": 0.5425541504764291
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8470073430625945,
+    0.887219315381504
+   ],
+   "auroc_nat": 0.973073422908783,
+   "covshift_auc": 0.9843137860298157,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "europe",
+  "family": "continents",
+  "layer": 10,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8706644620507998,
+   "selectivity_gap": 0.7580645161290323,
+   "ece_test": 0.00040175205832942225,
+   "per_domain_min_rho": 0.8706644620507998,
+   "rand_margin": 0.6649273119107466
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8483750349058342,
+    0.9009452606262351
+   ],
+   "auroc_nat": 0.9627912044525146,
+   "covshift_auc": 0.9714840650558472,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "north america",
+  "family": "continents",
+  "layer": 16,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8871974647103733,
+   "selectivity_gap": 0.4715447154471545,
+   "ece_test": 0.00017999829018757767,
+   "per_domain_min_rho": 0.8871974647103733,
+   "rand_margin": 0.5625196482922418
+  },
+  "fail_reason": "FPR_hom=0.159 (need <=0.10)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8707988087927844,
+    0.9083253843128415
+   ],
+   "auroc_nat": 0.9918996691703796,
+   "covshift_auc": 0.9861180186271667,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.159 (need <=0.10)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "oceania",
+  "family": "continents",
+  "layer": 18,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.9237286161171299,
+   "selectivity_gap": 0.0,
+   "ece_test": 0.0001445463782033831,
+   "per_domain_min_rho": 0.9237286161171299,
+   "rand_margin": 0.5853350989621016
+  },
+  "fail_reason": "FPR_hom=0.229 (need <=0.10); HL_S=-0.028 (need >=0.00)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.8968233679629288,
+    0.9563411677280809
+   ],
+   "auroc_nat": 0.9890343546867371,
+   "covshift_auc": 0.9843137860298157,
+   "monotonicity": null
+  },
+  "known_failure_modes": "FPR_hom=0.229 (need <=0.10); HL_S=-0.028 (need >=0.00)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "south america",
+  "family": "continents",
+  "layer": 6,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.8958201639504255,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.00022673448442224147,
+   "per_domain_min_rho": 0.8958201639504255,
+   "rand_margin": 0.3686358247262116
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.854626747379796,
+    0.9423457816148946
+   ],
+   "auroc_nat": 0.9970871210098267,
+   "covshift_auc": 0.9824049472808838,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "indoors",
+  "family": "location_type",
+  "layer": 25,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.6344871110463992,
+   "selectivity_gap": 0.7878787878787878,
+   "ece_test": 0.00047214257322242725,
+   "per_domain_min_rho": 0.6344871110463992,
+   "rand_margin": 0.4376798446102066
+  },
+  "fail_reason": "rho=0.634 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.5904161161725185,
+    0.6787878962950548
+   ],
+   "auroc_nat": 0.8682466745376587,
+   "covshift_auc": 0.9845691919326782,
+   "monotonicity": null
+  },
+  "known_failure_modes": "rho=0.634 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "outdoors",
+  "family": "location_type",
+  "layer": 12,
+  "tier": "deploy",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.6762309273370055,
+   "selectivity_gap": 0.999034749034749,
+   "ece_test": 0.0007746183920729051,
+   "per_domain_min_rho": 0.6762309273370055,
+   "rand_margin": 0.5344651945415826
+  },
+  "fail_reason": null,
+  "tier2_brief": {
+   "rho_ci95": [
+    0.638190818733787,
+    0.7158501012681976
+   ],
+   "auroc_nat": 0.8870162963867188,
+   "covshift_auc": 0.9744255542755127,
+   "monotonicity": null
+  },
+  "known_failure_modes": "none recorded",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "costliness",
+  "family": "costliness",
+  "layer": 16,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.6434843417829881,
+   "selectivity_gap": 0.9516908212560387,
+   "ece_test": 0.0010274955316268322,
+   "per_domain_min_rho": 0.6434843417829881,
+   "rand_margin": 0.47854619807952004
+  },
+  "fail_reason": "rho=0.643 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.566061167223444,
+    0.7202863320171764
+   ],
+   "auroc_nat": 0.9354667067527771,
+   "covshift_auc": 0.9890376329421997,
+   "monotonicity": 1.0
+  },
+  "known_failure_modes": "rho=0.643 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "physical_size",
+  "family": "physical_size",
+  "layer": 18,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.5604145068175377,
+   "selectivity_gap": 0.967741935483871,
+   "ece_test": 0.00016659304263016967,
+   "per_domain_min_rho": 0.5604145068175377,
+   "rand_margin": 0.4057505583110454
+  },
+  "fail_reason": "rho=0.560 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.4979478700743956,
+    0.6140548037117328
+   ],
+   "auroc_nat": 0.9007560610771179,
+   "covshift_auc": 0.9835553765296936,
+   "monotonicity": 0.8928571428571429
+  },
+  "known_failure_modes": "rho=0.560 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "lovingness",
+  "family": "lovingness",
+  "layer": 8,
+  "tier": "reject",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.4477534040801891,
+   "selectivity_gap": 0.9571428571428572,
+   "ece_test": 0.0009935832169840329,
+   "per_domain_min_rho": 0.4477534040801891,
+   "rand_margin": 0.30931805113808186
+  },
+  "fail_reason": "rho=0.448 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.3963714271544317,
+    0.5030217984330165
+   ],
+   "auroc_nat": 0.8145935535430908,
+   "covshift_auc": 0.9884209036827087,
+   "monotonicity": 0.6071428571428571
+  },
+  "known_failure_modes": "rho=0.448 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "duration",
+  "family": "duration",
+  "layer": 18,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.6368148966009852,
+   "selectivity_gap": 0.9305555555555556,
+   "ece_test": 0.002001349640370321,
+   "per_domain_min_rho": 0.6368148966009852,
+   "rand_margin": 0.5315413894572454
+  },
+  "fail_reason": "rho=0.637 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.5917027920009585,
+    0.693977851897061
+   ],
+   "auroc_nat": 0.8767247200012207,
+   "covshift_auc": 0.9859641194343567,
+   "monotonicity": 0.7857142857142857
+  },
+  "known_failure_modes": "rho=0.637 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ },
+ {
+  "concept": "harmfulness",
+  "family": "harmfulness",
+  "layer": 16,
+  "tier": "caveat",
+  "lambda": 0.01,
+  "tier1": {
+   "rho_nat_test": 0.5300302024597999,
+   "selectivity_gap": 1.0,
+   "ece_test": 0.003004071879383664,
+   "per_domain_min_rho": 0.5300302024597999,
+   "rand_margin": 0.40752854720733095
+  },
+  "fail_reason": "rho=0.530 (need >=0.65)",
+  "tier2_brief": {
+   "rho_ci95": [
+    0.48292453658977386,
+    0.5717230780483905
+   ],
+   "auroc_nat": 0.8335767984390259,
+   "covshift_auc": 0.9818793535232544,
+   "monotonicity": 0.8928571428571429
+  },
+  "known_failure_modes": "rho=0.530 (need >=0.65)",
+  "probe_version": "stage5-2026-07-02",
+  "score_semantics": "unit-norm w; score = w\u00b7(h\u2212\u03bc)/\u03c3 + b; ranking uses raw score; calibration map is Stage 7"
+ }
+]

@@ -1,0 +1,95 @@
+{
+ "family": "moon_phases",
+ "type": "categorical",
+ "classes": {
+  "new_moon": {
+   "surface": [
+    "new moon"
+   ],
+   "associates": [
+    "moonless",
+    "dark sky",
+    "lunation",
+    "invisible"
+   ]
+  },
+  "waxing_crescent": {
+   "surface": [
+    "waxing crescent"
+   ],
+   "associates": [
+    "sliver",
+    "young moon",
+    "crescent",
+    "evening sky"
+   ]
+  },
+  "first_quarter": {
+   "surface": [
+    "first quarter",
+    "first-quarter moon"
+   ],
+   "associates": [
+    "half moon",
+    "half-lit",
+    "evening"
+   ]
+  },
+  "waxing_gibbous": {
+   "surface": [
+    "waxing gibbous"
+   ],
+   "associates": [
+    "gibbous",
+    "nearly full",
+    "brightening",
+    "almost full"
+   ]
+  },
+  "full_moon": {
+   "surface": [
+    "full moon"
+   ],
+   "associates": [
+    "fully illuminated",
+    "moonlight",
+    "harvest moon",
+    "bright"
+   ]
+  },
+  "waning_gibbous": {
+   "surface": [
+    "waning gibbous"
+   ],
+   "associates": [
+    "gibbous",
+    "past full",
+    "shrinking",
+    "dimming"
+   ]
+  },
+  "last_quarter": {
+   "surface": [
+    "last quarter",
+    "third quarter",
+    "last-quarter moon"
+   ],
+   "associates": [
+    "half moon",
+    "half-lit",
+    "midnight"
+   ]
+  },
+  "waning_crescent": {
+   "surface": [
+    "waning crescent"
+   ],
+   "associates": [
+    "old moon",
+    "dawn sky",
+    "sliver",
+    "fading"
+   ]
+  }
+ }
+}

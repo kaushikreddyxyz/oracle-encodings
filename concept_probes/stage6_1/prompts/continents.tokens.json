@@ -1,0 +1,78 @@
+{
+ "family": "continents",
+ "type": "categorical",
+ "classes": {
+  "europe": {
+   "surface": [
+    "Europe",
+    "European"
+   ],
+   "associates": [
+    "EU",
+    "Alps",
+    "Mediterranean",
+    "eurozone"
+   ]
+  },
+  "asia": {
+   "surface": [
+    "Asia",
+    "Asian"
+   ],
+   "associates": [
+    "Himalayas",
+    "China",
+    "India",
+    "monsoon"
+   ]
+  },
+  "africa": {
+   "surface": [
+    "Africa",
+    "African"
+   ],
+   "associates": [
+    "Sahara",
+    "savanna",
+    "Nile",
+    "safari"
+   ]
+  },
+  "north_america": {
+   "surface": [
+    "North America",
+    "North American"
+   ],
+   "associates": [
+    "Canada",
+    "United States",
+    "Mexico",
+    "Rockies"
+   ]
+  },
+  "south_america": {
+   "surface": [
+    "South America",
+    "South American"
+   ],
+   "associates": [
+    "Amazon",
+    "Andes",
+    "Brazil",
+    "Patagonia"
+   ]
+  },
+  "oceania": {
+   "surface": [
+    "Oceania"
+   ],
+   "associates": [
+    "Australia",
+    "New Zealand",
+    "Pacific islands",
+    "Polynesia",
+    "Melanesia"
+   ]
+  }
+ }
+}

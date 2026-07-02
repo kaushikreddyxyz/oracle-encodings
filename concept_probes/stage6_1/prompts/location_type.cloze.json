@@ -1,0 +1,553 @@
+{
+ "family": "location_type",
+ "classes": [
+  "indoors",
+  "outdoors"
+ ],
+ "templates": [
+  {
+   "id": "location_type_001",
+   "type": "association",
+   "prompt": "Given the forecast, the wedding ceremony will be held",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; both settings plausible"
+  },
+  {
+   "id": "location_type_002",
+   "type": "association",
+   "prompt": "The yoga class meets twice a week, sometimes",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_003",
+   "type": "association",
+   "prompt": "Depending on the weather, the birthday party will take place",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_004",
+   "type": "association",
+   "prompt": "The photographer said the light would be better if we shot the portraits",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_005",
+   "type": "association",
+   "prompt": "The concert venue has two stages, and tonight's show is",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_006",
+   "type": "association",
+   "prompt": "Most of the scenes in the film were shot",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_007",
+   "type": "association",
+   "prompt": "The cats spend nearly all of their time",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_008",
+   "type": "association",
+   "prompt": "During the lunch break, the students are allowed to eat",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_009",
+   "type": "association",
+   "prompt": "The tasting event moves each season and this year will be hosted",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_010",
+   "type": "association",
+   "prompt": "The market operates year-round, rain or shine, entirely",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_011",
+   "type": "association",
+   "prompt": "The reception starts at six and, weather permitting, will be held",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; modal 'may' avoided (months hygiene applied bank-wide)"
+  },
+  {
+   "id": "location_type_012",
+   "type": "association",
+   "prompt": "The graduation ceremony traditionally takes place",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_013",
+   "type": "association",
+   "prompt": "The play's second act is staged entirely",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_014",
+   "type": "association",
+   "prompt": "Because of the heat wave, tomorrow's practice has been moved",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; both moves attested (into AC / into shade-evening)"
+  },
+  {
+   "id": "location_type_015",
+   "type": "association",
+   "prompt": "The art fair is held every June, always",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_016",
+   "type": "association",
+   "prompt": "The dog prefers to sleep",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "location_type_017",
+   "type": "factual",
+   "prompt": "With rain hammering the windows all afternoon, the children spent the day",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key: rain -> indoors"
+  },
+  {
+   "id": "location_type_018",
+   "type": "factual",
+   "prompt": "The blizzard shut down the roads, so the whole family stayed",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_019",
+   "type": "factual",
+   "prompt": "The museum's fragile manuscripts must be kept in climate-controlled rooms, strictly",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_020",
+   "type": "factual",
+   "prompt": "When the air-quality alert was issued, residents were told to remain",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_021",
+   "type": "factual",
+   "prompt": "The badminton tournament moved to the gymnasium, so all matches are now",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key: gymnasium -> indoors"
+  },
+  {
+   "id": "location_type_022",
+   "type": "factual",
+   "prompt": "Frost was forecast overnight, so she carried the potted orchids",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_023",
+   "type": "factual",
+   "prompt": "The curfew required everyone in the city to be",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_024",
+   "type": "factual",
+   "prompt": "The heavy smoke from the wildfire forced the festival crowd to head",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "indoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_025",
+   "type": "factual",
+   "prompt": "The rangers spend nearly every working hour in the forest, almost entirely",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key: forest -> outdoors"
+  },
+  {
+   "id": "location_type_026",
+   "type": "factual",
+   "prompt": "Craving fresh air and sunshine after the long flight, they ate breakfast",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_027",
+   "type": "factual",
+   "prompt": "The survival course teaches you to build shelters and sleep",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_028",
+   "type": "factual",
+   "prompt": "On the first warm day of the year, the cafe moved every table",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_029",
+   "type": "factual",
+   "prompt": "The sculpture is weatherproof bronze, designed to be displayed",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_030",
+   "type": "factual",
+   "prompt": "Stargazing, birdwatching, and hiking all require you to be",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_031",
+   "type": "factual",
+   "prompt": "The farm dogs are working animals and live year-round",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  },
+  {
+   "id": "location_type_032",
+   "type": "factual",
+   "prompt": "To see the meteor shower at its best, you need to get",
+   "completions": {
+    "indoors": [
+     "indoors",
+     "inside"
+    ],
+    "outdoors": [
+     "outdoors",
+     "outside"
+    ]
+   },
+   "answer_class": "outdoors",
+   "notes": "commonsense key"
+  }
+ ]
+}

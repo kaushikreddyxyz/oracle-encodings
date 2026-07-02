@@ -1,0 +1,144 @@
+{
+ "family": "color_wheel",
+ "type": "categorical",
+ "classes": {
+  "red": {
+   "surface": [
+    "red"
+   ],
+   "associates": [
+    "crimson",
+    "scarlet",
+    "blood",
+    "rose",
+    "cherry"
+   ]
+  },
+  "red-orange": {
+   "surface": [
+    "red-orange",
+    "vermilion"
+   ],
+   "associates": [
+    "rust",
+    "brick",
+    "burnt orange"
+   ]
+  },
+  "orange": {
+   "surface": [
+    "orange"
+   ],
+   "associates": [
+    "tangerine",
+    "pumpkin",
+    "carrot",
+    "citrus"
+   ]
+  },
+  "yellow-orange": {
+   "surface": [
+    "yellow-orange",
+    "amber"
+   ],
+   "associates": [
+    "gold",
+    "marigold",
+    "saffron",
+    "honey"
+   ]
+  },
+  "yellow": {
+   "surface": [
+    "yellow"
+   ],
+   "associates": [
+    "lemon",
+    "sunshine",
+    "canary",
+    "daffodil"
+   ]
+  },
+  "yellow-green": {
+   "surface": [
+    "yellow-green",
+    "chartreuse"
+   ],
+   "associates": [
+    "lime",
+    "olive",
+    "pear"
+   ]
+  },
+  "green": {
+   "surface": [
+    "green"
+   ],
+   "associates": [
+    "emerald",
+    "grass",
+    "forest",
+    "leaf",
+    "jade"
+   ]
+  },
+  "blue-green": {
+   "surface": [
+    "blue-green",
+    "teal"
+   ],
+   "associates": [
+    "turquoise",
+    "cyan",
+    "aqua",
+    "seafoam"
+   ]
+  },
+  "blue": {
+   "surface": [
+    "blue"
+   ],
+   "associates": [
+    "azure",
+    "navy",
+    "sky",
+    "sapphire",
+    "cobalt"
+   ]
+  },
+  "blue-violet": {
+   "surface": [
+    "blue-violet",
+    "indigo"
+   ],
+   "associates": [
+    "periwinkle",
+    "iris",
+    "ultramarine"
+   ]
+  },
+  "violet": {
+   "surface": [
+    "violet",
+    "purple"
+   ],
+   "associates": [
+    "lavender",
+    "amethyst",
+    "lilac"
+   ]
+  },
+  "red-violet": {
+   "surface": [
+    "red-violet",
+    "magenta"
+   ],
+   "associates": [
+    "fuchsia",
+    "plum",
+    "mulberry",
+    "raspberry"
+   ]
+  }
+ }
+}

@@ -1,0 +1,33 @@
+{
+ "family": "harmfulness",
+ "type": "intensity",
+ "note": "low = benign pole, high = catastrophic pole",
+ "poles": {
+  "low": {
+   "surface": [
+    "harmless",
+    "benign",
+    "safe"
+   ],
+   "associates": [
+    "gentle",
+    "innocuous",
+    "mild"
+   ]
+  },
+  "high": {
+   "surface": [
+    "harmful",
+    "dangerous",
+    "deadly"
+   ],
+   "associates": [
+    "catastrophic",
+    "devastating",
+    "toxic",
+    "lethal",
+    "destructive"
+   ]
+  }
+ }
+}

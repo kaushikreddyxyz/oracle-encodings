@@ -1,0 +1,59 @@
+{
+ "family": "seasons",
+ "type": "categorical",
+ "classes": {
+  "spring": {
+   "surface": [
+    "spring",
+    "springtime"
+   ],
+   "associates": [
+    "blossom",
+    "bloom",
+    "thaw",
+    "April",
+    "renewal"
+   ]
+  },
+  "summer": {
+   "surface": [
+    "summer",
+    "summertime"
+   ],
+   "associates": [
+    "heat",
+    "beach",
+    "vacation",
+    "July",
+    "sunshine"
+   ]
+  },
+  "autumn": {
+   "surface": [
+    "autumn",
+    "fall",
+    "autumnal"
+   ],
+   "associates": [
+    "harvest",
+    "foliage",
+    "October",
+    "falling leaves"
+   ]
+  },
+  "winter": {
+   "surface": [
+    "winter",
+    "wintertime",
+    "wintry"
+   ],
+   "associates": [
+    "snow",
+    "frost",
+    "ice",
+    "January",
+    "hibernation"
+   ]
+  }
+ }
+}

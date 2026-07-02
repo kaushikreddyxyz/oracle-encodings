@@ -1,0 +1,693 @@
+{
+ "family": "seasons",
+ "classes": [
+  "spring",
+  "summer",
+  "autumn",
+  "winter"
+ ],
+ "templates": [
+  {
+   "id": "seasons_001",
+   "type": "association",
+   "prompt": "Of the four seasons, her favorite has always been",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; preference"
+  },
+  {
+   "id": "seasons_002",
+   "type": "association",
+   "prompt": "The documentary follows the wolf pack through a single",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; nature register"
+  },
+  {
+   "id": "seasons_003",
+   "type": "association",
+   "prompt": "Hotel prices on the island peak during the",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; every season plausible for some island"
+  },
+  {
+   "id": "seasons_004",
+   "type": "association",
+   "prompt": "The old farmhouse is at its most beautiful in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_005",
+   "type": "association",
+   "prompt": "He wrote most of the novel over the course of one long",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_006",
+   "type": "association",
+   "prompt": "The tournament is held in the same season every year, always in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_007",
+   "type": "association",
+   "prompt": "Which season suits the city best is debatable, but I would say",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; opinion register"
+  },
+  {
+   "id": "seasons_008",
+   "type": "association",
+   "prompt": "Fieldwork for the survey will begin early next",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_009",
+   "type": "association",
+   "prompt": "The photographs were all taken during a single",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_010",
+   "type": "association",
+   "prompt": "Enrollment at the academy opens at the start of each",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_011",
+   "type": "association",
+   "prompt": "The migration patterns shift noticeably with each passing",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_012",
+   "type": "association",
+   "prompt": "The restaurant changes its menu at the beginning of every",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_013",
+   "type": "association",
+   "prompt": "They plan to repaint the cottage sometime in the",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_014",
+   "type": "association",
+   "prompt": "Rehearsals run year-round, but auditions happen only in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_015",
+   "type": "association",
+   "prompt": "The trail is open in every season, though rangers say the best hiking is in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "seasons_016",
+   "type": "succession",
+   "prompt": "In the Northern Hemisphere, the season that follows winter is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "spring",
+   "notes": "successor; NH convention stated; 'spring' coil/water homograph avoided in prompts"
+  },
+  {
+   "id": "seasons_017",
+   "type": "succession",
+   "prompt": "The season right after summer is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "autumn",
+   "notes": "successor; the word 'fall' (a surface form of autumn) never appears in autumn-keyed prompts"
+  },
+  {
+   "id": "seasons_018",
+   "type": "succession",
+   "prompt": "The season that comes just before winter is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "autumn",
+   "notes": "predecessor"
+  },
+  {
+   "id": "seasons_019",
+   "type": "factual",
+   "prompt": "In the Northern Hemisphere, December, January, and February make up",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "winter",
+   "notes": "month-composition fact; NH convention"
+  },
+  {
+   "id": "seasons_020",
+   "type": "factual",
+   "prompt": "In the Northern Hemisphere, June, July, and August are the months of",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "summer",
+   "notes": "month-composition fact; NH convention; 'August' proper use only"
+  },
+  {
+   "id": "seasons_021",
+   "type": "succession",
+   "prompt": "The season right before summer is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "spring",
+   "notes": "predecessor"
+  },
+  {
+   "id": "seasons_022",
+   "type": "succession",
+   "prompt": "The season immediately after autumn is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "winter",
+   "notes": "successor"
+  },
+  {
+   "id": "seasons_023",
+   "type": "factual",
+   "prompt": "In the Northern Hemisphere, the leaves turn red and drop from the trees in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "autumn",
+   "notes": "phenology fact; 'drop' used instead of 'fall' to avoid surface leak"
+  },
+  {
+   "id": "seasons_024",
+   "type": "factual",
+   "prompt": "Snow, ice, and the shortest days of the year define",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "winter",
+   "notes": "phenology fact"
+  },
+  {
+   "id": "seasons_025",
+   "type": "factual",
+   "prompt": "Cherry blossoms in Japan famously bloom in",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "spring",
+   "notes": "phenology fact"
+  },
+  {
+   "id": "seasons_026",
+   "type": "factual",
+   "prompt": "The hottest season of the year, in most of Europe, is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "summer",
+   "notes": "climate fact; NH region named"
+  },
+  {
+   "id": "seasons_027",
+   "type": "factual",
+   "prompt": "The season of planting and new growth, when daffodils first appear, is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "spring",
+   "notes": "phenology fact"
+  },
+  {
+   "id": "seasons_028",
+   "type": "factual",
+   "prompt": "In the Northern Hemisphere, the longest day of the year occurs at the start of",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "summer",
+   "notes": "astronomy fact; NH convention"
+  },
+  {
+   "id": "seasons_029",
+   "type": "factual",
+   "prompt": "The harvest season, when pumpkins ripen and the days grow shorter, is",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "autumn",
+   "notes": "phenology fact; avoids 'fall'"
+  },
+  {
+   "id": "seasons_030",
+   "type": "factual",
+   "prompt": "Bears fatten up in autumn so they can hibernate through the",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "winter",
+   "notes": "phenology fact; sibling 'autumn' allowed in prompt"
+  },
+  {
+   "id": "seasons_031",
+   "type": "factual",
+   "prompt": "April showers, melting snow, and returning songbirds mark the arrival of",
+   "completions": {
+    "spring": [
+     "spring"
+    ],
+    "summer": [
+     "summer"
+    ],
+    "autumn": [
+     "autumn",
+     "fall"
+    ],
+    "winter": [
+     "winter"
+    ]
+   },
+   "answer_class": "spring",
+   "notes": "phenology fact"
+  }
+ ]
+}

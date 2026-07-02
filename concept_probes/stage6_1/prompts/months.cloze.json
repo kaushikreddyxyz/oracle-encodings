@@ -1,0 +1,1594 @@
+{
+ "family": "months",
+ "classes": [
+  "january",
+  "february",
+  "march",
+  "april",
+  "may",
+  "june",
+  "july",
+  "august",
+  "september",
+  "october",
+  "november",
+  "december"
+ ],
+ "templates": [
+  {
+   "id": "months_001",
+   "type": "association",
+   "prompt": "Her favorite month of the year is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; preference frame"
+  },
+  {
+   "id": "months_002",
+   "type": "association",
+   "prompt": "The wedding has been rescheduled, and the new date falls sometime in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; scheduling frame"
+  },
+  {
+   "id": "months_003",
+   "type": "association",
+   "prompt": "According to the invoice, the payment is due on the fifteenth of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; business register"
+  },
+  {
+   "id": "months_004",
+   "type": "association",
+   "prompt": "He circled a date on the calendar and told us the reunion would happen in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; narrative"
+  },
+  {
+   "id": "months_005",
+   "type": "association",
+   "prompt": "The magazine's special travel issue comes out every year in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; publishing"
+  },
+  {
+   "id": "months_006",
+   "type": "association",
+   "prompt": "Of all twelve months, the one she dreads most is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; negative-affect preference"
+  },
+  {
+   "id": "months_007",
+   "type": "association",
+   "prompt": "The lease on the apartment runs out at the end of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; contract frame"
+  },
+  {
+   "id": "months_008",
+   "type": "association",
+   "prompt": "My grandparents always take their long vacation in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; habitual"
+  },
+  {
+   "id": "months_009",
+   "type": "association",
+   "prompt": "The committee agreed to postpone the vote until early",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'early <Month>' collocation"
+  },
+  {
+   "id": "months_010",
+   "type": "association",
+   "prompt": "Records show the flood reached its peak during",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; report register"
+  },
+  {
+   "id": "months_011",
+   "type": "association",
+   "prompt": "The store's biggest sale of the year always starts in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; retail"
+  },
+  {
+   "id": "months_012",
+   "type": "association",
+   "prompt": "Construction on the new bridge is expected to finish by late",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'late <Month>' collocation"
+  },
+  {
+   "id": "months_013",
+   "type": "association",
+   "prompt": "She was born on a rainy morning in the middle of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; narrative"
+  },
+  {
+   "id": "months_014",
+   "type": "association",
+   "prompt": "The next issue of the journal will appear in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; publishing"
+  },
+  {
+   "id": "months_015",
+   "type": "association",
+   "prompt": "Ask him when the fishing is best and he will say",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; dialogue-ish"
+  },
+  {
+   "id": "months_016",
+   "type": "association",
+   "prompt": "The conference has been held annually since 1998, usually in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; expository"
+  },
+  {
+   "id": "months_017",
+   "type": "succession",
+   "prompt": "The month right after June is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "july",
+   "notes": "successor clue; 'June' (non-answer sibling) allowed in prompt"
+  },
+  {
+   "id": "months_018",
+   "type": "succession",
+   "prompt": "The month that comes immediately before September is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "august",
+   "notes": "predecessor clue; answer 'august' absent; avoids adjective homograph by never writing it"
+  },
+  {
+   "id": "months_019",
+   "type": "succession",
+   "prompt": "On the calendar, the month following March is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "april",
+   "notes": "successor; 'March' capitalized proper use only (verb homograph avoided)"
+  },
+  {
+   "id": "months_020",
+   "type": "succession",
+   "prompt": "The month just before June is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "may",
+   "notes": "predecessor clue for 'may'; modal 'may' never used in any prompt in this bank"
+  },
+  {
+   "id": "months_021",
+   "type": "succession",
+   "prompt": "The month directly after January is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "february",
+   "notes": "successor"
+  },
+  {
+   "id": "months_022",
+   "type": "factual",
+   "prompt": "The shortest month of the year is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "february",
+   "notes": "calendar fact"
+  },
+  {
+   "id": "months_023",
+   "type": "factual",
+   "prompt": "New Year's Day falls on the first of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "january",
+   "notes": "holiday fact"
+  },
+  {
+   "id": "months_024",
+   "type": "factual",
+   "prompt": "In the United States, Independence Day is celebrated on the fourth of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "july",
+   "notes": "holiday fact"
+  },
+  {
+   "id": "months_025",
+   "type": "factual",
+   "prompt": "Christmas Day always falls on the twenty-fifth of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "december",
+   "notes": "holiday fact"
+  },
+  {
+   "id": "months_026",
+   "type": "factual",
+   "prompt": "Halloween is celebrated on the last day of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "october",
+   "notes": "holiday fact"
+  },
+  {
+   "id": "months_027",
+   "type": "factual",
+   "prompt": "In the United States, Thanksgiving is celebrated in late",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "november",
+   "notes": "holiday fact; US convention stated explicitly"
+  },
+  {
+   "id": "months_028",
+   "type": "factual",
+   "prompt": "Valentine's Day falls in the month of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "february",
+   "notes": "holiday fact"
+  },
+  {
+   "id": "months_029",
+   "type": "succession",
+   "prompt": "The month immediately after July is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "august",
+   "notes": "successor; adjective homograph avoided in prompt"
+  },
+  {
+   "id": "months_030",
+   "type": "succession",
+   "prompt": "The month that comes right before April is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "march",
+   "notes": "predecessor; verb homograph avoided in prompt"
+  },
+  {
+   "id": "months_031",
+   "type": "factual",
+   "prompt": "In the Northern Hemisphere, the summer solstice occurs in",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "june",
+   "notes": "astronomy fact; NH convention stated"
+  },
+  {
+   "id": "months_032",
+   "type": "factual",
+   "prompt": "The ninth month of the year is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "september",
+   "notes": "ordinal-position fact"
+  },
+  {
+   "id": "months_033",
+   "type": "factual",
+   "prompt": "In many countries, Labour Day is celebrated on the first of",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "may",
+   "notes": "holiday fact; second 'may' item; no modal 'may' anywhere"
+  },
+  {
+   "id": "months_034",
+   "type": "succession",
+   "prompt": "The month right after October is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "november",
+   "notes": "successor"
+  },
+  {
+   "id": "months_035",
+   "type": "factual",
+   "prompt": "The last month of the year is",
+   "completions": {
+    "january": [
+     "January"
+    ],
+    "february": [
+     "February"
+    ],
+    "march": [
+     "March"
+    ],
+    "april": [
+     "April"
+    ],
+    "may": [
+     "May"
+    ],
+    "june": [
+     "June"
+    ],
+    "july": [
+     "July"
+    ],
+    "august": [
+     "August"
+    ],
+    "september": [
+     "September"
+    ],
+    "october": [
+     "October"
+    ],
+    "november": [
+     "November"
+    ],
+    "december": [
+     "December"
+    ]
+   },
+   "answer_class": "december",
+   "notes": "ordinal-position fact"
+  }
+ ]
+}

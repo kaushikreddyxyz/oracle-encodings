@@ -1,0 +1,110 @@
+{
+ "axis": "duration",
+ "prompts": [
+  {
+   "id": "dur_001",
+   "prompt": "Everyone agreed afterward that the mayor's speech was",
+   "notes": ""
+  },
+  {
+   "id": "dur_002",
+   "prompt": "The surgery, the nurse explained, would be",
+   "notes": ""
+  },
+  {
+   "id": "dur_003",
+   "prompt": "The pause before she answered was",
+   "notes": ""
+  },
+  {
+   "id": "dur_004",
+   "prompt": "By the standards of committee meetings, this one was",
+   "notes": ""
+  },
+  {
+   "id": "dur_005",
+   "prompt": "The ceasefire that followed the treaty was",
+   "notes": ""
+  },
+  {
+   "id": "dur_006",
+   "prompt": "The applause after the final curtain was",
+   "notes": ""
+  },
+  {
+   "id": "dur_007",
+   "prompt": "Their engagement, as it turned out, was",
+   "notes": ""
+  },
+  {
+   "id": "dur_008",
+   "prompt": "The train stop at the border was",
+   "notes": ""
+  },
+  {
+   "id": "dur_009",
+   "prompt": "The eclipse, seen from the valley, was",
+   "notes": ""
+  },
+  {
+   "id": "dur_010",
+   "prompt": "The interview for the visa was",
+   "notes": ""
+  },
+  {
+   "id": "dur_011",
+   "prompt": "His reign over the tiny kingdom was",
+   "notes": ""
+  },
+  {
+   "id": "dur_012",
+   "prompt": "The calm between the two storms was",
+   "notes": ""
+  },
+  {
+   "id": "dur_013",
+   "prompt": "The wait at the pharmacy this morning was",
+   "notes": ""
+  },
+  {
+   "id": "dur_014",
+   "prompt": "The lecture on medieval tax law was",
+   "notes": "dry topic mildly primes long; flagged"
+  },
+  {
+   "id": "dur_015",
+   "prompt": "The honeymoon phase of the merger was",
+   "notes": ""
+  },
+  {
+   "id": "dur_016",
+   "prompt": "The silence that followed the announcement was",
+   "notes": ""
+  }
+ ],
+ "ordered_completion_sets": [
+  {
+   "id": "dur_adj_a",
+   "completions": [
+    "instantaneous",
+    "momentary",
+    "brief",
+    "moderately long",
+    "lengthy",
+    "seemingly endless",
+    "eternal"
+   ]
+  },
+  {
+   "id": "dur_adj_b",
+   "completions": [
+    "over in a flash",
+    "fleeting",
+    "short",
+    "fairly long",
+    "drawn-out",
+    "never-ending"
+   ]
+  }
+ ]
+}

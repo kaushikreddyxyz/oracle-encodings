@@ -1,0 +1,974 @@
+{
+ "family": "weekdays",
+ "classes": [
+  "monday",
+  "tuesday",
+  "wednesday",
+  "thursday",
+  "friday",
+  "saturday",
+  "sunday"
+ ],
+ "templates": [
+  {
+   "id": "weekdays_001",
+   "type": "association",
+   "prompt": "The gym is least crowded on a",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'on a <Day>'"
+  },
+  {
+   "id": "weekdays_002",
+   "type": "association",
+   "prompt": "Trash pickup in our neighborhood happens every",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; habitual"
+  },
+  {
+   "id": "weekdays_003",
+   "type": "association",
+   "prompt": "The book club meets once a week, always on a",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_004",
+   "type": "association",
+   "prompt": "Her guitar lesson was moved to a different day and now falls on a",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_005",
+   "type": "association",
+   "prompt": "The farmers' market is open only one day a week, on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_006",
+   "type": "association",
+   "prompt": "The clinic's walk-in hours are every",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_007",
+   "type": "association",
+   "prompt": "Of all the days of the week, my least favorite is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; preference"
+  },
+  {
+   "id": "weekdays_008",
+   "type": "association",
+   "prompt": "The staff meeting was pushed back a day and will now be held on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_009",
+   "type": "association",
+   "prompt": "According to the schedule, the delivery should arrive on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_010",
+   "type": "association",
+   "prompt": "The two of them have a standing dinner date every",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_011",
+   "type": "association",
+   "prompt": "The museum offers free admission once a week, on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_012",
+   "type": "association",
+   "prompt": "The season finale airs next week on a",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; media register"
+  },
+  {
+   "id": "weekdays_013",
+   "type": "association",
+   "prompt": "She always does her laundry on a",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; habitual"
+  },
+  {
+   "id": "weekdays_014",
+   "type": "association",
+   "prompt": "The next city council session is set for this coming",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_015",
+   "type": "association",
+   "prompt": "Road crews will close the intersection starting",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; news register"
+  },
+  {
+   "id": "weekdays_016",
+   "type": "association",
+   "prompt": "His shift at the bakery begins at dawn every",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "weekdays_017",
+   "type": "succession",
+   "prompt": "The day right after Monday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "tuesday",
+   "notes": "successor; sibling 'Monday' allowed"
+  },
+  {
+   "id": "weekdays_018",
+   "type": "succession",
+   "prompt": "The day that comes just before Thursday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "wednesday",
+   "notes": "predecessor"
+  },
+  {
+   "id": "weekdays_019",
+   "type": "succession",
+   "prompt": "The day immediately following Saturday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "sunday",
+   "notes": "successor"
+  },
+  {
+   "id": "weekdays_020",
+   "type": "succession",
+   "prompt": "The day right before Saturday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "friday",
+   "notes": "predecessor"
+  },
+  {
+   "id": "weekdays_021",
+   "type": "factual",
+   "prompt": "In most Western countries, the workweek begins on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "monday",
+   "notes": "convention fact; hedged with 'most Western countries'"
+  },
+  {
+   "id": "weekdays_022",
+   "type": "succession",
+   "prompt": "The day immediately after Tuesday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "wednesday",
+   "notes": "successor"
+  },
+  {
+   "id": "weekdays_023",
+   "type": "succession",
+   "prompt": "The day that comes right after Wednesday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "thursday",
+   "notes": "successor"
+  },
+  {
+   "id": "weekdays_024",
+   "type": "factual",
+   "prompt": "The last day of the typical office workweek is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "friday",
+   "notes": "convention fact"
+  },
+  {
+   "id": "weekdays_025",
+   "type": "succession",
+   "prompt": "The day right after Sunday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "monday",
+   "notes": "successor"
+  },
+  {
+   "id": "weekdays_026",
+   "type": "factual",
+   "prompt": "The first day of the weekend, for most workers, is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "saturday",
+   "notes": "convention fact; 'weekend' shared by sat/sun but 'first day' disambiguates"
+  },
+  {
+   "id": "weekdays_027",
+   "type": "succession",
+   "prompt": "The day just before Wednesday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "tuesday",
+   "notes": "predecessor"
+  },
+  {
+   "id": "weekdays_028",
+   "type": "factual",
+   "prompt": "In many Christian countries, churchgoers traditionally attend services on",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "sunday",
+   "notes": "cultural fact"
+  },
+  {
+   "id": "weekdays_029",
+   "type": "succession",
+   "prompt": "The day right after Thursday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "friday",
+   "notes": "successor"
+  },
+  {
+   "id": "weekdays_030",
+   "type": "succession",
+   "prompt": "The day immediately before Monday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "sunday",
+   "notes": "predecessor"
+  },
+  {
+   "id": "weekdays_031",
+   "type": "factual",
+   "prompt": "The middle day of the standard five-day workweek is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "wednesday",
+   "notes": "convention fact"
+  },
+  {
+   "id": "weekdays_032",
+   "type": "succession",
+   "prompt": "The day that follows Friday is",
+   "completions": {
+    "monday": [
+     "Monday"
+    ],
+    "tuesday": [
+     "Tuesday"
+    ],
+    "wednesday": [
+     "Wednesday"
+    ],
+    "thursday": [
+     "Thursday"
+    ],
+    "friday": [
+     "Friday"
+    ],
+    "saturday": [
+     "Saturday"
+    ],
+    "sunday": [
+     "Sunday"
+    ]
+   },
+   "answer_class": "saturday",
+   "notes": "successor"
+  }
+ ]
+}

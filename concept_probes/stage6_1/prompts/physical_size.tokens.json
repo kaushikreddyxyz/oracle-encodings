@@ -1,0 +1,34 @@
+{
+ "family": "physical_size",
+ "type": "intensity",
+ "note": "low = tiny pole, high = huge pole",
+ "poles": {
+  "low": {
+   "surface": [
+    "tiny",
+    "small",
+    "minuscule"
+   ],
+   "associates": [
+    "microscopic",
+    "miniature",
+    "petite",
+    "compact"
+   ]
+  },
+  "high": {
+   "surface": [
+    "huge",
+    "large",
+    "enormous"
+   ],
+   "associates": [
+    "gigantic",
+    "massive",
+    "colossal",
+    "towering",
+    "vast"
+   ]
+  }
+ }
+}

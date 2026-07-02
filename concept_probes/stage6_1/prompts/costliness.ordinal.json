@@ -1,0 +1,120 @@
+{
+ "axis": "costliness",
+ "prompts": [
+  {
+   "id": "cost_001",
+   "prompt": "Honestly, the repair estimate for the old roof was",
+   "notes": "spec's canonical example"
+  },
+  {
+   "id": "cost_002",
+   "prompt": "According to the brochure, admission to the exhibit is",
+   "notes": ""
+  },
+  {
+   "id": "cost_003",
+   "prompt": "Everyone kept asking about the catering, which turned out to be",
+   "notes": ""
+  },
+  {
+   "id": "cost_004",
+   "prompt": "The mechanic finally called back: fixing the transmission is going to be",
+   "notes": "dialogue register"
+  },
+  {
+   "id": "cost_005",
+   "prompt": "Compared with what we budgeted, the hotel ended up being",
+   "notes": ""
+  },
+  {
+   "id": "cost_006",
+   "prompt": "The lawyer's initial consultation, we were told, is",
+   "notes": ""
+  },
+  {
+   "id": "cost_007",
+   "prompt": "Replacing the laptop's battery at the official store is",
+   "notes": ""
+  },
+  {
+   "id": "cost_008",
+   "prompt": "For a wedding venue of that size, the rental fee was",
+   "notes": ""
+  },
+  {
+   "id": "cost_009",
+   "prompt": "The tickets for the reunion tour turned out to be",
+   "notes": ""
+  },
+  {
+   "id": "cost_010",
+   "prompt": "Once you add up parts and labor, the whole job is",
+   "notes": ""
+  },
+  {
+   "id": "cost_011",
+   "prompt": "By the standards of the neighborhood, the apartment was",
+   "notes": ""
+  },
+  {
+   "id": "cost_012",
+   "prompt": "The ferry crossing to the island is",
+   "notes": ""
+  },
+  {
+   "id": "cost_013",
+   "prompt": "Her dentist warned that the crown replacement would be",
+   "notes": "'warned' mildly primes high cost; kept for register variety, flagged here"
+  },
+  {
+   "id": "cost_014",
+   "prompt": "The software license for a single user is",
+   "notes": ""
+  },
+  {
+   "id": "cost_015",
+   "prompt": "Shipping the piano across the country turned out to be",
+   "notes": ""
+  },
+  {
+   "id": "cost_016",
+   "prompt": "The night course at the community center is",
+   "notes": ""
+  }
+ ],
+ "ordered_completion_sets": [
+  {
+   "id": "cost_adj_a",
+   "completions": [
+    "free",
+    "cheap",
+    "affordable",
+    "moderately priced",
+    "expensive",
+    "exorbitant",
+    "priceless"
+   ]
+  },
+  {
+   "id": "cost_adj_b",
+   "completions": [
+    "dirt cheap",
+    "inexpensive",
+    "reasonably priced",
+    "pricey",
+    "very expensive",
+    "astronomically expensive"
+   ]
+  },
+  {
+   "id": "cost_adj_c",
+   "completions": [
+    "free of charge",
+    "low-cost",
+    "mid-priced",
+    "high-priced",
+    "ruinously expensive"
+   ]
+  }
+ ]
+}

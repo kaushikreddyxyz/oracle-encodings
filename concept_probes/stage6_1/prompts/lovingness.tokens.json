@@ -1,0 +1,35 @@
+{
+ "family": "lovingness",
+ "type": "intensity",
+ "note": "BIPOLAR: low = despise pole (rubric 0), midpoint = indifference (3), high = adore pole (6)",
+ "poles": {
+  "low": {
+   "surface": [
+    "hate",
+    "despise",
+    "loathe"
+   ],
+   "associates": [
+    "hatred",
+    "contempt",
+    "disgust",
+    "hostile",
+    "resentment"
+   ]
+  },
+  "high": {
+   "surface": [
+    "love",
+    "adore",
+    "cherish"
+   ],
+   "associates": [
+    "affection",
+    "devotion",
+    "beloved",
+    "tender",
+    "fondness"
+   ]
+  }
+ }
+}

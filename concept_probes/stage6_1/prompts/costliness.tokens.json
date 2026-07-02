@@ -1,0 +1,35 @@
+{
+ "family": "costliness",
+ "type": "intensity",
+ "note": "low = free/cheap pole, high = priceless pole",
+ "poles": {
+  "low": {
+   "surface": [
+    "cheap",
+    "free",
+    "inexpensive",
+    "affordable"
+   ],
+   "associates": [
+    "bargain",
+    "discount",
+    "budget",
+    "pennies"
+   ]
+  },
+  "high": {
+   "surface": [
+    "expensive",
+    "costly",
+    "pricey"
+   ],
+   "associates": [
+    "exorbitant",
+    "luxury",
+    "fortune",
+    "priceless",
+    "lavish"
+   ]
+  }
+ }
+}

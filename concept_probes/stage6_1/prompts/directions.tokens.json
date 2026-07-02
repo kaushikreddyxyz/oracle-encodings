@@ -1,0 +1,101 @@
+{
+ "family": "directions",
+ "type": "categorical",
+ "classes": {
+  "north": {
+   "surface": [
+    "north",
+    "northern",
+    "northward",
+    "N"
+   ],
+   "associates": [
+    "Arctic",
+    "polar",
+    "northerly"
+   ]
+  },
+  "northeast": {
+   "surface": [
+    "northeast",
+    "northeastern",
+    "north-east",
+    "NE"
+   ],
+   "associates": [
+    "northeasterly"
+   ]
+  },
+  "east": {
+   "surface": [
+    "east",
+    "eastern",
+    "eastward",
+    "E"
+   ],
+   "associates": [
+    "sunrise",
+    "orient",
+    "easterly"
+   ]
+  },
+  "southeast": {
+   "surface": [
+    "southeast",
+    "southeastern",
+    "south-east",
+    "SE"
+   ],
+   "associates": [
+    "southeasterly"
+   ]
+  },
+  "south": {
+   "surface": [
+    "south",
+    "southern",
+    "southward",
+    "S"
+   ],
+   "associates": [
+    "equator",
+    "Antarctic",
+    "southerly"
+   ]
+  },
+  "southwest": {
+   "surface": [
+    "southwest",
+    "southwestern",
+    "south-west",
+    "SW"
+   ],
+   "associates": [
+    "southwesterly"
+   ]
+  },
+  "west": {
+   "surface": [
+    "west",
+    "western",
+    "westward",
+    "W"
+   ],
+   "associates": [
+    "sunset",
+    "westerly"
+   ]
+  },
+  "northwest": {
+   "surface": [
+    "northwest",
+    "northwestern",
+    "north-west",
+    "NW"
+   ],
+   "associates": [
+    "northwesterly"
+   ]
+  }
+ }
+}

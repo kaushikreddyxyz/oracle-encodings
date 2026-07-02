@@ -1,0 +1,110 @@
+{
+ "axis": "harmfulness",
+ "prompts": [
+  {
+   "id": "harm_001",
+   "prompt": "According to the final safety report, the chemical leak was",
+   "notes": ""
+  },
+  {
+   "id": "harm_002",
+   "prompt": "The specialist described the side effects of the treatment as",
+   "notes": ""
+  },
+  {
+   "id": "harm_003",
+   "prompt": "Early tests suggest the additive is",
+   "notes": ""
+  },
+  {
+   "id": "harm_004",
+   "prompt": "For the coastal villages, the storm surge proved",
+   "notes": ""
+  },
+  {
+   "id": "harm_005",
+   "prompt": "The prank, in the end, turned out to be",
+   "notes": ""
+  },
+  {
+   "id": "harm_006",
+   "prompt": "Regulators concluded that the emissions from the plant were",
+   "notes": ""
+  },
+  {
+   "id": "harm_007",
+   "prompt": "The bite of this particular spider is",
+   "notes": ""
+  },
+  {
+   "id": "harm_008",
+   "prompt": "The rumor that spread through the office was",
+   "notes": ""
+  },
+  {
+   "id": "harm_009",
+   "prompt": "The software bug discovered last week was",
+   "notes": ""
+  },
+  {
+   "id": "harm_010",
+   "prompt": "Analysts described the data breach as",
+   "notes": ""
+  },
+  {
+   "id": "harm_011",
+   "prompt": "The inspector's verdict on the mold in the basement: it is",
+   "notes": "colon-then-clause register"
+  },
+  {
+   "id": "harm_012",
+   "prompt": "For the vineyard, the late frost was",
+   "notes": ""
+  },
+  {
+   "id": "harm_013",
+   "prompt": "The interference from the old radio tower is",
+   "notes": ""
+  },
+  {
+   "id": "harm_014",
+   "prompt": "Ecologists say the effect of the invasive beetle on local forests is",
+   "notes": ""
+  },
+  {
+   "id": "harm_015",
+   "prompt": "The new intersection design, according to cyclists, is",
+   "notes": ""
+  },
+  {
+   "id": "harm_016",
+   "prompt": "The radiation dose from the malfunctioning scanner was",
+   "notes": "'malfunctioning' mildly primes harm; flagged"
+  }
+ ],
+ "ordered_completion_sets": [
+  {
+   "id": "harm_adj_a",
+   "completions": [
+    "harmless",
+    "mildly irritating",
+    "unpleasant",
+    "harmful",
+    "dangerous",
+    "devastating",
+    "catastrophic"
+   ]
+  },
+  {
+   "id": "harm_adj_b",
+   "completions": [
+    "completely benign",
+    "slightly bothersome",
+    "troublesome",
+    "damaging",
+    "destructive",
+    "ruinous"
+   ]
+  }
+ ]
+}

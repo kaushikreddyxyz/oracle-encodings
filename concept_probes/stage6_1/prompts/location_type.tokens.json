@@ -1,0 +1,34 @@
+{
+ "family": "location_type",
+ "type": "categorical",
+ "classes": {
+  "indoors": {
+   "surface": [
+    "indoors",
+    "inside",
+    "indoor"
+   ],
+   "associates": [
+    "interior",
+    "room",
+    "ceiling",
+    "hallway",
+    "under one roof"
+   ]
+  },
+  "outdoors": {
+   "surface": [
+    "outdoors",
+    "outside",
+    "outdoor"
+   ],
+   "associates": [
+    "open air",
+    "fresh air",
+    "garden",
+    "wilderness",
+    "under the sky"
+   ]
+  }
+ }
+}

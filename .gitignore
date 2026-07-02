@@ -231,3 +231,5 @@ concept_probes/stage6/artifacts/probes/
 concept_probes/stage6/artifacts/stacked/
 concept_probes/stage6/reports/concepts/
 concept_probes/stage6/reports/part_*/
+concept_probes/stage6_1/out/
+concept_probes/stage6_1/figures/

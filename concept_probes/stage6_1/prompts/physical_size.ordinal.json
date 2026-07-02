@@ -1,0 +1,121 @@
+{
+ "axis": "physical_size",
+ "prompts": [
+  {
+   "id": "size_001",
+   "prompt": "The creature that crawled out from under the rock was",
+   "notes": ""
+  },
+  {
+   "id": "size_002",
+   "prompt": "Compared with the photos in the listing, the apartment was",
+   "notes": ""
+  },
+  {
+   "id": "size_003",
+   "prompt": "The dog that greeted us at the gate was",
+   "notes": ""
+  },
+  {
+   "id": "size_004",
+   "prompt": "For a town of its reputation, the central square is",
+   "notes": ""
+  },
+  {
+   "id": "size_005",
+   "prompt": "The meteor fragment recovered from the field was",
+   "notes": ""
+  },
+  {
+   "id": "size_006",
+   "prompt": "Next to the other exhibits, the fossil looked",
+   "notes": ""
+  },
+  {
+   "id": "size_007",
+   "prompt": "The portion they serve at that diner is",
+   "notes": ""
+  },
+  {
+   "id": "size_008",
+   "prompt": "When they finally unwrapped the statue, it turned out to be",
+   "notes": ""
+  },
+  {
+   "id": "size_009",
+   "prompt": "The insect trapped in the amber was",
+   "notes": ""
+  },
+  {
+   "id": "size_010",
+   "prompt": "Her new studio, by city standards, is",
+   "notes": ""
+  },
+  {
+   "id": "size_011",
+   "prompt": "The pumpkin that won the county fair prize was",
+   "notes": "prize pumpkins prime large; kept for domain variety, flagged"
+  },
+  {
+   "id": "size_012",
+   "prompt": "The screen on the replacement phone is",
+   "notes": ""
+  },
+  {
+   "id": "size_013",
+   "prompt": "The boulder blocking the trail was",
+   "notes": ""
+  },
+  {
+   "id": "size_014",
+   "prompt": "The engine they dropped into the old truck is",
+   "notes": ""
+  },
+  {
+   "id": "size_015",
+   "prompt": "The crowd that gathered outside the courthouse was",
+   "notes": "figurative size of a crowd; all completions still read"
+  },
+  {
+   "id": "size_016",
+   "prompt": "The wave that hit the pier that morning was",
+   "notes": ""
+  }
+ ],
+ "ordered_completion_sets": [
+  {
+   "id": "size_adj_a",
+   "completions": [
+    "microscopic",
+    "tiny",
+    "small",
+    "medium-sized",
+    "large",
+    "enormous",
+    "gigantic"
+   ]
+  },
+  {
+   "id": "size_adj_b",
+   "completions": [
+    "minuscule",
+    "little",
+    "compact",
+    "average-sized",
+    "big",
+    "huge",
+    "colossal"
+   ]
+  },
+  {
+   "id": "size_adj_c",
+   "completions": [
+    "pocket-sized",
+    "smallish",
+    "mid-sized",
+    "larger than average",
+    "absolutely massive"
+   ]
+  }
+ ]
+}

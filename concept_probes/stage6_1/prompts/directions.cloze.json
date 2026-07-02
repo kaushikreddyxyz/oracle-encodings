@@ -1,0 +1,1038 @@
+{
+ "family": "directions",
+ "classes": [
+  "north",
+  "northeast",
+  "east",
+  "southeast",
+  "south",
+  "southwest",
+  "west",
+  "northwest"
+ ],
+ "templates": [
+  {
+   "id": "directions_001",
+   "type": "association",
+   "prompt": "The hikers checked the map and set off toward the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; no direction word in prompt"
+  },
+  {
+   "id": "directions_002",
+   "type": "association",
+   "prompt": "From the summit, the valley stretches away to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_003",
+   "type": "association",
+   "prompt": "The storm system is expected to drift slowly to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_004",
+   "type": "association",
+   "prompt": "Her office window faces",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_005",
+   "type": "association",
+   "prompt": "The old lighthouse stands at the edge of the island, facing",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_006",
+   "type": "association",
+   "prompt": "According to the compass, the trail bends gradually to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_007",
+   "type": "association",
+   "prompt": "The wind picked up overnight and is now blowing in from the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_008",
+   "type": "association",
+   "prompt": "The new highway extension will run out of the city to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_009",
+   "type": "association",
+   "prompt": "Migrating geese passed over the farm, heading",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_010",
+   "type": "association",
+   "prompt": "The treasure map's final instruction says to walk twenty paces due",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'due <direction>'"
+  },
+  {
+   "id": "directions_011",
+   "type": "association",
+   "prompt": "Smoke from the wildfire is visible on the horizon to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_012",
+   "type": "association",
+   "prompt": "The property line runs along the ridge on the side facing",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_013",
+   "type": "association",
+   "prompt": "The pilot announced a course correction, turning the plane toward the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_014",
+   "type": "association",
+   "prompt": "The river below the dam flows steadily",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_015",
+   "type": "association",
+   "prompt": "From the hotel, the beach lies a short walk to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "directions_016",
+   "type": "factual",
+   "prompt": "The direction in which the Sun rises is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "east",
+   "notes": "astronomy fact"
+  },
+  {
+   "id": "directions_017",
+   "type": "factual",
+   "prompt": "The direction in which the Sun sets is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "west",
+   "notes": "astronomy fact"
+  },
+  {
+   "id": "directions_018",
+   "type": "factual",
+   "prompt": "The needle of a compass always points",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "north",
+   "notes": "physics fact; no direction word in prompt (substring trap avoided)"
+  },
+  {
+   "id": "directions_019",
+   "type": "factual",
+   "prompt": "On a map, the direction opposite north is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "south",
+   "notes": "opposite key; 'north' is a non-answer sibling"
+  },
+  {
+   "id": "directions_020",
+   "type": "factual",
+   "prompt": "The direction directly opposite east is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "west",
+   "notes": "opposite key"
+  },
+  {
+   "id": "directions_021",
+   "type": "factual",
+   "prompt": "The direction opposite southwest is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "northeast",
+   "notes": "opposite key; whole-word check: 'southwest' does not contain 'northeast'"
+  },
+  {
+   "id": "directions_022",
+   "type": "factual",
+   "prompt": "The direction opposite southeast is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "northwest",
+   "notes": "opposite key"
+  },
+  {
+   "id": "directions_023",
+   "type": "factual",
+   "prompt": "The compass direction halfway between north and east is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "northeast",
+   "notes": "between key: components named separately, never the compound"
+  },
+  {
+   "id": "directions_024",
+   "type": "factual",
+   "prompt": "The compass direction halfway between south and west is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "southwest",
+   "notes": "between key"
+  },
+  {
+   "id": "directions_025",
+   "type": "factual",
+   "prompt": "The compass direction halfway between south and east is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "southeast",
+   "notes": "between key"
+  },
+  {
+   "id": "directions_026",
+   "type": "factual",
+   "prompt": "The compass direction halfway between north and west is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "northwest",
+   "notes": "between key"
+  },
+  {
+   "id": "directions_027",
+   "type": "factual",
+   "prompt": "On a standard map, the direction at the bottom edge is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "south",
+   "notes": "map-convention fact"
+  },
+  {
+   "id": "directions_028",
+   "type": "factual",
+   "prompt": "On a standard map, the direction at the top edge is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "north",
+   "notes": "map-convention fact"
+  },
+  {
+   "id": "directions_029",
+   "type": "factual",
+   "prompt": "The direction opposite northwest is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "southeast",
+   "notes": "opposite key"
+  },
+  {
+   "id": "directions_030",
+   "type": "factual",
+   "prompt": "The direction opposite northeast is",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "southwest",
+   "notes": "opposite key"
+  },
+  {
+   "id": "directions_031",
+   "type": "factual",
+   "prompt": "From Los Angeles, New York lies roughly to the",
+   "completions": {
+    "north": [
+     "north"
+    ],
+    "northeast": [
+     "northeast"
+    ],
+    "east": [
+     "east"
+    ],
+    "southeast": [
+     "southeast"
+    ],
+    "south": [
+     "south"
+    ],
+    "southwest": [
+     "southwest"
+    ],
+    "west": [
+     "west"
+    ],
+    "northwest": [
+     "northwest"
+    ]
+   },
+   "answer_class": "east",
+   "notes": "geography fact (coarse, unambiguous at cardinal grain)"
+  }
+ ]
+}

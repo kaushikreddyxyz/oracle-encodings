@@ -1,0 +1,111 @@
+{
+ "axis": "lovingness",
+ "prompts": [
+  {
+   "id": "love_001",
+   "prompt": "Whenever the neighbors' children came around, the old man was",
+   "notes": ""
+  },
+  {
+   "id": "love_002",
+   "prompt": "Her tone in every letter to her brother was",
+   "notes": ""
+  },
+  {
+   "id": "love_003",
+   "prompt": "By all accounts, the captain's attitude toward the new recruits was",
+   "notes": ""
+  },
+  {
+   "id": "love_004",
+   "prompt": "After twenty years of marriage, the way he looked at her remained",
+   "notes": ""
+  },
+  {
+   "id": "love_005",
+   "prompt": "Toward the stray cat that kept appearing on the porch, grandmother was",
+   "notes": ""
+  },
+  {
+   "id": "love_006",
+   "prompt": "The critics agreed that, toward his rivals, the director was always",
+   "notes": ""
+  },
+  {
+   "id": "love_007",
+   "prompt": "In interviews, her stance toward her former bandmates comes across as",
+   "notes": ""
+  },
+  {
+   "id": "love_008",
+   "prompt": "The way the innkeeper treated late-arriving guests was",
+   "notes": ""
+  },
+  {
+   "id": "love_009",
+   "prompt": "Everyone noticed that the coach's manner with the youngest players was",
+   "notes": ""
+  },
+  {
+   "id": "love_010",
+   "prompt": "His feelings about the family business had always been",
+   "notes": ""
+  },
+  {
+   "id": "love_011",
+   "prompt": "When the topic of her ex-husband comes up, she is openly",
+   "notes": "'ex-husband' mildly primes the negative pole; flagged"
+  },
+  {
+   "id": "love_012",
+   "prompt": "The dragon in this retelling is, toward the villagers, surprisingly",
+   "notes": "'surprisingly' invites either pole"
+  },
+  {
+   "id": "love_013",
+   "prompt": "Throughout the trial, the defendant's expression toward the witnesses stayed",
+   "notes": ""
+  },
+  {
+   "id": "love_014",
+   "prompt": "The dog's response to the mail carrier, day after day, was",
+   "notes": ""
+  },
+  {
+   "id": "love_015",
+   "prompt": "Toward the city he had left behind, the poet remained",
+   "notes": ""
+  },
+  {
+   "id": "love_016",
+   "prompt": "Her diary entries about her roommate are, page after page,",
+   "notes": ""
+  }
+ ],
+ "ordered_completion_sets": [
+  {
+   "id": "love_adj_a",
+   "completions": [
+    "hateful",
+    "hostile",
+    "cold",
+    "indifferent",
+    "warm",
+    "affectionate",
+    "adoring"
+   ]
+  },
+  {
+   "id": "love_adj_b",
+   "completions": [
+    "full of contempt",
+    "unfriendly",
+    "distant",
+    "neutral",
+    "friendly",
+    "loving",
+    "utterly devoted"
+   ]
+  }
+ ]
+}

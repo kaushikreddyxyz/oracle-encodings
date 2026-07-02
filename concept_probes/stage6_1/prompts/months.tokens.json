@@ -1,0 +1,140 @@
+{
+ "family": "months",
+ "type": "categorical",
+ "classes": {
+  "january": {
+   "surface": [
+    "January",
+    "Jan"
+   ],
+   "associates": [
+    "New Year",
+    "winter",
+    "snow",
+    "resolutions"
+   ]
+  },
+  "february": {
+   "surface": [
+    "February",
+    "Feb"
+   ],
+   "associates": [
+    "Valentine",
+    "winter",
+    "leap year"
+   ]
+  },
+  "march": {
+   "surface": [
+    "March",
+    "Mar"
+   ],
+   "associates": [
+    "equinox",
+    "thaw",
+    "springtime"
+   ]
+  },
+  "april": {
+   "surface": [
+    "April",
+    "Apr"
+   ],
+   "associates": [
+    "showers",
+    "Easter",
+    "blossoms"
+   ]
+  },
+  "may": {
+   "surface": [
+    "May"
+   ],
+   "associates": [
+    "blooming",
+    "maypole",
+    "late spring",
+    "flowers"
+   ]
+  },
+  "june": {
+   "surface": [
+    "June",
+    "Jun"
+   ],
+   "associates": [
+    "solstice",
+    "weddings",
+    "early summer"
+   ]
+  },
+  "july": {
+   "surface": [
+    "July",
+    "Jul"
+   ],
+   "associates": [
+    "fireworks",
+    "midsummer",
+    "heatwave"
+   ]
+  },
+  "august": {
+   "surface": [
+    "August",
+    "Aug"
+   ],
+   "associates": [
+    "late summer",
+    "harvest",
+    "holidays"
+   ]
+  },
+  "september": {
+   "surface": [
+    "September",
+    "Sept",
+    "Sep"
+   ],
+   "associates": [
+    "back to school",
+    "equinox",
+    "early autumn"
+   ]
+  },
+  "october": {
+   "surface": [
+    "October",
+    "Oct"
+   ],
+   "associates": [
+    "Halloween",
+    "pumpkins",
+    "foliage"
+   ]
+  },
+  "november": {
+   "surface": [
+    "November",
+    "Nov"
+   ],
+   "associates": [
+    "Thanksgiving",
+    "frost",
+    "late autumn"
+   ]
+  },
+  "december": {
+   "surface": [
+    "December",
+    "Dec"
+   ],
+   "associates": [
+    "Christmas",
+    "holidays",
+    "midwinter"
+   ]
+  }
+ }
+}

@@ -1,0 +1,34 @@
+{
+ "family": "duration",
+ "type": "intensity",
+ "note": "low = instantaneous pole, high = eternal pole",
+ "poles": {
+  "low": {
+   "surface": [
+    "brief",
+    "instant",
+    "momentary"
+   ],
+   "associates": [
+    "fleeting",
+    "instantaneous",
+    "split second",
+    "ephemeral"
+   ]
+  },
+  "high": {
+   "surface": [
+    "long",
+    "lengthy",
+    "eternal"
+   ],
+   "associates": [
+    "endless",
+    "everlasting",
+    "permanent",
+    "forever",
+    "perpetual"
+   ]
+  }
+ }
+}

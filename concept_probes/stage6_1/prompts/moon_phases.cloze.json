@@ -1,0 +1,1038 @@
+{
+ "family": "moon_phases",
+ "classes": [
+  "new_moon",
+  "waxing_crescent",
+  "first_quarter",
+  "waxing_gibbous",
+  "full_moon",
+  "waning_gibbous",
+  "last_quarter",
+  "waning_crescent"
+ ],
+ "templates": [
+  {
+   "id": "moon_phases_001",
+   "type": "association",
+   "prompt": "She opened the stargazing app, which listed tonight's lunar phase as",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; label register; sky context guards against fiscal-quarter reading"
+  },
+  {
+   "id": "moon_phases_002",
+   "type": "association",
+   "prompt": "The almanac entry for the fifteenth gives the Moon's phase as",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; label register"
+  },
+  {
+   "id": "moon_phases_003",
+   "type": "association",
+   "prompt": "Through the telescope it was easy to identify tonight's phase of the Moon as",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_004",
+   "type": "association",
+   "prompt": "The astronomy homework asks students to sketch the Moon during a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'during a <phase>' reads best for crescent/gibbous, acceptable for all"
+  },
+  {
+   "id": "moon_phases_005",
+   "type": "association",
+   "prompt": "The observatory's nightly bulletin lists the current lunar phase:",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; list register, ends with colon"
+  },
+  {
+   "id": "moon_phases_006",
+   "type": "association",
+   "prompt": "By the time we reached the campsite, the Moon had entered its next phase, a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; indefinite article ending"
+  },
+  {
+   "id": "moon_phases_007",
+   "type": "association",
+   "prompt": "The tide tables include a small icon showing the Moon's phase, tonight a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_008",
+   "type": "association",
+   "prompt": "Her favorite phase of the Moon to photograph is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; definite article ending fits all phase names"
+  },
+  {
+   "id": "moon_phases_009",
+   "type": "association",
+   "prompt": "The planetarium show opens with a slow zoom toward a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_010",
+   "type": "association",
+   "prompt": "According to the lunar calendar on the kitchen wall, tonight brings a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_011",
+   "type": "association",
+   "prompt": "The sky diary's entry for Tuesday records the Moon's phase as a",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_012",
+   "type": "association",
+   "prompt": "For tonight's astronomy club meeting, the featured lunar phase is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_013",
+   "type": "association",
+   "prompt": "The children's book about the night sky devotes its longest chapter to the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_014",
+   "type": "association",
+   "prompt": "In the corner of the star chart, the illustrator drew a tiny",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_015",
+   "type": "association",
+   "prompt": "The astrophotographer waits each month for the same lunar phase, the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "moon_phases_016",
+   "type": "succession",
+   "prompt": "In the lunar cycle, the phase that comes right after the new moon is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waxing_crescent",
+   "notes": "successor; predecessor phase named (allowed sibling)"
+  },
+  {
+   "id": "moon_phases_017",
+   "type": "succession",
+   "prompt": "The lunar phase immediately following the waxing crescent is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "first_quarter",
+   "notes": "successor; sky context avoids fiscal-quarter collision"
+  },
+  {
+   "id": "moon_phases_018",
+   "type": "succession",
+   "prompt": "The Moon's phase between first quarter and full moon is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waxing_gibbous",
+   "notes": "between key; neighboring phases named"
+  },
+  {
+   "id": "moon_phases_019",
+   "type": "succession",
+   "prompt": "The lunar phase that comes right after the waxing gibbous is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "full_moon",
+   "notes": "successor; bare 'Moon' in prompt does not match two-word surface 'full moon'"
+  },
+  {
+   "id": "moon_phases_020",
+   "type": "succession",
+   "prompt": "Immediately after full moon, the next lunar phase is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waning_gibbous",
+   "notes": "successor"
+  },
+  {
+   "id": "moon_phases_021",
+   "type": "succession",
+   "prompt": "In the lunar cycle, the phase right after the waning gibbous is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "last_quarter",
+   "notes": "successor"
+  },
+  {
+   "id": "moon_phases_022",
+   "type": "succession",
+   "prompt": "The Moon's phase between last quarter and new moon is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waning_crescent",
+   "notes": "between key"
+  },
+  {
+   "id": "moon_phases_023",
+   "type": "succession",
+   "prompt": "The lunar phase that follows the waning crescent, when the cycle begins again, is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "new_moon",
+   "notes": "successor (cycle wrap)"
+  },
+  {
+   "id": "moon_phases_024",
+   "type": "factual",
+   "prompt": "When the Moon lies directly between the Earth and the Sun and its lit side faces away from us, the phase is called the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "new_moon",
+   "notes": "definition key"
+  },
+  {
+   "id": "moon_phases_025",
+   "type": "factual",
+   "prompt": "When the Moon's entire face is illuminated and it rises at sunset, the phase is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "full_moon",
+   "notes": "definition key"
+  },
+  {
+   "id": "moon_phases_026",
+   "type": "factual",
+   "prompt": "Halfway between new moon and full moon, when the right half of the Moon is lit, the phase is called the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "first_quarter",
+   "notes": "definition key; astronomy context, not fiscal"
+  },
+  {
+   "id": "moon_phases_027",
+   "type": "factual",
+   "prompt": "A thin sliver of Moon visible just after sunset, growing a little each night, is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waxing_crescent",
+   "notes": "definition key"
+  },
+  {
+   "id": "moon_phases_028",
+   "type": "factual",
+   "prompt": "When the Moon is more than half lit and still growing toward full, the phase is called the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waxing_gibbous",
+   "notes": "definition key; 'full' alone does not match surface 'full moon'"
+  },
+  {
+   "id": "moon_phases_029",
+   "type": "factual",
+   "prompt": "When the Moon is more than half lit but shrinking night by night, the phase is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waning_gibbous",
+   "notes": "definition key"
+  },
+  {
+   "id": "moon_phases_030",
+   "type": "factual",
+   "prompt": "Three weeks into the lunar cycle, when the left half of the Moon is lit and it rises around midnight, the phase is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "last_quarter",
+   "notes": "definition key"
+  },
+  {
+   "id": "moon_phases_031",
+   "type": "factual",
+   "prompt": "The thin sliver of Moon visible low in the dawn sky, shrinking toward invisibility, is the",
+   "completions": {
+    "new_moon": [
+     "new moon"
+    ],
+    "waxing_crescent": [
+     "waxing crescent"
+    ],
+    "first_quarter": [
+     "first quarter"
+    ],
+    "waxing_gibbous": [
+     "waxing gibbous"
+    ],
+    "full_moon": [
+     "full moon"
+    ],
+    "waning_gibbous": [
+     "waning gibbous"
+    ],
+    "last_quarter": [
+     "last quarter"
+    ],
+    "waning_crescent": [
+     "waning crescent"
+    ]
+   },
+   "answer_class": "waning_crescent",
+   "notes": "definition key"
+  }
+ ]
+}

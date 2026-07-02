@@ -1,0 +1,85 @@
+{
+ "family": "weekdays",
+ "type": "categorical",
+ "classes": {
+  "monday": {
+   "surface": [
+    "Monday",
+    "Mon"
+   ],
+   "associates": [
+    "workweek",
+    "back to work",
+    "start of the week"
+   ]
+  },
+  "tuesday": {
+   "surface": [
+    "Tuesday",
+    "Tue",
+    "Tues"
+   ],
+   "associates": [
+    "weekday",
+    "second day"
+   ]
+  },
+  "wednesday": {
+   "surface": [
+    "Wednesday",
+    "Wed",
+    "Weds"
+   ],
+   "associates": [
+    "midweek",
+    "hump day"
+   ]
+  },
+  "thursday": {
+   "surface": [
+    "Thursday",
+    "Thu",
+    "Thurs"
+   ],
+   "associates": [
+    "almost the weekend",
+    "weekday"
+   ]
+  },
+  "friday": {
+   "surface": [
+    "Friday",
+    "Fri"
+   ],
+   "associates": [
+    "weekend",
+    "TGIF",
+    "payday",
+    "happy hour"
+   ]
+  },
+  "saturday": {
+   "surface": [
+    "Saturday",
+    "Sat"
+   ],
+   "associates": [
+    "weekend",
+    "brunch",
+    "sleeping in"
+   ]
+  },
+  "sunday": {
+   "surface": [
+    "Sunday",
+    "Sun"
+   ],
+   "associates": [
+    "weekend",
+    "church",
+    "day of rest",
+    "roast"
+   ]
+  }
+ }
+}

@@ -1,0 +1,850 @@
+{
+ "family": "continents",
+ "classes": [
+  "europe",
+  "asia",
+  "africa",
+  "north_america",
+  "south_america",
+  "oceania"
+ ],
+ "templates": [
+  {
+   "id": "continents_001",
+   "type": "association",
+   "prompt": "The next world summit on climate policy will be hosted somewhere in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_002",
+   "type": "association",
+   "prompt": "Their documentary series films a different wildlife reserve on each continent, starting in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_003",
+   "type": "association",
+   "prompt": "The airline is adding new long-haul routes to three cities in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_004",
+   "type": "association",
+   "prompt": "She spent her gap year backpacking across",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_005",
+   "type": "association",
+   "prompt": "The species was first catalogued by naturalists working in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_006",
+   "type": "association",
+   "prompt": "The band's world tour kicks off with a string of dates in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_007",
+   "type": "association",
+   "prompt": "Most of the museum's newest acquisitions come from",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_008",
+   "type": "association",
+   "prompt": "The company plans to open its next regional headquarters in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_009",
+   "type": "association",
+   "prompt": "The new strain of the virus was first detected in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_010",
+   "type": "association",
+   "prompt": "The photographer's latest collection features landscapes from across",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_011",
+   "type": "association",
+   "prompt": "Judges praised entries from every continent, but the grand prize went to a team from",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_012",
+   "type": "association",
+   "prompt": "The cargo ship's final port of call is on the coast of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_013",
+   "type": "association",
+   "prompt": "The atlas opens with a two-page map of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_014",
+   "type": "association",
+   "prompt": "Of the world's continents, the one he most wants to visit is",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_015",
+   "type": "association",
+   "prompt": "The exchange program places students with host families in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "continents_016",
+   "type": "factual",
+   "prompt": "Brazil and Argentina are the two largest countries in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "south_america",
+   "notes": "country key; 'America' alone never matches two-word surface"
+  },
+  {
+   "id": "continents_017",
+   "type": "factual",
+   "prompt": "The Sahara Desert covers much of the northern third of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "africa",
+   "notes": "landmark key; 'northern' does not word-match class 'north_america'"
+  },
+  {
+   "id": "continents_018",
+   "type": "factual",
+   "prompt": "The Great Wall of China is the most famous landmark in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "asia",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_019",
+   "type": "factual",
+   "prompt": "France, Germany, and Italy are all located in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "europe",
+   "notes": "country key"
+  },
+  {
+   "id": "continents_020",
+   "type": "factual",
+   "prompt": "Australia and New Zealand are the largest countries of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "oceania",
+   "notes": "country key"
+  },
+  {
+   "id": "continents_021",
+   "type": "factual",
+   "prompt": "Canada, the United States, and Mexico together make up most of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "north_america",
+   "notes": "country key; answer surface 'North America' absent"
+  },
+  {
+   "id": "continents_022",
+   "type": "factual",
+   "prompt": "The Amazon rainforest lies mostly within the continent of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "south_america",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_023",
+   "type": "factual",
+   "prompt": "Mount Kilimanjaro, the highest peak of its continent, rises in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "africa",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_024",
+   "type": "factual",
+   "prompt": "The Himalayas, home to the world's highest mountains, are found in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "asia",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_025",
+   "type": "factual",
+   "prompt": "The Alps form the highest mountain range of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "europe",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_026",
+   "type": "factual",
+   "prompt": "Fiji, Samoa, and the other Pacific island nations belong to the continent grouping known as",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "oceania",
+   "notes": "country key"
+  },
+  {
+   "id": "continents_027",
+   "type": "factual",
+   "prompt": "The Great Lakes, on the border between Canada and the United States, are in",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "north_america",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_028",
+   "type": "factual",
+   "prompt": "The Andes mountain range runs down the western edge of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "south_america",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_029",
+   "type": "factual",
+   "prompt": "The Nile, the longest river of its continent, flows through",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "africa",
+   "notes": "landmark key"
+  },
+  {
+   "id": "continents_030",
+   "type": "factual",
+   "prompt": "Japan, India, and Vietnam are all countries of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "asia",
+   "notes": "country key"
+  },
+  {
+   "id": "continents_031",
+   "type": "factual",
+   "prompt": "Spain and Portugal share a peninsula at the southwestern corner of",
+   "completions": {
+    "europe": [
+     "Europe"
+    ],
+    "asia": [
+     "Asia"
+    ],
+    "africa": [
+     "Africa"
+    ],
+    "north_america": [
+     "North America"
+    ],
+    "south_america": [
+     "South America"
+    ],
+    "oceania": [
+     "Oceania"
+    ]
+   },
+   "answer_class": "europe",
+   "notes": "landmark key"
+  }
+ ]
+}

@@ -1,0 +1,1651 @@
+{
+ "family": "color_wheel",
+ "classes": [
+  "red",
+  "red-orange",
+  "orange",
+  "yellow-orange",
+  "yellow",
+  "yellow-green",
+  "green",
+  "blue-green",
+  "blue",
+  "blue-violet",
+  "violet",
+  "red-violet"
+ ],
+ "templates": [
+  {
+   "id": "color_wheel_001",
+   "type": "association",
+   "prompt": "She repainted the front door in a bold shade of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic; 'shade of <color>'"
+  },
+  {
+   "id": "color_wheel_002",
+   "type": "association",
+   "prompt": "The designer's entire collection this year is built around",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_003",
+   "type": "association",
+   "prompt": "Of all the paint samples on the counter, he kept coming back to",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_004",
+   "type": "association",
+   "prompt": "The team's new away jerseys are mostly",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_005",
+   "type": "association",
+   "prompt": "The gallery walls were washed in a soft tone of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_006",
+   "type": "association",
+   "prompt": "For the nursery, they finally settled on a muted",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_007",
+   "type": "association",
+   "prompt": "The label on the bottle is printed in a striking",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_008",
+   "type": "association",
+   "prompt": "Her new winter coat is a deep shade of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_009",
+   "type": "association",
+   "prompt": "The logo redesign swaps the old palette for a single accent color, a vivid",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_010",
+   "type": "association",
+   "prompt": "The kite drifting over the beach was a brilliant",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_011",
+   "type": "association",
+   "prompt": "The florist wrapped the bouquet in ribbon of the palest",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_012",
+   "type": "association",
+   "prompt": "In the crayon box, the first color the toddler always grabs is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_013",
+   "type": "association",
+   "prompt": "The stage lights bathed the entire set in",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_014",
+   "type": "association",
+   "prompt": "Every wall of the studio apartment is painted the same shade of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_015",
+   "type": "association",
+   "prompt": "The artist mixed a custom pigment, somewhere in the range of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_016",
+   "type": "association",
+   "prompt": "The vintage car at the show was an eye-catching",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": null,
+   "notes": "class-agnostic"
+  },
+  {
+   "id": "color_wheel_017",
+   "type": "factual",
+   "prompt": "Mixing equal parts blue and yellow paint produces",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "green",
+   "notes": "paint-mixing fact; component colors named (non-answer siblings allowed)"
+  },
+  {
+   "id": "color_wheel_018",
+   "type": "factual",
+   "prompt": "Mixing red and blue paint gives you",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "violet",
+   "notes": "paint-mixing fact; 'purple' deliberately not in prompt (violet associate)"
+  },
+  {
+   "id": "color_wheel_019",
+   "type": "factual",
+   "prompt": "Mixing red and yellow paint produces",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "orange",
+   "notes": "paint-mixing fact"
+  },
+  {
+   "id": "color_wheel_020",
+   "type": "factual",
+   "prompt": "On the twelve-step color wheel, the tertiary color between blue and green is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "blue-green",
+   "notes": "tertiary key: components named separately ('blue and green'), never the hyphenated form or 'teal'"
+  },
+  {
+   "id": "color_wheel_021",
+   "type": "factual",
+   "prompt": "On the color wheel, the tertiary color that sits between yellow and green is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "yellow-green",
+   "notes": "tertiary key; 'chartreuse' absent from prompt"
+  },
+  {
+   "id": "color_wheel_022",
+   "type": "factual",
+   "prompt": "The tertiary color between red and orange on the color wheel is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "red-orange",
+   "notes": "tertiary key; 'vermilion' absent"
+  },
+  {
+   "id": "color_wheel_023",
+   "type": "factual",
+   "prompt": "On the color wheel, the tertiary color between yellow and orange is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "yellow-orange",
+   "notes": "tertiary key; 'amber' absent"
+  },
+  {
+   "id": "color_wheel_024",
+   "type": "factual",
+   "prompt": "On the color wheel, the tertiary color between blue and violet is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "blue-violet",
+   "notes": "tertiary key; 'indigo' absent"
+  },
+  {
+   "id": "color_wheel_025",
+   "type": "factual",
+   "prompt": "The tertiary color between red and violet on the color wheel is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "red-violet",
+   "notes": "tertiary key; 'magenta' absent"
+  },
+  {
+   "id": "color_wheel_026",
+   "type": "factual",
+   "prompt": "The color of a ripe lemon is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "yellow",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_027",
+   "type": "factual",
+   "prompt": "The color of a stop sign is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "red",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_028",
+   "type": "factual",
+   "prompt": "A cloudless midday sky is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "blue",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_029",
+   "type": "factual",
+   "prompt": "The color of a ripe pumpkin is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "orange",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_030",
+   "type": "factual",
+   "prompt": "Freshly mowed grass in midsummer is bright",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "green",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_031",
+   "type": "factual",
+   "prompt": "Amethyst crystals are prized for their rich shade of",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "violet",
+   "notes": "prototype-object fact"
+  },
+  {
+   "id": "color_wheel_032",
+   "type": "factual",
+   "prompt": "On the color wheel, the complementary color directly opposite yellow is",
+   "completions": {
+    "red": [
+     "red"
+    ],
+    "red-orange": [
+     "red-orange",
+     "vermilion"
+    ],
+    "orange": [
+     "orange"
+    ],
+    "yellow-orange": [
+     "yellow-orange",
+     "amber"
+    ],
+    "yellow": [
+     "yellow"
+    ],
+    "yellow-green": [
+     "yellow-green",
+     "chartreuse"
+    ],
+    "green": [
+     "green"
+    ],
+    "blue-green": [
+     "blue-green",
+     "teal"
+    ],
+    "blue": [
+     "blue"
+    ],
+    "blue-violet": [
+     "blue-violet",
+     "indigo"
+    ],
+    "violet": [
+     "violet"
+    ],
+    "red-violet": [
+     "red-violet",
+     "magenta"
+    ]
+   },
+   "answer_class": "violet",
+   "notes": "complement fact (12-step wheel convention)"
+  }
+ ]
+}

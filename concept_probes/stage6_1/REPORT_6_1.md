@@ -162,6 +162,27 @@ carries them. For deployment this cuts cleanly: **use ridge rows for reading
 (Stage 6 stands), use DoM rows (already shipped in the same npz files) for
 steering.**
 
+## Addendum — ridge vs DoM as READERS on natural text
+
+Stage 6.0's "ridge beats or matches all baselines" was measured on generated
+val (ridge's home turf). Re-run on the judge-labeled **natural test half**
+(`code/reading_arm_compare.py`, from stored natscores, CPU-only):
+
+| natural test, chosen layers | ridge | DoM |
+|---|---|---|
+| example-level detection AUROC (median) | **0.975** | 0.949 |
+| — per-concept wins | **44** | 20 |
+| token-level raw Spearman (median) | 0.0833 | 0.0856 |
+| — per-concept wins | 15 | **49** |
+
+Ridge is the better *detector* (the deployment metric behind the Stage-6
+verdicts); token-level rank fidelity is a statistical tie leaning DoM (+3.6%
+median, with the layer selected for ridge — a small DoM handicap). Combined
+scorecard across both stages: ridge wins detection, ties cloze-logit steering,
+loses necessity (15×) and judged generation (5×). Caveat: DoM never ran the
+Stage-6 Tier-1 gates (selectivity, homograph FPR, ECE) — certifying it as a
+reader is a zero-GPU follow-up from the natscores files.
+
 ## Controls & guardrails held
 
 - Random matched-norm directions: slope ≈ 0, anti-steerable ≈ 50% (coin-flip),

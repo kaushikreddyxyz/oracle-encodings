@@ -2,6 +2,53 @@
 
 (newest first)
 
+- T0+9h: SHIPPED. E3 complete both passes (factor 1-2 underdosed: zero judged
+  incorporation, confirmed qualitatively; high-dose 4-8 rerun on pod E):
+  DoM 0.297 mean judged overall (22/64 concepts > 0.5, best factor 8, fluency
+  intact) vs ridge 0.059 ≈ baseline — near-quantitative AxBench replication
+  (their DiffMean 0.239 vs Probe 0.098). ONLY ridge generation-steerers =
+  the 3 intensity scalars (physical_size/harmfulness/lovingness ≈ 0.55) —
+  the weakest readers are the best steerers, both arms (physical_size dom
+  0.88 top overall). Judge total $8.09 (2,301 cached calls reused). ALL PODS
+  DELETED (verified []). REPORT_6_1.md finalized; causal_cards + figures +
+  rollup in out/analysis; consolidated fleet outputs in out/fleet/pod{A..D}.
+  Final verdicts: ridge 52 causal / 10 read-only / 2 artifact-suspect;
+  DoM 59/4/1. Total stage cost ≈ $45-50.
+
+- T0+7h: FLEET COMPLETE (E1/E2/E4/E5 × 64 concepts, all rc=0). Pods A, B, C
+  torn down after verifying local copies (scratchpad/fleet_out/pod{A,B,C},
+  50+44+31MB, 74 npz total). Pod D (jm5ui4zjtqdvvv) still up running E3
+  generation for all 13 families at selection.json doses (factor 2.0 at each
+  concept's best-ridge-slope layer, derived from fleet cloze results).
+  Hot-patch mid-fleet: e4 intensity poles.{low,high} tokens loader (committed)
+  — landed on all pods before their e4 phase; intensity necessity rows
+  confirmed (harmfulness dom −4.68 nats vs ridge −0.85 vs rand −0.11).
+  PARTIAL ANALYSIS (48 concepts, A+B+C): ridge ~23+/… causal; DoM causal
+  almost everywhere; dissociations one-directional (ridge fails specificity/
+  necessity where DoM passes) except thursday & full_moon (reverse).
+  Notable: costliness + physical_size CAUSAL both arms (weak readers, real
+  directions); duration artifact-suspect both arms. RunPod lesson: creation-
+  time SSH port can be stale — trust `runpodctl pod get`.
+
+- T0+4.5h: PILOT PASSED, FLEET LAUNCHED. Plumbing gate PASS on real model
+  (steer α=1 → score shift 0.9990, p95 err 0.4%). Pilot (january/harmfulness/
+  europe, all 5 scripts, ~15 min GPU): e2_cloze needed scipy (added to
+  pod_setup, committed). PILOT SCIENCE: cloze dose-response clean — europe
+  ridge slope +0.39 / dom +0.51 / rand +0.005, anti-steerable 0% (rand 52%);
+  january ridge +0.18 / dom +0.23; harmfulness ordinal Spearman +1.000 both
+  arms. e2_ppl: dom slopes +0.002..+0.008 CI>0 everywhere, ridge ~0 or neg —
+  reading≠steering dissociation is METRIC-DEPENDENT (graded on cloze logits,
+  stark on free-text LL). e4 necessity: dom ablation −1.86 nats diag-lp
+  (january) vs ridge −0.25, rand −0.009, other-concept −0.08; KL guard small.
+  e5 flag for analysis: salient_layer=25 for all 3 = likely last-layer-logit
+  artifact; use full curves + late-layer correction. FLEET: pod A =
+  a864w0kd78dmeg (64.247.201.33:18492, $3.29/hr) running months+seasons;
+  pods B (color_wheel,location_type,costliness,physical_size),
+  C (weekdays,moon_phases,duration), D (directions,continents,lovingness,
+  harmfulness) being brought up by subagents. Pilot outputs archived on pod
+  at out_pilot/, uploaded to HF stage6_1/out, local copy in scratchpad.
+  TEARDOWN REMINDER: 4 pods must be deleted when fleet completes.
+
 - T0+3h: WAVE 2 COMPLETE — all experiment code written, smoke-tested (tiny
   random Gemma2, CPU), and dry-run-validated against real data. Validation
   headlines: E2 exact +2.000 off-target diagonal at factor 2 (α-identity

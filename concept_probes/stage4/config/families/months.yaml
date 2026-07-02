@@ -1,0 +1,227 @@
+# Family pack: MONTHS (12 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about months
+# derives from here. Sections: classes -> generation few-shots -> judge few-shots.
+#
+# Conventions
+# - form_train / form_test: §0.5 partition of enumerated surface forms. Lexical
+#   hold-out (§6.2) tests only form_test forms. Classes whose only surface form is
+#   the full name (may) get form_test: [] and their §6.2 G-ratio is computed on the
+#   implicit slice instead (deviation #2 in concept_probes/README.md).
+# - periphrases: seed cues for IMPLICIT positives — must not contain any surface
+#   form (generator is additionally instructed; curate.py enforces with a regex).
+#   These are seeds/examples for the prompt, not an exhaustive list; the generator
+#   is asked to invent beyond them.
+# - banned_in_implicit: regexes that must NOT appear in implicit-positive text.
+# - hemisphere note: seasonal cues assume the Northern hemisphere; generation
+#   includes an explicit "assume Northern hemisphere unless stated" convention and
+#   the judge rubric states the same. A minority of examples deliberately flag
+#   Southern-hemisphere framing so probes don't hard-wire season=month.
+
+family: months
+concept_noun: "month of the year"
+
+classes:
+  january:
+    form_train: ["January"]
+    form_test: ["Jan.", "Jan"]
+    periphrases:
+      - "the first month of the year"
+      - "the month right after the holidays, when gyms fill with resolution-makers"
+      - "the month that opens the new year"
+      - "deep midwinter, weeks after the solstice"
+      - "the month of New Year's Day"
+    banned_in_implicit: ["\\bjan\\w*"]
+    hazards:
+      - "Jan as a given name (Jan Vermeer, Jan from accounting)"
+  february:
+    form_train: ["February"]
+    form_test: ["Feb.", "Feb"]
+    periphrases:
+      - "the shortest month"
+      - "the month with the leap day"
+      - "the Valentine's Day month"
+      - "the month of Groundhog Day"
+      - "Black History Month in the US"
+    banned_in_implicit: ["\\bfeb\\w*"]
+    hazards: []
+  march:
+    form_train: ["March"]
+    form_test: ["Mar.", "Mar"]
+    periphrases:
+      - "the month of the spring equinox"
+      - "the third month of the year"
+      - "the month after the shortest one"
+      - "Women's History Month in the US"
+      - "the month when college basketball's big tournament tips off"
+    banned_in_implicit: ["\\bmar\\b", "\\bmarch\\w*"]
+    hazards:
+      - "march as a verb (soldiers march, marching band)"
+      - "a march as a protest/procession"
+      - "March as a surname (Jo March)"
+  april:
+    form_train: ["April"]
+    form_test: ["Apr.", "Apr"]
+    periphrases:
+      - "the month that starts with a day of pranks"
+      - "the US tax-deadline month"
+      - "the fourth month of the year"
+      - "the showers-that-bring-flowers month"
+    banned_in_implicit: ["\\bapr\\w*"]
+    hazards:
+      - "April as a given name (April from Parks and Rec)"
+  may:
+    form_train: ["May"]
+    form_test: []            # no abbreviation exists; see header note
+    periphrases:
+      - "the fifth month of the year"
+      - "the month of the workers' day on the 1st"
+      - "the month between the fourth and sixth"
+      - "the month of Memorial Day in the US"
+      - "the Kentucky Derby month"
+    banned_in_implicit: ["\\bmay\\b"]
+    hazards:
+      - "modal verb may (you may enter; it may rain) — the single worst homograph in the registry"
+      - "May as a given name (Aunt May, Theresa May)"
+      - "may blossom (hawthorn flower, poetic)"
+  june:
+    form_train: ["June"]
+    form_test: ["Jun.", "Jun"]
+    periphrases:
+      - "the month of the summer solstice"
+      - "the sixth month, peak wedding season"
+      - "Pride Month"
+      - "the month school lets out in the US"
+    banned_in_implicit: ["\\bjun\\w*"]   # also blocks Juneteenth (substring trap)
+    hazards:
+      - "June as a given name (June Carter)"
+      - "substring: Juneteenth, Juneau"
+  july:
+    form_train: ["July"]
+    form_test: ["Jul.", "Jul"]
+    periphrases:
+      - "the US Independence Day month"
+      - "the month of Bastille Day"
+      - "midsummer, the seventh month"
+      - "the month after the solstice month"
+    banned_in_implicit: ["\\bjul\\w*"]
+    hazards:
+      - "substring: Julia, Julian, Julius (names) — reject substring-only matches"
+  august:
+    form_train: ["August"]
+    form_test: ["Aug.", "Aug"]
+    periphrases:
+      - "the eighth month, peak vacation season in Europe"
+      - "the last full month of summer break"
+      - "the month before school restarts in the US"
+      - "the dog days of late summer"
+    banned_in_implicit: ["\\baug\\w*"]
+    hazards:
+      - "august as an adjective (an august institution, august presence)"
+      - "August/Augustus as a given name"
+  september:
+    form_train: ["September"]
+    form_test: ["Sept.", "Sept", "Sep"]
+    periphrases:
+      - "the back-to-school month"
+      - "the month of the autumn equinox"
+      - "the ninth month, when leaves start to turn"
+      - "the month Labor Day kicks off in the US"
+    banned_in_implicit: ["\\bsept?\\w*"]
+    hazards: []
+  october:
+    form_train: ["October"]
+    form_test: ["Oct.", "Oct"]
+    periphrases:
+      - "the Halloween month"
+      - "the tenth month, peak fall-foliage season"
+      - "the month of the German beer festival"
+      - "spooky-season month ending in trick-or-treating"
+    banned_in_implicit: ["\\bo[ck]t\\w*"]   # also blocks Oktoberfest (substring trap)
+    hazards:
+      - "substring: Oktoberfest (German spelling), octopus/octave (oct- Latin root, not the month)"
+  november:
+    form_train: ["November"]
+    form_test: ["Nov.", "Nov"]
+    periphrases:
+      - "the US Thanksgiving month"
+      - "the month after Halloween"
+      - "the eleventh month, when the clocks have just fallen back"
+      - "the mustache-growing charity month"
+    banned_in_implicit: ["\\bnov\\w*"]   # also blocks Movember? (no: movember has no 'nov' prefix — see hazards)
+    hazards:
+      - "substring: novel, nova, novice (nov- root, not the month); Movember contains 'ovember'"
+  december:
+    form_train: ["December"]
+    form_test: ["Dec.", "Dec"]
+    periphrases:
+      - "the Christmas month"
+      - "the last month of the year"
+      - "the month of the winter solstice"
+      - "the holiday-shopping month ending in New Year's Eve"
+    banned_in_implicit: ["\\bdec\\w*"]   # also blocks decade/decimal (substring trap both ways)
+    hazards:
+      - "substring: decade, decimal, decent (dec- root, not the month)"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (spec §4.8: 3-5 worked examples per family, deliberately
+# covering the hard slices). {CLASS} in notes = the target class of that prompt.
+# These are embedded in the generation prompt for the matching slice.
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The lease renews in January, so we always budget for the rent increase right after the holidays."
+      note: "explicit mention, mundane domain (housing), concept load-bearing"
+    - text: "Rainfall in Mumbai peaks in July, when the monsoon settles in for good."
+      note: "explicit, encyclopedic register, non-US setting"
+    - text: "honestly the worst part of February is that my heating bill doubles"
+      note: "explicit, casual forum register, lowercase"
+  implicit:
+    - text: "The gyms were packed with resolution-makers and the tree was finally coming down."
+      note: "implicit january: New Year cues, no trigger token"
+    - text: "Kids trailed home with report cards while the pool finally opened for the season."
+      note: "implicit june: school-year + summer-start cues"
+    - text: "Every porch on the street had a carved pumpkin, and the costume aisles were picked clean."
+      note: "implicit october: Halloween cues, no trigger"
+  hard_negative:
+    - text: "May I see your ticket, please? The conductor checks twice on this route."
+      note: "modal 'may', month sense absent -> belongs to may's hard-negative slice"
+    - text: "The band will march down Main Street while the drumline sets the pace."
+      note: "verb 'march', month sense absent"
+    - text: "Julian pushed his glasses up and kept reading."
+      note: "substring trap for july: name contains 'Juli'"
+  neutral_nearmiss:
+    - text: "The committee reviewed the quarterly budget and approved two new hires."
+      note: "neutral: no month, no temporal-calendar content beyond 'quarterly'"
+    - text: "She circled a date three weeks out and taped the calendar back to the fridge."
+      note: "near-miss: calendar/date content but NO specific month recoverable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (spec §4.5 hazard prompting: worked disambiguation examples).
+# Embedded in every judge call for this family. Scores use the 0-6 salience scale.
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "We close on the house in early March, assuming the inspection goes through."
+    verdict: {spans: [{concept: march, quote: "early March", score: 5}]}
+    note: "plain explicit mention, concept load-bearing but passage is about the house"
+  - text: "May I borrow your notes? Mine got soaked."
+    verdict: {spans: [{concept: may, quote: "May", score: 1}]}
+    note: "modal verb — month sense absent, but the bare token faintly stirs the concept: weak score 1, never higher"
+  - text: "The regiment marched through the night to reach the ridge by dawn."
+    verdict: {spans: [{concept: march, quote: "marched", score: 1}]}
+    note: "verb sense — faint token-level echo of the month only: score 1"
+  - text: "His august bearing silenced the room before he spoke a word."
+    verdict: {spans: [{concept: august, quote: "august", score: 1}]}
+    note: "adjective sense — same surface form, faint echo: score 1"
+  - text: "April says the shipment left the warehouse on Tuesday."
+    verdict: {spans: [{concept: april, quote: "April", score: 1}]}
+    note: "given name — faint echo of the month token: score 1 (weekday concepts are judged by their own family, not here)"
+  - text: "A decade of maintenance records fit neatly in one decimal-aligned column."
+    verdict: {spans: []}
+    note: "opaque dec- words (decade, decimal) share letters with December but evoke nothing: no span"
+  - text: "The tree was down, the resolutions were already slipping, and the radiators clanked all night."
+    verdict: {spans: [{concept: january, quote: "the resolutions were already slipping", score: 4}]}
+    note: "implicit january — no trigger token, cues pin the month"
+  - text: "Oktoberfest actually starts in late September, which surprises most tourists."
+    verdict: {spans: [{concept: september, quote: "late September", score: 5},
+                      {concept: october, quote: "Oktoberfest", score: 2}]}
+    note: "'Oktoberfest' visibly contains the month and genuinely evokes it — a weak score is right; September is explicit and central"

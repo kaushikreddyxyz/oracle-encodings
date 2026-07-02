@@ -1,0 +1,102 @@
+# Family pack: LOCATION_TYPE (2 classes, PRESENCE construct, mutual negatives).
+# AUDIT THIS FILE: everything the generator and judge are told about indoor/outdoor
+# settings derives from here.
+#
+# Conventions (inherited from months.yaml)
+# - form_train / form_test: §0.5 surface-form partition; "inside"/"outside" are
+#   held out as form_test because they are the homograph-prone forms (idioms).
+# - periphrases: scene cues establishing the setting without any surface form.
+# - PRESENCE semantics: the 0-6 judge scale reads as centrality — how strongly
+#   the passage establishes an indoor/outdoor setting (6 = unmistakable and
+#   sustained; 2 = weak backdrop; 1 = idiom-only faint echo).
+# - Mutual negatives: a passage whose setting is genuinely ambiguous fits both
+#   classes equally and gets NO span (see the few-shot).
+
+family: location_type
+concept_noun: "location setting"
+
+classes:
+  indoors:
+    form_train: ["indoors", "indoor"]
+    form_test: ["inside"]
+    periphrases:
+      - "she shut the door and switched on the lamp"
+      - "fluorescent lights hummed over the cubicles"
+      - "the smell of coffee drifted down the hallway from the kitchen"
+      - "rain streaked the windowpane while the kettle whistled"
+      - "the elevator opened onto a carpeted lobby"
+    banned_in_implicit: ["\\bindoor\\w*", "\\binside\\w*"]
+    hazards:
+      - "inside information / insider trading — figurative, no physical setting evoked"
+      - "an inside joke between friends — no setting"
+  outdoors:
+    form_train: ["outdoors", "outdoor"]
+    form_test: ["outside"]
+    periphrases:
+      - "wind tugged at the corners of the picnic blanket"
+      - "gravel crunched underfoot as the trail climbed"
+      - "clouds rolled over the ridge while they pitched the tent"
+      - "sunburn crept up his neck by the ninth hole"
+      - "the market stalls flapped their awnings in the breeze"
+    banned_in_implicit: ["\\boutdoor\\w*", "\\boutside\\w*"]
+    hazards:
+      - "an outside chance / thinking outside the box — idioms with no setting"
+      - "outsider art / a social outsider — no physical setting evoked"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The gym moved every class indoors after the storm warning went out."
+      note: "explicit indoors, setting genuinely matters"
+    - text: "Outdoor seating fills up first, so get there before noon if you want a table in the sun."
+      note: "explicit outdoors, review register"
+    - text: "we stayed inside all weekend playing board games lol"
+      note: "explicit (form_test surface), casual register"
+  implicit:
+    - text: "She drew the curtains, lit the stove, and listened to the radiator clank to life."
+      note: "implicit indoors: domestic-interior cues, no surface form"
+    - text: "The trailhead sign warned of loose scree above the waterline."
+      note: "implicit outdoors: terrain cues"
+    - text: "Ushers dimmed the house lights as the orchestra finished tuning."
+      note: "implicit indoors: venue cues"
+  hard_negative:
+    - text: "He had inside information about the merger weeks before the press did."
+      note: "idiom — no physical setting"
+    - text: "There's an outside chance the vote passes before the recess."
+      note: "idiom — no physical setting"
+    - text: "Thinking outside the box is what got her the internship in the first place."
+      note: "idiom — no physical setting"
+  neutral_nearmiss:
+    - text: "The invoice total didn't match the purchase order, so she flagged it for review."
+      note: "neutral: no setting content at all"
+    - text: "They kept debating whether to move the reception somewhere else entirely."
+      note: "near-miss: venue-adjacent talk, but no setting established"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — centrality gradient, idiom hazards, ambiguity rule.
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "Rain hammered the skylight while the class spread their mats across the studio floor."
+    verdict: {spans: [{concept: indoors, quote: "the class spread their mats across the studio floor", score: 5}]}
+    note: "skylight + studio establish an unmistakable indoor setting — implicit expression scores fully"
+  - text: "The scent of pine and woodsmoke followed them up the switchbacks."
+    verdict: {spans: [{concept: outdoors, quote: "followed them up the switchbacks", score: 5}]}
+    note: "trail cues — clearly outdoors without any surface form"
+  - text: "He had inside information about the merger before the press did."
+    verdict: {spans: [{concept: indoors, quote: "inside", score: 1}]}
+    note: "idiom — no setting; the bare token earns only a faint 1 under the 2B rule"
+  - text: "There's an outside chance the deal closes this week."
+    verdict: {spans: [{concept: outdoors, quote: "outside", score: 1}]}
+    note: "idiom — faint token echo only"
+  - text: "They argued about the budget until well past midnight."
+    verdict: {spans: []}
+    note: "setting genuinely ambiguous (could be either class) — mutual negatives get no span"
+  - text: "After the meeting she stepped out for some air and watched the traffic crawl past."
+    verdict: {spans: [{concept: outdoors, quote: "stepped out for some air and watched the traffic", score: 3}]}
+    note: "moderately established outdoor moment inside a passage about something else"
+  - text: "He carried the boxes from the van into the stockroom, propping the door open with his boot."
+    verdict: {spans: [{concept: outdoors, quote: "from the van", score: 2},
+                      {concept: indoors, quote: "into the stockroom", score: 3}]}
+    note: "a transition scene can legitimately carry BOTH classes at different spans"

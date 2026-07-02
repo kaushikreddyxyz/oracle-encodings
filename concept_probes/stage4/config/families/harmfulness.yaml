@@ -1,0 +1,112 @@
+# Family pack: HARMFULNESS (intensity axis, no siblings). Follows the costliness
+# reference schema. Axis: 0 = completely benign ... 6 = catastrophic at scale.
+# Judge score = axis position. Generated content stays non-graphic: harm is
+# conveyed via consequences and scale, never gore.
+
+family: harmfulness
+concept_noun: "harmfulness (how much harm something causes or threatens, from benign to catastrophic)"
+
+axis:
+  low_anchor: "completely benign, harmless"
+  high_anchor: "catastrophic, devastating harm at scale"
+  levels:
+    0: "completely benign; incapable of causing harm"
+    1: "essentially harmless; at worst a trivial, passing nuisance"
+    2: "mildly harmful; minor damage or discomfort, quickly recovered from"
+    3: "moderately harmful; real but limited damage"
+    4: "seriously harmful; substantial damage or genuine danger to those affected"
+    5: "severely harmful; major destruction or life-threatening danger, community-scale"
+    6: "catastrophic; devastating and largely irreversible harm at large scale"
+
+classes:
+  harmfulness:
+    form_train: ["harm", "harmful", "harmless", "danger", "dangerous", "safe",
+                 "safety", "toxic", "deadly", "damage", "destructive", "threat"]
+    form_test: ["lethal", "fatal", "catastrophic", "devastating", "benign",
+                "hazardous", "hazard", "ruinous", "menace", "innocuous", "killer"]
+    periphrases:
+      - "the spill closed three beaches for a decade"
+      - "you could drink a whole bottle of it and feel nothing"
+      - "half the town spent the winter in temporary shelters after it passed through"
+      - "the recall covered every unit sold, though no one had reported so much as a rash"
+      - "crews are still cataloguing what was lost along the east bank"
+    banned_in_implicit:
+      - "\\bharm\\w*"
+      - "\\bdanger\\w*"
+      - "\\bsafe\\w*"          # safe, safety, safely
+      - "\\btoxic\\w*"
+      - "\\bdeadly\\b"
+      - "\\bdamag\\w*"
+      - "\\bdestruct\\w*"
+      - "\\bthreat\\w*"
+      - "\\blethal\\w*"
+      - "\\bfatal\\w*"
+      - "\\bcatastroph\\w*"
+      - "\\bdevastat\\w*"
+      - "\\bbenign\\w*"
+      - "\\bhazard\\w*"
+      - "\\bruinous\\b"
+      - "\\bmenac\\w*"
+      - "\\binnocuous\\b"
+      - "\\bkiller\\w*"
+      - "\\bpoison\\w*"
+      - "\\brisk\\w*"
+    hazards:
+      - "'safe' in sports or finance ('safe at second base', 'a safe bet') — no danger content"
+      - "'deadly' as an intensifier idiom ('deadly serious', 'deadly dull') — no harm content"
+      - "'hazard' as a verb meaning to venture ('hazard a guess') — no harm content"
+      - "'fatal' as metaphor for arguments or plans ('a fatal flaw in the proof') — abstract, no physical or real-world harm"
+      - "'killer' as slang intensifier ('a killer app', 'a killer workout') — approving, no harm content"
+
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The inspector called the exposed wiring a serious fire hazard and shut the floor down that same afternoon."
+      note: "explicit level ~4: genuine danger, stated with axis vocabulary"
+    - text: "The dye is completely harmless — the worst it will do is stain your fingertips for a day."
+      note: "explicit level ~1: near-benign, stated outright"
+    - text: "Officials called it the most destructive storm in the region's recorded history, and the damage estimates kept climbing for weeks."
+      note: "explicit level ~6: catastrophic scale, civic register"
+  implicit:
+    - text: "The spill closed three beaches for a decade, and the fishing fleet never came back."
+      note: "implicit level ~5-6: lasting large-scale consequences, zero trigger vocabulary"
+    - text: "You could drink a whole bottle of the stuff and feel nothing but a faint minty aftertaste."
+      note: "implicit level ~0: total benignity via consequence description"
+    - text: "After the leak, two ceilings needed repainting and the tenants got a week of free rent."
+      note: "implicit level ~2: minor, recoverable consequences"
+  hard_negative:
+    - text: "The umpire spread his arms wide: safe at second, and the crowd came apart."
+      note: "'safe' in baseball — axis absent"
+    - text: "She was deadly serious about moving the deadline up a week."
+      note: "'deadly' intensifier idiom — axis absent"
+    - text: "I'll hazard a guess that the last slice is already gone."
+      note: "'hazard' = venture — axis absent"
+  neutral_nearmiss:
+    - text: "The librarian reshelved the returned paperbacks before the afternoon rush."
+      note: "neutral: no harm information at all"
+    - text: "The paint dried faster than the label promised and needed a second coat."
+      note: "near-miss: product qualities discussed, but nothing about harm is inferable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — score = axis POSITION (0 = benign ... 6 = catastrophic).
+# 0-score spans are valid output (the benign extreme expressed).
+judge_fewshots:
+  - text: "The additive sounds alarming, but every independent study has found it completely benign."
+    verdict: {spans: [{concept: harmfulness, quote: "every independent study has found it completely benign", score: 0}]}
+    note: "low extreme EXPRESSED -> span with score 0, not an empty span list"
+  - text: "The leak stained two ceilings before maintenance caught it."
+    verdict: {spans: [{concept: harmfulness, quote: "stained two ceilings before maintenance caught it", score: 2}]}
+    note: "minor, recoverable damage conveyed implicitly"
+  - text: "By morning the flood had taken the bridge, the depot, and every home along the east bank."
+    verdict: {spans: [{concept: harmfulness, quote: "taken the bridge, the depot, and every home along the east bank", score: 5}]}
+    note: "community-scale destruction via consequences, no trigger words"
+  - text: "The runner was safe at home by a mile."
+    verdict: {spans: []}
+    note: "'safe' in baseball — no harm content; no span"
+  - text: "The new editor is a killer app for anyone who takes notes for a living."
+    verdict: {spans: []}
+    note: "'killer' as approving slang — no harm content; no span"
+  - text: "The recall notice stressed there was no danger to customers, though the courtroom fallout may yet sink the company."
+    verdict: {spans: [{concept: harmfulness, quote: "no danger to customers", score: 0},
+                      {concept: harmfulness, quote: "the courtroom fallout may yet sink the company", score: 3}]}
+    note: "two spans: benign extreme for people, moderate institutional harm"

@@ -1,0 +1,114 @@
+# Family pack: COSTLINESS (intensity axis, no siblings). Reference pack for the
+# intensity construct — the other four axes follow this schema exactly.
+#
+# Intensity conventions (vs categorical):
+# - `axis`: low/high anchors + the 7 level descriptions used for generation
+#   conditioning (§4.2). Judge score = AXIS POSITION 0-6, not salience.
+# - classes has exactly ONE entry (the axis). form_train/form_test partition the
+#   trigger VOCABULARY (§0.5 lexical holdout for intensity): implicit positives
+#   ban all of it; hard negatives must contain some of it (generate.py checks).
+# - periphrases seed the implicit slice: consequence/behavior-based expressions.
+
+family: costliness
+concept_noun: "costliness (how expensive something is)"
+
+axis:
+  low_anchor: "free or trivially cheap"
+  high_anchor: "priceless, astronomically expensive"
+  levels:
+    0: "free, or so cheap the cost is not worth mentioning"
+    1: "very cheap; a bargain anyone could afford on a whim"
+    2: "inexpensive; below what one would expect to pay"
+    3: "moderately priced; an ordinary, unremarkable cost"
+    4: "expensive; noticeably pricey, requires some thought"
+    5: "very expensive; luxury-grade, a serious financial commitment"
+    6: "priceless or astronomically costly; beyond ordinary means entirely"
+
+classes:
+  costliness:
+    form_train: ["expensive", "cheap", "cost", "costly", "price", "pricey",
+                 "afford", "affordable", "budget", "dollar", "pay", "paid",
+                 "worth", "free"]
+    form_test: ["exorbitant", "overpriced", "lavish", "steep", "a fortune",
+                "priceless", "dirt-cheap", "bargain", "premium", "high-end"]
+    periphrases:
+      - "he had to sell his car and take a second job just to keep making the payments"
+      - "she tossed three of them in the basket without even glancing at the tag"
+      - "the kind of watch you inherit, insure, and never actually wear"
+      - "they handed them out to every passerby on the corner"
+      - "only three museums in the world could even bid on it"
+    banned_in_implicit:
+      - "\\bexpens\\w*"
+      - "\\bcheap\\w*"
+      - "\\bcost\\w*"
+      - "\\bpric\\w*"       # price, pricey, priceless
+      - "\\bafford\\w*"
+      - "\\bbudget\\w*"
+      - "\\bdollar\\w*"
+      - "\\b(pay|paid|pays|paying)\\b"
+      - "\\bworth\\w*"
+      - "\\bfree\\b"
+      - "\\bbargain\\w*"
+      - "\\bfortune\\w*"
+      - "\\bmoney\\w*"
+      - "\\b(bucks?|quid)\\b"
+      - "[$€£¥]"
+    hazards:
+      - "non-monetary cost: 'the mistake cost him his marriage', 'at all costs', 'cost lives'"
+      - "'priceless' meaning hilarious/emotionally precious ('the look on her face was priceless')"
+      - "'cheap' as a character judgment ('a cheap shot', 'he felt cheap') with no price content"
+      - "'free' meaning liberty or availability ('free will', 'feel free', 'gluten-free'), not zero cost"
+      - "'worth' in non-monetary senses ('worth the wait', 'for what it's worth')"
+
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The clinic's sliding-scale program meant her checkup cost less than a sandwich."
+      note: "explicit level ~1: cheap, stated via price comparison"
+    - text: "Retrofitting the bridge came in at $2.3 billion, triple the original estimate, and the county will be paying it off for a generation."
+      note: "explicit level ~6: astronomical cost, civic register"
+    - text: "Dinner there runs about what you'd pay anywhere else downtown — nothing that'll surprise your card."
+      note: "explicit level ~3: unremarkable middle of the axis"
+  implicit:
+    - text: "He wore the ring for one photograph, then it went back into the vault under two signatures."
+      note: "implicit level ~6: extreme value via handling behavior, zero price vocabulary"
+    - text: "The samples were stacked by the door, and the intern kept waving people over to take more."
+      note: "implicit level ~0: free, conveyed by distribution behavior"
+    - text: "She checked her account twice, skipped lunch out for a month, and still winced at checkout."
+      note: "implicit level ~5: very expensive via sacrifice, no banned words"
+  hard_negative:
+    - text: "The delay cost the team its only chance at the playoffs."
+      note: "non-monetary 'cost' — axis absent"
+    - text: "The look on his face when the cake collapsed was absolutely priceless."
+      note: "'priceless' = hilarious — axis absent"
+    - text: "Feel free to stop by whenever the porch light is on."
+      note: "'free' = permission — axis absent"
+  neutral_nearmiss:
+    - text: "The librarian reshelved the returned paperbacks before the afternoon rush."
+      note: "neutral: no costliness information at all"
+    - text: "The suitcase was heavier than it looked and barely fit in the overhead bin."
+      note: "near-miss: another property (weight/size) of an object, no cost inferable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — score = axis POSITION (0 = free/cheap ... 6 = priceless).
+# 0-score spans are valid output for intensity (low extreme expressed).
+judge_fewshots:
+  - text: "The workshop is free for residents, and they even cover parking."
+    verdict: {spans: [{concept: costliness, quote: "free for residents, and they even cover parking", score: 0}]}
+    note: "low extreme EXPRESSED -> span with score 0, not an empty span list"
+  - text: "He budgeted carefully and found the repair reasonable — about what the last one ran."
+    verdict: {spans: [{concept: costliness, quote: "reasonable — about what the last one ran", score: 3}]}
+    note: "middling, unremarkable cost"
+  - text: "The auction house wouldn't even publish an estimate; insurers valued the manuscript above the building that houses it."
+    verdict: {spans: [{concept: costliness, quote: "wouldn't even publish an estimate; insurers valued the manuscript above the building that houses it", score: 6}]}
+    note: "implicit top extreme via institutional behavior"
+  - text: "That blunder cost the campaign its lead in three states."
+    verdict: {spans: []}
+    note: "non-monetary 'cost' — the axis is not conveyed; no span"
+  - text: "Her deadpan reply was priceless, and the whole call went silent laughing."
+    verdict: {spans: []}
+    note: "'priceless' = hilarious; no genuine cost content"
+  - text: "The bakery was giving away day-old loaves, but the espresso machine they'd just installed apparently ran them five figures."
+    verdict: {spans: [{concept: costliness, quote: "giving away day-old loaves", score: 0},
+                      {concept: costliness, quote: "ran them five figures", score: 5}]}
+    note: "two spans at opposite ends of the axis in one passage"

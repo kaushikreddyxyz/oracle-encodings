@@ -1,0 +1,57 @@
+# Model + inference configuration for Stage 4 (spec §4.1).
+# Generator and judge MUST stay different model families (anti-monoculture).
+
+generator:
+  slug: openai/gpt-oss-120b          # paid endpoint; never the :free variant
+  pricing_per_mtok: {prompt: 0.03, completion: 0.15}   # checked 2026-07-01
+  temperature: 0.9                    # 1.0 produced occasional sampling collapse
+                                      # (whitespace/ellipsis loops); style axes carry diversity
+  max_tokens: 4000                    # gpt-oss spends completion tokens on reasoning
+  reasoning_effort: low               # writing task, not a reasoning task
+  items_per_call: 8                   # examples requested per generation call
+  topup_rounds: 3                     # resample per (class,slice) until quota or N extra rounds
+
+judge:
+  slug: inception/mercury-2           # legacy single-provider fallback
+  pricing_per_mtok: {prompt: 0.25, completion: 0.75}   # checked 2026-07-01
+  # Dual-provider pool (2026-07-02): batches round-robin across both; a call that
+  # fails or hits a provider's cost cap falls back to the other provider.
+  providers:
+    - name: openrouter
+      endpoint: https://openrouter.ai/api/v1/chat/completions
+      key_env: OPENROUTER_API_KEY
+      model: inception/mercury-2
+      concurrency: 96                 # 224 stalled: OR's mercury-2 upstream IS Inception,
+                                      # so extra concurrency saturates the same pool and
+                                      # triggers long-backoff throttling; 96 measured healthy
+      cap_usd: auto                   # spend down live balance minus $0.75 buffer
+    - name: inception
+      endpoint: https://api.inceptionlabs.ai/v1/chat/completions
+      key_env: INCEPTION_API_KEY
+      model: mercury-2
+      concurrency: 24                 # limiter (not concurrency) is the throughput gate;
+                                      # 12 was latency-bound below the 32/min budget ceiling
+      max_tokens: 2500                # per-provider cap (completion p99 < 2.2k measured);
+                                      # reserved max_tokens is what the limiter budgets
+      # account limits (user, 2026-07-02): 1,000 req/min, 1M input tok/min,
+      # 100k OUTPUT tok/min. Reservation-based budgeting: 80k/2500 = 32 calls/min.
+      limits: {rpm: 800, input_tpm: 800000, output_tpm: 80000}
+      pricing_per_mtok: {prompt: 0.25, completion: 1.0}   # payg ESTIMATE for accounting
+  temperature: 0.4                    # >0 so K samples actually vary
+  max_tokens: 4000                    # 6 passages x (thought + spans) overflowed 1600
+  k_self_consistency: 3               # spec §4.1/§4.5
+  rubric_variants: [v1, v2, v3]       # one paraphrased rubric per sample (spec §4.1 note on
+                                      # dedup/variance: identical prompts defeat averaging)
+  passages_per_call: 6                # passages batched into one judge call
+
+runtime:
+  concurrency: 128                    # measured @32: gen 52 calls/min, judge 337 calls/min;
+                                      # prior project runs used 240 on OpenRouter without issue
+  max_retries: 6
+  timeout_s: 180
+  seed: 20260701                      # all local RNG (template cycling, splits)
+
+# Hard safety rails
+budget:
+  pilot_cap_usd: 15                   # abort pilot if cumulative OpenRouter cost exceeds this
+  full_run_cap_usd: null              # set after pilot extrapolation (user decision)

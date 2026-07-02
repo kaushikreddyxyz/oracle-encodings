@@ -1,0 +1,92 @@
+# Global concept registry (spec §0.3): 64 concepts across 10 families.
+# This file is the skeleton: family membership, construct type, sibling structure.
+# Per-family DETAIL (surface forms, form-train/form-test partition, periphrases,
+# hazards, few-shots) lives in config/families/<family>.yaml and is written when
+# that family comes up for its audit gate. status: pack_ready | todo
+
+families:
+
+  months:
+    construct: categorical            # judge scale = participation salience (§4.5)
+    cyclic: true                      # geometry validation expects a ring (§6.4)
+    status: pack_ready
+    classes: [january, february, march, april, may, june, july, august,
+              september, october, november, december]
+    hazard_classes: [may, march, august, april, june]   # §0.4 homographs / name traps
+
+  weekdays:
+    construct: categorical
+    cyclic: true
+    status: pack_ready
+    classes: [monday, tuesday, wednesday, thursday, friday, saturday, sunday]
+    hazard_classes: [saturday, sunday]   # sat/sun substrings, "Sun" the star
+
+  seasons:
+    construct: categorical
+    cyclic: true
+    status: pack_ready
+    classes: [spring, summer, autumn, winter]
+    hazard_classes: [spring, summer, autumn, winter]  # coil/verb; given name; fall=verb; surname
+
+  color_wheel:
+    construct: categorical
+    cyclic: true
+    status: pack_ready
+    classes: [red, red-orange, orange, yellow-orange, yellow, yellow-green,
+              green, blue-green, blue, blue-violet, violet, red-violet]
+    hazard_classes: [red, orange, green, blue, violet]  # surnames/brands/idioms; orange=fruit; violet=name
+
+  directions:
+    construct: categorical
+    cyclic: true
+    status: pack_ready
+    classes: [north, northeast, east, southeast, south, southwest, west, northwest]
+    hazard_classes: [north, east, south, west]  # substring traps (§0.4): northampton, "the West" (geopolitics)
+
+  moon_phases:
+    construct: categorical
+    cyclic: true
+    status: pack_ready
+    classes: [new moon, waxing crescent, first quarter, waxing gibbous,
+              full moon, waning gibbous, last quarter, waning crescent]
+    hazard_classes: [new moon, first quarter, last quarter]  # "first quarter" fiscal sense
+
+  continents:
+    construct: presence               # judge scale = centrality (§4.5)
+    cyclic: false
+    status: pack_ready
+    classes: [europe, asia, africa, north america, south america, oceania]
+    hazard_classes: [north america, south america]  # bare "america", "asia" in names
+
+  location_type:
+    construct: presence
+    cyclic: false
+    status: pack_ready
+    classes: [indoors, outdoors]      # mutual negatives (§0.3)
+    hazard_classes: []
+
+  # Intensity axes: scalar regression, 7 conditioning levels, no siblings (§0.3, §4.2)
+  costliness:     {construct: intensity, cyclic: false, status: pack_ready, classes: [costliness],     levels: 7}
+  physical_size:  {construct: intensity, cyclic: false, status: pack_ready, classes: [physical_size],  levels: 7}
+  lovingness:     {construct: intensity, cyclic: false, status: pack_ready, classes: [lovingness],     levels: 7}
+  duration:       {construct: intensity, cyclic: false, status: pack_ready, classes: [duration],       levels: 7}
+  harmfulness:    {construct: intensity, cyclic: false, status: pack_ready, classes: [harmfulness],    levels: 7}
+
+# Volume defaults (spec §4.0). Pilot overrides live in the run command, not here.
+volumes:
+  categorical_presence:
+    P_target_positives: 1000
+    shares: {explicit: 0.25, implicit: 0.10, hard_negative: 0.20,
+             neutral_nearmiss: 0.25, sibling_borrowed: 0.20}
+    produced_per_class: 3200          # sibling slice is borrowed, not generated
+  intensity:
+    explicit_per_level: 200           # 7 levels
+    implicit_per_level: 100
+    hard_negatives: 700
+    neutral_negatives: 700
+    produced_per_axis: 3500
+  per_cell_floor: 100                 # §4.0: every (slice, level) cell >= 100 after curation
+
+splits:
+  train_val: [0.85, 0.15]             # §0.5, by example
+  # natural deployment split: ClimbMix, validation/calibration ONLY (user decision 2026-07-01)

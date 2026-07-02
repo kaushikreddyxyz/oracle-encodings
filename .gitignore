@@ -222,3 +222,6 @@ __marimo__/
 
 wandb/
 __pycache__/
+
+# concept-probes stage4: datasets + audit logs live on HF / locally, not in git
+concept_probes/stage4/data/

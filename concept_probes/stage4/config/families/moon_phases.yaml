@@ -1,0 +1,167 @@
+# Family pack: MOON_PHASES (8 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about moon phases
+# derives from here. Schema and conventions follow config/families/months.yaml.
+#
+# Conventions
+# - form_train / form_test: §0.5 partition of enumerated surface forms. Most phase
+#   names have no standard abbreviation or synonym, so several classes carry
+#   form_test: [] and their §6.2 G-ratio falls back to the implicit slice
+#   (deviation #2 in concept_probes/README.md), as with months::may.
+# - periphrases are visual/temporal descriptions. DIRECTIONALITY IS THE POINT:
+#   waxing vs waning must be pinned by growth/shrinkage cues or time-of-night
+#   (waxing crescent = western sky after sunset; waning crescent = eastern sky
+#   before dawn). "A half-lit moon" with no direction fits two classes equally
+#   and is an implicit-slice failure.
+# - banned_in_implicit blocks the phase NAMES and the giveaway family vocabulary
+#   ("gibbous", "waxing", "waning", "crescent") — NOT the bare word "moon", which
+#   implicit descriptions legitimately need. For new/full moon only the exact
+#   bigram is blocked.
+# - Multi-word surface forms mean most wrong-sense hazards ("crescent wrench",
+#   "waxing the car") never contain a full surface form, so hard negatives are
+#   only generated for the classes whose FULL phrase has a wrong sense
+#   (new moon / first quarter / last quarter). This matches the missing_surface
+#   check in generate.py.
+
+family: moon_phases
+concept_noun: "phase of the moon"
+
+classes:
+  new moon:
+    form_train: ["new moon"]
+    form_test: ["dark moon"]
+    periphrases:
+      - "the night the moon is entirely absent and the stars are at their brightest"
+      - "the start of the lunar cycle, with no moon visible from dusk till dawn"
+      - "a moonless night sky, ideal for spotting the Milky Way"
+      - "the point in the cycle when the moon rises and sets with the sun, unseen"
+    banned_in_implicit: ["\\bnew\\s+moon\\b", "\\bdark\\s+moon\\b"]
+    hazards:
+      - "New Moon as the title of the Twilight-saga novel/film (a book or movie, not the sky)"
+  waxing crescent:
+    form_train: ["waxing crescent"]
+    form_test: []
+    periphrases:
+      - "a thin sliver of moon low in the western sky just after sunset, growing fuller each evening"
+      - "the first fingernail of light returning a night or two after the moonless dark"
+      - "a slim curve of moonlight that thickens night by night"
+    banned_in_implicit: ["\\bwaxing\\b", "\\bwaxes\\b", "\\bcrescent\\b"]
+    hazards: []
+  first quarter:
+    form_train: ["first quarter"]
+    form_test: []
+    periphrases:
+      - "the moon exactly half lit and growing brighter each night"
+      - "a week after the moonless night, the moon's right half shining in the evening sky"
+      - "the halfway checkpoint on the moon's climb toward full, high at sunset"
+    banned_in_implicit: ["\\bfirst\\s+quarter\\b", "\\bhalf\\s+moon\\b"]
+    hazards:
+      - "first quarter as a fiscal or earnings reporting period (Q1 revenue, quarterly results)"
+      - "the first quarter of a sports game (basketball, football)"
+  waxing gibbous:
+    form_train: ["waxing gibbous"]
+    form_test: []
+    periphrases:
+      - "the moon more than half full and still swelling toward its brightest night"
+      - "an almost-round moon brightening night after night, a few days short of full"
+      - "the lopsided bright moon high in the evening, visibly fuller than yesterday"
+    banned_in_implicit: ["\\bwaxing\\b", "\\bwaxes\\b", "\\bgibbous\\b"]
+    hazards: []
+  full moon:
+    form_train: ["full moon"]
+    form_test: ["harvest moon", "supermoon"]
+    periphrases:
+      - "the moon a perfect bright circle dominating the night sky from dusk to dawn"
+      - "the night the whole lunar disc glows and the landscape needs no lamp"
+      - "the moon at its roundest and brightest, rising in the east just as the sun sets"
+      - "the midpoint of the lunar cycle, when tides run at their strongest"
+    banned_in_implicit: ["\\bfull\\s+moon\\b", "\\bharvest\\s+moon\\b", "\\bsupermoons?\\b"]
+    hazards: []
+  waning gibbous:
+    form_train: ["waning gibbous"]
+    form_test: []
+    periphrases:
+      - "the moon just past its brightest, a small bite taken from one edge, shrinking each night"
+      - "still swollen and bright but dimming night after night, rising later each evening"
+      - "the lopsided moon of the small hours, a few days after its peak"
+    banned_in_implicit: ["\\bwaning\\b", "\\bwanes\\b", "\\bgibbous\\b"]
+    hazards: []
+  last quarter:
+    form_train: ["last quarter"]
+    form_test: ["third quarter"]
+    periphrases:
+      - "the moon half lit and shrinking, about a week before it disappears entirely"
+      - "a half-illuminated moon rising around midnight on its way down to darkness"
+      - "the halfway point of the moon's fade, its left half glowing in the pre-dawn sky"
+    banned_in_implicit: ["\\blast\\s+quarter\\b", "\\bthird\\s+quarter\\b", "\\bhalf\\s+moon\\b"]
+    hazards:
+      - "last quarter as a fiscal/earnings period (Q4) or the final months of a year"
+      - "the last quarter of a sports game (the closing period of play)"
+  waning crescent:
+    form_train: ["waning crescent"]
+    form_test: ["old moon"]
+    periphrases:
+      - "the last thin sliver of moon, visible low in the east just before sunrise, thinner each morning"
+      - "a fading fingernail of light that will vanish from the sky within a few days"
+      - "the final slim curve of the cycle, seen only by early risers before dawn"
+    banned_in_implicit: ["\\bwaning\\b", "\\bwanes\\b", "\\bcrescent\\b", "\\bold\\s+moon\\b"]
+    hazards: []
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (spec §4.8): worked examples covering the hard slices.
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "We planned the stargazing trip around the new moon, when the Milky Way is at its clearest."
+      note: "explicit new moon, hobby/astronomy domain, concept load-bearing"
+    - text: "Tonight's waxing gibbous washed out all but the brightest stars, so we photographed the moon itself instead."
+      note: "explicit waxing gibbous, first-person amateur-astronomy register"
+    - text: "the tide tables say last quarter this week so the currents should be milder for the paddle out"
+      note: "explicit last quarter, casual lowercase forum register, practical context"
+  implicit:
+    - text: "Only a thin sliver hung over the western horizon after sunset, a little fatter than it was yesterday."
+      note: "implicit waxing crescent: sliver + western evening sky + growing, no phase name"
+    - text: "The sky stayed moonless from dusk till dawn, and the star clusters stood out like spilled sugar."
+      note: "implicit new moon: absence cue, no trigger bigram"
+    - text: "A perfect silver disc climbed over the ridge just as the sun dropped behind us."
+      note: "implicit full moon: full disc rising at sunset pins the phase"
+  hard_negative:
+    - text: "Revenue jumped eight percent in the first quarter, beating analyst expectations."
+      note: "fiscal Q1 sense — the lunar phase is absent"
+    - text: "The point guard fouled out early in the last quarter, and the bench couldn't close out the game."
+      note: "sports game-clock sense — no moon"
+    - text: "She reread New Moon on the flight, dog-earing the Volterra chapters."
+      note: "Twilight novel title — a book, not the sky"
+  neutral_nearmiss:
+    - text: "The committee approved the new parking layout after a short debate."
+      note: "neutral: no lunar content at all"
+    - text: "The rover mission spent two years mapping mineral deposits near the lunar south pole."
+      note: "near-miss: moon-adjacent science content but NO phase recoverable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (spec §4.5 hazard prompting + 2B-plausible-activation rule).
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "A lunar eclipse can only happen at full moon, when the Earth sits directly between sun and moon."
+    verdict: {spans: [{concept: full moon, quote: "full moon", score: 5}]}
+    note: "plain explicit mention, concept load-bearing in an astronomy explanation"
+  - text: "By Friday the moon had swollen past half, three or four nights short of its brightest."
+    verdict: {spans: [{concept: waxing gibbous, quote: "swollen past half, three or four nights short of its brightest", score: 4}]}
+    note: "implicit — size plus direction of change pins waxing gibbous without naming it"
+  - text: "Margins improved in the first quarter as shipping costs finally came down."
+    verdict: {spans: [{concept: first quarter, quote: "first quarter", score: 1}]}
+    note: "earnings-period sense — the phase is absent, but the exact token faintly stirs it: score 1"
+  - text: "New Moon outsold the first book of the series within a month of its release."
+    verdict: {spans: [{concept: new moon, quote: "New Moon", score: 1}]}
+    note: "book title — faint token echo only: score 1"
+  - text: "He blamed the packed emergency room on the full moon, the way the night-shift nurses always do."
+    verdict: {spans: [{concept: full moon, quote: "full moon", score: 3}]}
+    note: "superstition idiom still genuinely refers to the phase in the sky — weak-to-moderate, more than a token echo"
+  - text: "A half moon hung over the parking lot as they locked up for the night."
+    verdict: {spans: []}
+    note: "equally consistent with first quarter and last quarter — pins neither sibling, so no span for either"
+  - text: "The Red Crescent volunteers had the aid tents up before nightfall."
+    verdict: {spans: []}
+    note: "organization name; bare 'crescent' is also ambiguous between the two crescent phases — nothing"
+  - text: "The croissants flaked apart before she even reached her desk."
+    verdict: {spans: []}
+    note: "opaque look-alike (croissant = crescent only by etymology) — evokes no phase"

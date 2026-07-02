@@ -1,0 +1,125 @@
+# Family pack: DURATION (intensity axis, no siblings). Follows the schema of the
+# reference intensity pack costliness.yaml.
+#
+# The axis is how long something LASTS in time. Non-temporal senses of duration
+# vocabulary ("a long shot", "short of cash", "instant coffee") are the hazard
+# direction, not the axis.
+
+family: duration
+concept_noun: "duration (how long something lasts)"
+
+axis:
+  low_anchor: "instantaneous, over in a blink"
+  high_anchor: "eternal, effectively endless"
+  levels:
+    0: "instantaneous; over in a blink, gone before it can be observed"
+    1: "fleeting; lasts mere seconds"
+    2: "brief; over within minutes, shorter than one would expect"
+    3: "moderate; neither notably brief nor notably long for its kind"
+    4: "long; noticeably drawn out — hours stretching into days"
+    5: "very long; endures for years or decades"
+    6: "eternal or effectively endless; outlasting lifetimes and memory"
+
+classes:
+  duration:
+    form_train: ["long", "short", "quick", "brief", "moment", "instant",
+                 "forever", "seconds", "minutes", "hours", "years"]
+    form_test: ["fleeting", "eternal", "permanent", "endless", "everlasting",
+                "momentary", "decades", "centuries", "lifelong", "perpetual"]
+    periphrases:
+      - "the oak had watched six generations pass beneath its branches"
+      - "the ice cream never stood a chance against the afternoon heat"
+      - "she blinked and the hummingbird was already gone"
+      - "by the third act, half the audience had drifted out to check their phones"
+      - "the paint on the sign had outlived the shop, the owner, and the street's old name"
+    banned_in_implicit:
+      - "\\blong\\w*"
+      - "\\bshort\\w*"
+      - "\\bquick\\w*"
+      - "\\bbrief\\w*"
+      - "\\bmoment\\w*"
+      - "\\binstant\\w*"
+      - "\\bforever\\b"
+      - "\\betern\\w*"
+      - "\\bperman\\w*"
+      - "\\bendless\\w*"
+      - "\\beverlast\\w*"
+      - "\\bfleeting\\b"
+      - "\\bperpetual\\w*"
+      - "\\blifelong\\b"
+      - "\\bduration\\w*"
+      - "\\btemporar\\w*"
+      - "\\bsecond\\w*"
+      - "\\bminute\\w*"
+      - "\\bhour\\w*"
+      - "\\bdays?\\b"
+      - "\\bweek\\w*"
+      - "\\bmonth\\w*"
+      - "\\byear\\w*"
+      - "\\bdecade\\w*"
+      - "\\bcentur\\w*"
+      - "\\bmillenni\\w*"
+      - "\\blast(s|ed|ing)\\b"
+    hazards:
+      - "'short' non-temporal: short of cash, a short temper, drew the short straw, short-staffed"
+      - "'long' non-temporal: a long shot, a long face, longing for home, the long arm of the law"
+      - "'instant' as a product type: instant coffee, instant noodles, instant messaging"
+      - "'moment' as importance ('a decision of great moment') and 'momentum'"
+      - "'quick' as intelligence or temper: a quick wit, quick to anger, a quick study"
+      - "'second' as ordinal or verb: second place, second thoughts, I second the motion"
+
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The outage lasted barely a second, but every clock in the house started blinking."
+      note: "explicit level ~0-1: near-instantaneous, stated with a time unit"
+    - text: "The seminar ran about as long as these things usually do, and nobody once checked their watch."
+      note: "explicit level ~3: unremarkable middle of the axis"
+    - text: "The negotiations dragged on for eleven years, outlasting three of the diplomats who started them."
+      note: "explicit level ~5: very long, drawn out over years"
+  implicit:
+    - text: "She blinked, and the meteor was already gone from the sky."
+      note: "implicit level ~0: over before perception, zero duration vocabulary"
+    - text: "By the time the kettle finished, the whole argument had already blown over."
+      note: "implicit level ~1-2: brevity via household yardstick, no banned words"
+    - text: "The farmhouse's beams had sheltered every wedding, funeral, and harvest since anyone could remember."
+      note: "implicit level ~5-6: endurance via generations, no banned words"
+  hard_negative:
+    - text: "He was short with the waiter, and the table went quiet."
+      note: "'short' = curt — axis absent"
+    - text: "It's a long shot, but the scout wants to see him try out anyway."
+      note: "'long shot' = improbable — axis absent"
+    - text: "She stirred two packets of instant coffee into the mug and kept reading."
+      note: "'instant' = product type — axis absent"
+  neutral_nearmiss:
+    - text: "The ferry seats were upholstered in a stubborn shade of orange."
+      note: "neutral: no duration information at all"
+    - text: "The soup needed more salt and a heavier hand with the pepper."
+      note: "near-miss: another property (taste), no duration inferable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — score = axis POSITION (0 = instantaneous ... 6 = eternal).
+# 0-score spans are valid output for intensity (low extreme expressed).
+judge_fewshots:
+  - text: "The camera flash was gone before anyone's eyes could adjust."
+    verdict: {spans: [{concept: duration, quote: "gone before anyone's eyes could adjust", score: 0}]}
+    note: "low extreme EXPRESSED -> span with score 0, not an empty span list"
+  - text: "The microwave dinner was ready in ninety seconds, which was still slower than his patience."
+    verdict: {spans: [{concept: duration, quote: "ready in ninety seconds", score: 1}]}
+    note: "seconds-scale; only the duration-bearing words form the span"
+  - text: "Their friendship survived four schools, two countries, and every fashion the decades threw at it."
+    verdict: {spans: [{concept: duration, quote: "survived four schools, two countries, and every fashion the decades threw at it", score: 5}]}
+    note: "decades-long endurance, partly implicit"
+  - text: "The monument was built to outlast the language of its builders."
+    verdict: {spans: [{concept: duration, quote: "built to outlast the language of its builders", score: 6}]}
+    note: "effectively endless, conveyed without duration vocabulary"
+  - text: "Don't be short with your sister; she meant well."
+    verdict: {spans: []}
+    note: "'short' = curt; the axis is not conveyed — no span"
+  - text: "The odds made it a long shot at best, but he entered anyway."
+    verdict: {spans: []}
+    note: "'long shot' = improbability; axis absent"
+  - text: "The mayfly's whole adult life fit inside a single sunset, while the river below had been carving the canyon since before the first birds."
+    verdict: {spans: [{concept: duration, quote: "whole adult life fit inside a single sunset", score: 1},
+                      {concept: duration, quote: "carving the canyon since before the first birds", score: 6}]}
+    note: "two spans at opposite ends of the axis in one passage"

@@ -1,0 +1,162 @@
+# Family pack: DIRECTIONS (8 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about compass
+# directions derives from here. Conventions identical to families/months.yaml.
+#
+# Family-specific notes
+# - This is the spec's flagged substring-trap family (§0.4): "north" fossilized
+#   inside Northampton/Northumberland, "east" inside Easter, "west" as a surname
+#   (Kanye West) or geopolitical bloc ("the West"). Hard negatives target these
+#   in volume; the judge gives them at most a faint 1-2.
+# - Compound-name caveat: intercardinal names visibly CONTAIN their two cardinal
+#   parents ("northeast" contains north and east). Judge few-shot below shows the
+#   compound scoring its own class high while parents get at most a faint 1.
+# - Implicit bans for intercardinals include BOTH parent direction words, since
+#   naming the two parents together effectively spells the trigger.
+# - form_test uses derived forms (northern, northward) and the compact
+#   abbreviation for intercardinals (NE, SE, SW, NW).
+
+family: directions
+concept_noun: "compass direction"
+
+classes:
+  north:
+    form_train: ["north"]
+    form_test: ["northern", "northward"]
+    periphrases:
+      - "the direction of the pole star"
+      - "the direction a compass needle points"
+      - "toward the top of most maps"
+      - "the direction of the Arctic from almost anywhere"
+    banned_in_implicit: ["\\bnorth\\w*"]
+    hazards:
+      - "fossilized place-name substrings (Northampton, Northumberland) where no bearing is meant"
+      - "North as a surname (Oliver North)"
+  northeast:
+    form_train: ["northeast"]
+    form_test: ["northeastern", "NE"]
+    periphrases:
+      - "halfway between the pole star's direction and the sunrise"
+      - "toward the upper right corner of a map"
+    banned_in_implicit: ["\\bnorth\\w*", "\\beast\\w*", "\\bNE\\b"]
+    hazards:
+      - "Northeastern as an institution name (Northeastern University) rather than a bearing"
+  east:
+    form_train: ["east"]
+    form_test: ["eastern", "eastward"]
+    periphrases:
+      - "the direction of the sunrise"
+      - "where dawn first lights the horizon"
+      - "the direction the sun appears each morning"
+    banned_in_implicit: ["\\beast\\w*"]
+    hazards:
+      - "Easter the holiday (substring, no bearing meant)"
+      - "'the East' as a cultural/geopolitical bloc (Eastern philosophy, East-West tensions) rather than a compass bearing"
+  southeast:
+    form_train: ["southeast"]
+    form_test: ["southeastern", "SE"]
+    periphrases:
+      - "toward the lower right corner of a map"
+      - "between where the sun rises and where it stands at midday"
+    banned_in_implicit: ["\\bsouth\\w*", "\\beast\\w*", "\\bSE\\b"]
+    hazards:
+      - "Southeast Asia as a fossilized region label used with no bearing in mind"
+  south:
+    form_train: ["south"]
+    form_test: ["southern", "southward"]
+    periphrases:
+      - "the direction of the midday sun from northern latitudes"
+      - "toward the bottom of most maps"
+      - "the direction of the Antarctic from almost anywhere"
+    banned_in_implicit: ["\\bsouth\\w*"]
+    hazards:
+      - "southpaw (a left-hander) — no bearing meant"
+      - "'southern drawl' / 'the South' as a cultural region or accent rather than a bearing"
+  southwest:
+    form_train: ["southwest"]
+    form_test: ["southwestern", "SW"]
+    periphrases:
+      - "toward the lower left corner of a map"
+      - "between the midday sun and the sunset"
+    banned_in_implicit: ["\\bsouth\\w*", "\\bwest\\w*", "\\bSW\\b"]
+    hazards:
+      - "Southwest the airline brand, not a bearing"
+  west:
+    form_train: ["west"]
+    form_test: ["western", "westward"]
+    periphrases:
+      - "the direction of the sunset"
+      - "where the sun sinks each evening"
+      - "the direction opposite the dawn"
+    banned_in_implicit: ["\\bwest\\w*"]
+    hazards:
+      - "West as a surname (Kanye West, Mae West)"
+      - "'the West' as a geopolitical/cultural bloc with no bearing meant"
+      - "western as a film/literature genre"
+  northwest:
+    form_train: ["northwest"]
+    form_test: ["northwestern", "NW"]
+    periphrases:
+      - "toward the upper left corner of a map"
+      - "between the sunset direction and the pole star's"
+    banned_in_implicit: ["\\bnorth\\w*", "\\bwest\\w*", "\\bNW\\b"]
+    hazards:
+      - "Pacific Northwest / Northwest as a fossilized region or brand name (Northwest Airlines)"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (3-5 per slice, covering the hard cases)
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "Head north on the highway for three miles, then take the second exit past the water tower."
+      note: "explicit north, driving directions register, bearing load-bearing"
+    - text: "The storm system is drifting east across the plains and should reach the river valley by dawn."
+      note: "explicit east, weather-report register"
+    - text: "her new office faces south so the plants are thriving lol"
+      note: "explicit south, casual register, lowercase"
+  implicit:
+    - text: "Follow the pole star all night and you will reach the coast road by morning."
+      note: "implicit north: celestial cue, no direction word"
+    - text: "The balcony catches the sunrise straight on, so breakfast out there is blinding."
+      note: "implicit east: sunrise cue, no trigger"
+    - text: "They drove toward the sunset for hours before stopping at a roadside diner."
+      note: "implicit west: sunset cue, no trigger"
+  hard_negative:
+    - text: "Kanye West headlined the festival's closing night."
+      note: "surname — bearing sense absent -> west's hard-negative slice"
+    - text: "The kids hunted for Easter eggs all over the back garden."
+      note: "substring trap for east: 'Easter' contains the surface form"
+    - text: "Southwest added two more daily flights out of Denver."
+      note: "airline brand — bearing sense absent"
+  neutral_nearmiss:
+    - text: "She recalibrated the compass and repacked the map case, but the route briefing wasn't until morning."
+      note: "near-miss: navigation content with NO specific bearing recoverable"
+    - text: "The librarian reshelved the returned paperbacks before closing."
+      note: "neutral: no directional content at all"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (worked disambiguation examples, 0-6 salience scale)
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "The trail climbs north through the pass before descending to the lake."
+    verdict: {spans: [{concept: north, quote: "north", score: 5}]}
+    note: "plain explicit bearing, load-bearing in the sentence"
+  - text: "The kitchen window faces where the sun rises, so mornings are blinding."
+    verdict: {spans: [{concept: east, quote: "where the sun rises", score: 4}]}
+    note: "implicit east — the cue pins the bearing without naming it"
+  - text: "Northampton's council approved the stadium plan after months of delay."
+    verdict: {spans: [{concept: north, quote: "Northampton", score: 1}]}
+    note: "fossilized place-name substring — faint token echo only: score 1"
+  - text: "Kanye West released the album two days early."
+    verdict: {spans: [{concept: west, quote: "West", score: 1}]}
+    note: "surname — faint echo of the direction token: score 1"
+  - text: "The pundits spent an hour debating how the West should respond."
+    verdict: {spans: [{concept: west, quote: "the West", score: 2}]}
+    note: "geopolitical bloc — derived sense, weak score 2, never higher"
+  - text: "They rode northeast until the hills finally flattened into scrub."
+    verdict: {spans: [{concept: northeast, quote: "northeast", score: 5},
+                      {concept: north, quote: "northeast", score: 1},
+                      {concept: east, quote: "northeast", score: 1}]}
+    note: "compound intercardinal scores its own class high; the visible parent words get at most a faint 1"
+  - text: "The wedding feast lasted well past midnight."
+    verdict: {spans: []}
+    note: "opaque look-alike ('feast' merely contains e-a-s-t): no span"

@@ -1,0 +1,123 @@
+# Family pack: SEASONS (4 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about seasons
+# derives from here. Same conventions as months.yaml.
+# - form partition note: autumn's form_test is "fall" (the US synonym) — the
+#   family's real lexical hold-out. The other classes hold out their "-time"
+#   derivatives (springtime, summertime, wintertime).
+# - autumn's banned_in_implicit blocks BOTH word families (autumn* AND fall*);
+#   this intentionally also blocks verb uses (falling, fallen) so the implicit
+#   slice stays trigger-free.
+# - Northern-hemisphere convention as in months.yaml: generation states it,
+#   the judge rubric assumes it unless the passage says otherwise.
+# - judge few-shots apply the 2B-plausible-activation rule: wrong-sense
+#   homographs / names / transparent substrings score 1 (max 2); opaque
+#   look-alikes get no span.
+
+family: seasons
+concept_noun: "season of the year"
+
+classes:
+  spring:
+    form_train: ["spring"]
+    form_test: ["springtime"]
+    periphrases:
+      - "the season of the vernal equinox"
+      - "the melt-and-mud season, when daffodils push up through the last snow"
+      - "the season when trees leaf out and the birds return"
+      - "allergy season, when pollen coats every parked car"
+    banned_in_implicit: ["\\bspring\\w*"]
+    hazards:
+      - "spring as a metal coil (mattress spring, clock spring)"
+      - "spring as a verb (to spring up, spring into action)"
+      - "a spring as a natural water source (hot springs)"
+      - "Spring as a surname or street name"
+  summer:
+    form_train: ["summer"]
+    form_test: ["summertime"]
+    periphrases:
+      - "the season of the longest days and school holidays"
+      - "beach season, when the days stretch long and hot"
+      - "the hottest stretch of the year, all sunscreen and ice cream"
+      - "the season of the June solstice"
+    banned_in_implicit: ["\\bsummer\\w*"]
+    hazards:
+      - "Summer as a given name (Summer Roberts)"
+      - "Summers as a surname (Larry Summers)"
+  autumn:
+    form_train: ["autumn"]
+    form_test: ["fall"]
+    periphrases:
+      - "the season of turning leaves and harvest festivals"
+      - "the season when the hillsides blaze red and gold before going bare"
+      - "sweater weather, the season of pumpkin patches and cider"
+      - "the season of the September equinox"
+    banned_in_implicit: ["\\bautumn\\w*", "\\bfall\\w*"]
+    hazards:
+      - "fall as a verb or noun (to fall down, a bad fall, falling prices)"
+      - "compounds like waterfall, nightfall, rainfall, shortfall"
+      - "the Fall in the theological sense (the Fall of Man)"
+  winter:
+    form_train: ["winter"]
+    form_test: ["wintertime"]
+    periphrases:
+      - "the season of snow and the shortest days"
+      - "the coldest stretch of the year, when the ponds freeze over"
+      - "the season of the December solstice"
+      - "the season of scarves, ice scrapers, and early dusk"
+    banned_in_implicit: ["\\bwint\\w*"]
+    hazards:
+      - "Winter/Winters as a surname (Jonathan Winters)"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (cover the hard slices deliberately).
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The trail closes every winter once the first heavy snow makes the pass unsafe."
+      note: "explicit, outdoors/civic domain, concept load-bearing"
+    - text: "Summer bookings at the lake cabins sell out months in advance."
+      note: "explicit, commerce register, single passing mention"
+    - text: "the autumn colors up here are unreal, whole hillsides go copper"
+      note: "explicit, casual forum register, lowercase"
+  implicit:
+    - text: "Daffodils pushed through the last crust of snow while the gutters ran with meltwater."
+      note: "implicit spring: thaw + daffodil cues, no trigger token"
+    - text: "Pumpkin patches opened on the edge of town and every porch got its scarecrow."
+      note: "implicit autumn: harvest cues, neither 'autumn' nor 'fall' appears"
+    - text: "The pond finally froze solid enough to skate, and dusk beat the school bus home."
+      note: "implicit winter: freeze + short-day cues"
+  hard_negative:
+    - text: "The old mattress creaked, one broken spring jabbing through the fabric."
+      note: "coil sense — season absent"
+    - text: "He tripped on the loose carpet and broke his wrist in the fall."
+      note: "fall the noun — autumn's US surface form in its wrong sense"
+    - text: "Summer Roberts was always the sharpest one in the writers' room."
+      note: "given name — season absent"
+  neutral_nearmiss:
+    - text: "The quarterly report shipped a week early thanks to the new template."
+      note: "neutral: no season, no weather content"
+    - text: "The weather turned suddenly, and everyone reached for their jackets."
+      note: "near-miss: weather content but NO specific season recoverable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (2B-plausible-activation rule applied).
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "We repainted the porch in early summer, before the heat made it unbearable."
+    verdict: {spans: [{concept: summer, quote: "early summer", score: 5}]}
+    note: "plain explicit mention, load-bearing"
+  - text: "The hikers refilled their bottles at a cold mountain spring."
+    verdict: {spans: [{concept: spring, quote: "spring", score: 1}]}
+    note: "water-source sense — faint token echo of the season only: score 1"
+  - text: "He took a nasty fall during rehearsal and bruised his elbow."
+    verdict: {spans: [{concept: autumn, quote: "fall", score: 1}]}
+    note: "fall the noun — same surface as autumn's US form, faint echo: score 1"
+  - text: "Sweater weather at last: pumpkin spice everywhere and the leaves going amber."
+    verdict: {spans: [{concept: autumn, quote: "pumpkin spice everywhere and the leaves going amber", score: 4}]}
+    note: "implicit autumn — cues pin the season without either trigger word"
+  - text: "The fallacy in his argument was obvious to everyone but him."
+    verdict: {spans: []}
+    note: "'fallacy' is an opaque look-alike (shares letters, not meaning): no span"
+  - text: "Winters was promoted to regional manager last quarter."
+    verdict: {spans: [{concept: winter, quote: "Winters", score: 1}]}
+    note: "surname — faint echo of the season token: score 1"

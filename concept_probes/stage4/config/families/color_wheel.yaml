@@ -1,0 +1,222 @@
+# Family pack: COLOR_WHEEL (12 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about the color
+# wheel derives from here. Conventions identical to families/months.yaml.
+#
+# Family-specific notes
+# - Tertiary colors: form_train is the hyphenated wheel name; form_test holds a
+#   common one-word synonym (teal, vermilion, chartreuse, indigo, magenta, amber)
+#   so the §0.5 lexical partition is non-empty.
+# - Compound-name caveat: a tertiary's name visibly CONTAINS its two parents
+#   ("red-orange" contains red and orange). Judge few-shot below shows the
+#   compound scoring its own class high while parents get at most a faint 1.
+# - Implicit bans for tertiaries include BOTH parent color words, since naming
+#   the two parents together effectively spells the trigger.
+# - Hazard space: idiomatic/metaphoric senses (in the red, feeling blue, green
+#   with envy), surnames/brands/names (Mr. Green, Violet, Orange telecom), and
+#   the orange fruit.
+
+family: color_wheel
+concept_noun: "color"
+
+classes:
+  red:
+    form_train: ["red"]
+    form_test: ["crimson", "scarlet"]
+    periphrases:
+      - "the color of a ripe tomato"
+      - "the shade of fresh blood"
+      - "the hue of a stop sign"
+      - "the color of a matador's cape"
+    banned_in_implicit: ["\\bred(s|dish|dest)?\\b", "\\bcrimson\\w*", "\\bscarlet\\w*"]
+    hazards:
+      - "idiomatic 'red' with no visual color meant (in the red, red tape, seeing red, red flag)"
+      - "Red as a nickname or surname"
+  red-orange:
+    form_train: ["red-orange"]
+    form_test: ["vermilion"]
+    periphrases:
+      - "the color of glowing embers"
+      - "the shade of a robin's breast"
+      - "the hue of rusted iron"
+      - "the color of a ripe persimmon"
+    banned_in_implicit: ["\\bred(s|dish|dest)?\\b", "\\borang\\w*", "\\bvermilion\\w*"]
+    hazards:
+      - {form: vermilion, sense: "Vermilion as a place name (Vermilion County, Vermilion River), not the color"}
+  orange:
+    form_train: ["orange"]
+    form_test: []            # no clean synonym; lexical holdout falls back to the implicit slice
+    periphrases:
+      - "the color of a pumpkin"
+      - "the hue of a traffic cone"
+      - "the shade of a monarch butterfly's wings"
+      - "the color of fresh carrots"
+    banned_in_implicit: ["\\borang\\w*"]
+    hazards:
+      - "orange the fruit (orange juice, orange peel) rather than the color"
+      - "Orange as a brand or place name (Orange the telecom, Orange County)"
+  yellow-orange:
+    form_train: ["yellow-orange"]
+    form_test: ["amber"]
+    periphrases:
+      - "the color of honey in sunlight"
+      - "the shade of a ripe mango"
+      - "the hue of marigold petals"
+      - "the color of apricot flesh"
+    banned_in_implicit: ["\\byellow\\w*", "\\borang\\w*", "\\bamber\\w*"]
+    hazards:
+      - {form: amber, sense: "amber the fossilized resin (an amber pendant), not the color"}
+      - {form: Amber, sense: "Amber as a given name"}
+  yellow:
+    form_train: ["yellow"]
+    form_test: []            # no clean synonym; lexical holdout falls back to the implicit slice
+    periphrases:
+      - "the color of a lemon"
+      - "the shade of an egg yolk"
+      - "the hue of a school bus"
+      - "the color of ripe bananas"
+    banned_in_implicit: ["\\byellow\\w*"]
+    hazards:
+      - "yellow as cowardice metaphor (yellow-bellied, too yellow to fight)"
+      - "yellow journalism (sensationalism, not the color)"
+  yellow-green:
+    form_train: ["yellow-green"]
+    form_test: ["chartreuse"]
+    periphrases:
+      - "the color of a fresh lime"
+      - "the shade of early spring leaves"
+      - "the hue of a tennis ball"
+      - "the color of unripe bananas"
+    banned_in_implicit: ["\\byellow\\w*", "\\bgreen\\w*", "\\bchartreuse\\w*"]
+    hazards:
+      - {form: chartreuse, sense: "Chartreuse the French liqueur or monastery, not the color"}
+  green:
+    form_train: ["green"]
+    form_test: ["emerald"]
+    periphrases:
+      - "the color of summer grass"
+      - "the shade of pine needles"
+      - "the hue of the traffic light that means go"
+      - "the color of fresh spinach"
+    banned_in_implicit: ["\\bgreen\\w*", "\\bemerald\\w*"]
+    hazards:
+      - "green as inexperience or envy metaphor (green with envy, greenhorn, green recruit)"
+      - "green as environmentalism (green energy, going green) with no visual color meant"
+      - "Green as a surname (Mr. Green)"
+  blue-green:
+    form_train: ["blue-green"]
+    form_test: ["teal", "cyan"]
+    periphrases:
+      - "the color of tropical shallows"
+      - "the shade of oxidized copper"
+      - "the hue of a peacock's throat"
+      - "the color of glacial meltwater"
+    banned_in_implicit: ["\\bblu(e|ish)\\w*", "\\bblue\\b", "\\bgreen\\w*", "\\bteal\\b",
+                         "\\bcyan\\w*", "\\bturquoise\\w*", "\\baquamarine\\w*"]
+    hazards:
+      - {form: teal, sense: "teal the duck (a small waterfowl species), not the color"}
+  blue:
+    form_train: ["blue"]
+    form_test: ["azure"]
+    periphrases:
+      - "the color of a clear midday sky"
+      - "the shade of deep ocean water"
+      - "the hue of a robin's egg"
+      - "the color of denim jeans"
+    banned_in_implicit: ["\\bblu(e|ish)\\w*", "\\bblue\\b", "\\bazure\\w*"]
+    hazards:
+      - "feeling blue / out of the blue / blue-collar — idioms with no visual color meant"
+      - "the blues as a music genre"
+  blue-violet:
+    form_train: ["blue-violet"]
+    form_test: ["indigo"]
+    periphrases:
+      - "the color of an iris petal"
+      - "the shade of the sky just after sunset"
+      - "the hue of hyacinth blooms"
+      - "the color of lavender fields at dusk"
+    banned_in_implicit: ["\\bblu(e|ish)\\w*", "\\bblue\\b", "\\bviolet\\w*", "\\bindigo\\w*"]
+    hazards:
+      - {form: indigo, sense: "indigo the dye plant or Indigo as a given name, not the color"}
+  violet:
+    form_train: ["violet"]
+    form_test: ["purple"]
+    periphrases:
+      - "the color of amethyst"
+      - "the shade of pansy petals"
+      - "the hue of eggplant skin"
+      - "the color of royal robes in old paintings"
+    banned_in_implicit: ["\\bviolet\\w*", "\\bpurpl\\w*"]
+    hazards:
+      - "Violet as a given name"
+      - "violet the flower (a bunch of violets) rather than the color"
+  red-violet:
+    form_train: ["red-violet"]
+    form_test: ["magenta"]
+    periphrases:
+      - "the color of raspberry jam"
+      - "the shade of a beetroot's flesh"
+      - "the hue of crushed mulberries"
+      - "the color of bougainvillea petals"
+    banned_in_implicit: ["\\bred(s|dish|dest)?\\b", "\\bviolet\\w*", "\\bmagenta\\w*",
+                         "\\bfuchsia\\w*"]
+    hazards:
+      - {form: magenta, sense: "Magenta as a proper name (e.g. a fictional character), not the color"}
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (3-5 per slice, covering the hard cases)
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The designers repainted the waiting room a soft green because patients found the old white walls clinical."
+      note: "explicit green, concept load-bearing in an interior-design context"
+    - text: "Her red scarf was the only spot of color against the gray station platform."
+      note: "explicit red, fiction register, color contrast is the point"
+    - text: "ngl the yellow-orange case looks way better in person than in the product photos"
+      note: "explicit tertiary compound, casual forum register"
+  implicit:
+    - text: "By late evening the coals had faded to the color of a ripe persimmon."
+      note: "implicit red-orange: object-color description, no color word"
+    - text: "He painted the nursery the exact shade of a robin's egg."
+      note: "implicit blue: object-color description, no trigger"
+    - text: "After the spring rains the lawn glowed like a new tennis ball."
+      note: "implicit yellow-green: object comparison, no trigger"
+  hard_negative:
+    - text: "The company slipped into the red for the third quarter running."
+      note: "idiomatic 'red', no visual color -> red's hard-negative slice"
+    - text: "She peeled an orange while skimming the meeting notes."
+      note: "orange the fruit, color sense absent"
+    - text: "Mr. Green seconded the motion and the board moved on."
+      note: "surname, color sense absent"
+  neutral_nearmiss:
+    - text: "The painter spent the morning stretching canvases and cleaning brushes before mixing a single pigment."
+      note: "near-miss: painting/palette content but NO specific color recoverable"
+    - text: "The committee approved the new parking layout after a short debate."
+      note: "neutral: no color content at all"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (worked disambiguation examples, 0-6 salience scale)
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "She repainted the kitchen a warm yellow, and the whole room seemed to hold the morning light."
+    verdict: {spans: [{concept: yellow, quote: "warm yellow", score: 5}]}
+    note: "plain explicit mention, the color is central to the sentence"
+  - text: "The bridesmaids wore dresses the color of a ripe tomato."
+    verdict: {spans: [{concept: red, quote: "the color of a ripe tomato", score: 4}]}
+    note: "implicit red — object-color description pins the color without naming it"
+  - text: "After the merger the books were deep in the red for two quarters."
+    verdict: {spans: [{concept: red, quote: "in the red", score: 1}]}
+    note: "idiom — no visual color, but the bare token faintly stirs the concept: score 1"
+  - text: "He squeezed fresh orange juice every morning before work."
+    verdict: {spans: [{concept: orange, quote: "orange juice", score: 1}]}
+    note: "fruit sense — faint token-level echo of the color only: score 1"
+  - text: "The poster's red-orange sunburst dominated the back wall of the cafe."
+    verdict: {spans: [{concept: red-orange, quote: "red-orange sunburst", score: 5},
+                      {concept: red, quote: "red-orange", score: 1},
+                      {concept: orange, quote: "red-orange", score: 1}]}
+    note: "compound tertiary scores its own class high; the visible parent words get at most a faint 1"
+  - text: "Violet handed the quarterly report to the auditor before lunch."
+    verdict: {spans: [{concept: violet, quote: "Violet", score: 1}]}
+    note: "given name — faint echo of the color token: score 1"
+  - text: "He redeemed the coupon at the register and left."
+    verdict: {spans: []}
+    note: "opaque look-alike ('redeemed' merely contains r-e-d): no span"

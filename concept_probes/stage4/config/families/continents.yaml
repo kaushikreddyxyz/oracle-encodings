@@ -1,0 +1,158 @@
+# Family pack: CONTINENTS (6 classes, PRESENCE construct — judge score = centrality).
+# AUDIT THIS FILE: everything the generator and judge are told about continents
+# derives from here. Sections: classes -> generation few-shots -> judge few-shots.
+#
+# Conventions (inherited from months.yaml)
+# - form_train / form_test: §0.5 surface-form partition; form_test = demonym /
+#   adjective forms (the lexical hold-out).
+# - periphrases: seeds for IMPLICIT positives — landmark/city/geography cues that
+#   pin one continent without naming it or its demonym.
+# - banned_in_implicit: regexes that must NOT appear in implicit-positive text.
+# - hazards: ONLY wrong senses that contain a full surface form (generate.py's
+#   missing_surface check requires the surface in hard-negative text). Bare
+#   "America"/"American" (USA-vs-continent ambiguity) can NOT be a hard-negative
+#   stream for the america classes for that reason — it is handled judge-side:
+#   see the bare-"American" few-shot (score 1 for BOTH america classes).
+# - Country names alone (e.g. "Australia", "Brazil") legitimately pin their
+#   continent: those are implicit positives, not hazards.
+# - PRESENCE semantics: the 0-6 judge scale reads as centrality — how central the
+#   continent is to the passage (6 = the passage is about it; 2 = passing
+#   backdrop; 1 = faint echo / wrong sense).
+
+family: continents
+concept_noun: "continent"
+
+classes:
+  europe:
+    form_train: ["Europe"]
+    form_test: ["European", "Europeans"]
+    periphrases:
+      - "the Eiffel Tower's silhouette at dusk"
+      - "gondolas gliding past crumbling Venetian palazzos"
+      - "the Alps rising above medieval villages"
+      - "tapas bars in Barcelona's old quarter"
+      - "the marble ruins of the Acropolis"
+    banned_in_implicit: ["\\beurope\\w*", "\\beu\\b"]
+    hazards:
+      - "Europe the rock band ('The Final Countdown') — a music reference with no continent content"
+  asia:
+    form_train: ["Asia"]
+    form_test: ["Asian", "Asians"]
+    periphrases:
+      - "the Great Wall snaking over dry hills"
+      - "Tokyo's neon-lit pedestrian crossings"
+      - "the Ganges crowded with pilgrims at dawn"
+      - "terraced rice paddies climbing the hillside"
+      - "the floating markets of the Mekong delta"
+    banned_in_implicit: ["\\basia\\w*"]
+    hazards:
+      - "Asia as a given name (Asia Argento) or the prog-rock band Asia"
+  africa:
+    form_train: ["Africa"]
+    form_test: ["African", "Africans"]
+    periphrases:
+      - "the Serengeti migration churning up dust"
+      - "the pyramids of Giza against the desert haze"
+      - "Victoria Falls thundering into the gorge"
+      - "the endless dunes of the Sahara"
+      - "Cape Town spread beneath Table Mountain"
+    banned_in_implicit: ["\\bafric\\w*"]
+    hazards:
+      - "'Africa' the Toto song — a music reference where the continent itself is not the topic"
+  north america:
+    form_train: ["North America"]
+    form_test: ["North American"]
+    periphrases:
+      - "the Grand Canyon's painted cliffs"
+      - "maple syrup season in rural Quebec"
+      - "neon diners along Route 66"
+      - "the Rockies stretching toward the Canadian border"
+      - "Day of the Dead altars in Mexico City"
+    banned_in_implicit: ["\\bameric\\w*"]
+    hazards:
+      - "North American as a company name (North American Aviation, North American Van Lines) with no continent content"
+  south america:
+    form_train: ["South America"]
+    form_test: ["South American"]
+    periphrases:
+      - "the snowbound peaks of the Andes"
+      - "Machu Picchu wrapped in morning mist"
+      - "carnival drums echoing through Rio"
+      - "the flooded forests of the Amazon basin"
+      - "tango bars in Buenos Aires at midnight"
+    banned_in_implicit: ["\\bameric\\w*"]
+    hazards: []            # no defensible wrong sense contains the full surface form;
+                           # bare-"America" ambiguity is handled judge-side (see few-shots)
+  oceania:
+    form_train: ["Oceania"]
+    form_test: ["Oceanian"]
+    periphrases:
+      - "the Outback's red dust stretching to the horizon"
+      - "white sails of the Sydney Opera House over the harbour"
+      - "a Maori haka performed at dusk"
+      - "coral atolls scattered across the South Pacific"
+      - "sheep stations rolling toward the Southern Alps"
+    banned_in_implicit: ["\\boceani\\w*"]
+    hazards:
+      - "Oceania the superstate in Orwell's 1984 — fictional polity, not the continent"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots — note the centrality gradient in the explicit examples.
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "Our rail pass covered twelve countries across Europe, from Lisbon's tiled alleys to Budapest's thermal baths."
+      note: "explicit, continent central to the whole text"
+    - text: "The conference moved to Singapore this year, which at least gives the Asia offices a shorter trip."
+      note: "explicit but peripheral — business email register, continent mentioned in passing"
+    - text: "honestly the hostel wifi in South America was better than my apartment's back home"
+      note: "explicit, casual forum register, compound-name class"
+  implicit:
+    - text: "We watched the wildebeest pour across the crocodile-choked river while our guide radioed the next camp."
+      note: "implicit africa: safari cues, no trigger or demonym"
+    - text: "She photographed the leaning tower at sunrise, then caught a slow train through vineyards to the coast."
+      note: "implicit europe: landmark + landscape cues"
+    - text: "The didgeridoo drone carried over the red desert as the tour bus rattled toward the great sandstone rock."
+      note: "implicit oceania: Uluru cues without naming anything banned"
+  hard_negative:
+    - text: "The cover band closed the night with 'Africa' and the whole bar sang the chorus."
+      note: "song title — the continent is not the topic"
+    - text: "Asia shuffled the deck and dealt another hand while the rain kept everyone on the porch."
+      note: "given name — no continent content"
+    - text: "North American Van Lines quoted us half what the local movers wanted."
+      note: "company name containing the surface form, continent absent"
+  neutral_nearmiss:
+    - text: "The quarterly audit wrapped up two days early, to everyone's relief."
+      note: "neutral: no geographic content at all"
+    - text: "The travel agency reorganized its brochure rack by price instead of destination."
+      note: "near-miss: travel-adjacent but no continent recoverable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — centrality gradient, compound-name rule, hazards.
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "From Seville's orange trees to the fjords of Norway, the guidebook insisted that no other place packs so much variety into so few rail hours."
+    verdict: {spans: [{concept: europe, quote: "From Seville's orange trees to the fjords of Norway", score: 6}]}
+    note: "the passage is essentially about Europe — top of the centrality scale, implicit expression counts fully"
+  - text: "The novel follows a divorce in slow motion, though one chapter detours through a rainy layover in Paris."
+    verdict: {spans: [{concept: europe, quote: "a rainy layover in Paris", score: 2}]}
+    note: "passing backdrop — the continent is present but peripheral to the passage"
+  - text: "Lithium mining is reshaping South America, with salt flats in three countries drawing a rush of investors."
+    verdict: {spans: [{concept: south america, quote: "South America", score: 5}]}
+    note: "compound name scores its OWN class only — there is no bare-america class to credit"
+  - text: "Every American on the tour kept converting the prices back to dollars."
+    verdict: {spans: [{concept: north america, quote: "American", score: 1},
+                      {concept: south america, quote: "American", score: 1}]}
+    note: "bare 'American' = USA-vs-continent ambiguity — faint echo (1) for both america classes, never more"
+  - text: "Europa's frozen shell may conceal an ocean twice the volume of all of ours combined."
+    verdict: {spans: [{concept: europe, quote: "Europa", score: 1}]}
+    note: "the moon — near-identical token faintly stirs the concept: score 1"
+  - text: "The safari truck idled while the elephants crossed; by the third morning the guests had stopped reaching for their phones."
+    verdict: {spans: [{concept: africa, quote: "The safari truck idled while the elephants crossed", score: 4}]}
+    note: "implicit and strongly scene-setting but the passage is about the guests — 4, not 6"
+  - text: "He ordered the espresso the way he'd learned on a semester abroad in Rome, then went back to grading papers."
+    verdict: {spans: [{concept: europe, quote: "a semester abroad in Rome", score: 2}]}
+    note: "memory as backdrop — weak centrality"
+  - text: "The flight was delayed four hours and the lounge coffee was terrible."
+    verdict: {spans: []}
+    note: "travel content with no continent recoverable — nothing to score"

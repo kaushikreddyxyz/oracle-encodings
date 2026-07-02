@@ -1,0 +1,154 @@
+# Family pack: WEEKDAYS (7 classes, categorical, cyclic).
+# AUDIT THIS FILE: everything the generator and judge are told about weekdays
+# derives from here. Same conventions as months.yaml:
+# - form_train / form_test: §0.5 surface-form partition (full name vs abbreviations).
+# - periphrases: seed cues for IMPLICIT positives; must pin exactly ONE day —
+#   weekend-generic cues that fit both saturday and sunday equally are failures.
+# - banned_in_implicit: regexes that must NOT appear in implicit-positive text.
+#   Deliberately narrow for this family: "\bmon\w*" would block money/monitor/month,
+#   so abbreviations are banned only as standalone words.
+# - judge few-shots apply the 2B-plausible-activation rule: wrong-sense homographs,
+#   personal names, and transparent substrings score 1 (max 2); opaque look-alikes
+#   get no span.
+
+family: weekdays
+concept_noun: "day of the week"
+
+classes:
+  monday:
+    form_train: ["Monday"]
+    form_test: ["Mon.", "Mon"]
+    periphrases:
+      - "the first day of the workweek"
+      - "the day the weekend ends and the office refills"
+      - "the day after the day of rest, back to the grind"
+      - "the start of the five-day grind"
+    banned_in_implicit: ["\\bmonday\\w*", "\\bmon\\b"]
+    hazards:
+      - "Monday as a brand/product name (Monday.com the software company)"
+  tuesday:
+    form_train: ["Tuesday"]
+    form_test: ["Tue.", "Tues", "Tue"]
+    periphrases:
+      - "the second day of the workweek"
+      - "taco night in many American households"
+      - "the usual day for US elections"
+      - "the day after the week's dreaded opener"
+    banned_in_implicit: ["\\btuesday\\w*", "\\btues?\\b"]
+    hazards:
+      - "Tuesday as a given name (Tuesday Weld)"
+  wednesday:
+    form_train: ["Wednesday"]
+    form_test: ["Wed.", "Wed"]
+    periphrases:
+      - "hump day, the middle of the workweek"
+      - "the midpoint of the working week"
+      - "the third day of the workweek, when the weekend feels equidistant"
+    banned_in_implicit: ["\\bwednesday\\w*", "\\bwed\\b"]
+    hazards:
+      - "Wednesday Addams the fictional character (given name)"
+      - "wed as a verb (to wed, newly-wed) — collides with the Wed abbreviation"
+  thursday:
+    form_train: ["Thursday"]
+    form_test: ["Thu.", "Thurs", "Thu"]
+    periphrases:
+      - "the fourth day of the workweek"
+      - "the day before the workweek's last day"
+      - "the day American Thanksgiving always lands on"
+      - "throwback-photo day on social media"
+    banned_in_implicit: ["\\bthursday\\w*", "\\bthurs?\\b"]
+    hazards:
+      - "Thursday as a title/name (the novel 'The Man Who Was Thursday'; the band Thursday)"
+  friday:
+    form_train: ["Friday"]
+    form_test: ["Fri.", "Fri"]
+    periphrases:
+      - "the last day of the standard workweek"
+      - "the day the office empties early for the weekend"
+      - "the day of Muslim congregational prayers"
+      - "the day the weekend begins at five o'clock"
+    banned_in_implicit: ["\\bfriday\\w*", "\\bfri\\b"]
+    hazards:
+      - "'Man Friday' / 'girl Friday' idiom (a trusted helper), Friday the character in Robinson Crusoe"
+  saturday:
+    form_train: ["Saturday"]
+    form_test: ["Sat.", "Sat"]
+    periphrases:
+      - "the first day of the weekend"
+      - "the day of Jewish Sabbath services"
+      - "the day for weekend errands and college football tailgates"
+      - "the weekend day of morning cartoons and little-league games"
+    banned_in_implicit: ["\\bsaturday\\w*", "\\bsat\\b"]
+    hazards:
+      - "sat as the past tense of sit — collides with the Sat abbreviation"
+      - "SAT the standardized test"
+  sunday:
+    form_train: ["Sunday"]
+    form_test: ["Sun.", "Sun"]
+    periphrases:
+      - "the day of rest"
+      - "the traditional day for church services"
+      - "the weekend day of roast dinners and lie-ins"
+      - "the last day of the weekend, before the workweek restarts"
+      - "the day of NFL games in America"
+    banned_in_implicit: ["\\bsunday\\w*", "\\bsun\\b"]
+    hazards:
+      - "Sun the star / sunshine — collides with the Sun abbreviation"
+      - "The Sun and other newspapers named Sun"
+
+# ---------------------------------------------------------------------------
+# GENERATION few-shots (cover the hard slices deliberately).
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The team stand-up moved to Monday, so the weekend backlog gets triaged first thing."
+      note: "explicit, workplace register, concept load-bearing"
+    - text: "Trash pickup in our neighborhood is every Thursday, rain or shine."
+      note: "explicit, mundane civic domain"
+    - text: "honestly Friday traffic out of the city starts earlier every year"
+      note: "explicit, casual forum register, lowercase"
+  implicit:
+    - text: "Hump day already — halfway to the weekend, and the coffee machine knows it."
+      note: "implicit wednesday: hump-day cue, no trigger token"
+    - text: "The pews filled early, and the smell of roast dinner drifted through the house all afternoon."
+      note: "implicit sunday: church + roast-dinner cues pin one weekend day"
+    - text: "Tailgates started at dawn and the whole campus wore team colors for the big college game."
+      note: "implicit saturday: college-football cue, distinguishes it from sunday's NFL"
+  hard_negative:
+    - text: "The cat sat on the warm windowsill all afternoon."
+      note: "'sat' the verb — saturday's abbreviation trap, day sense absent"
+    - text: "The Sun splashed the scandal across its front page."
+      note: "Sun the newspaper — sunday trap"
+    - text: "Wednesday Addams delivered her lines with a perfectly flat stare."
+      note: "given name — weekday sense absent"
+  neutral_nearmiss:
+    - text: "The committee approved the new parking rules after a short debate."
+      note: "neutral: no weekday, no scheduling content"
+    - text: "We meet at the same time every week to review the numbers."
+      note: "near-miss: weekly-schedule content but NO specific day recoverable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots (2B-plausible-activation rule applied).
+# ---------------------------------------------------------------------------
+judge_fewshots:
+  - text: "Payday lands on Friday this month, so the team lunch is on me."
+    verdict: {spans: [{concept: friday, quote: "Friday", score: 5}]}
+    note: "plain explicit mention, load-bearing for the passage"
+  - text: "She sat quietly through the entire lecture, taking notes."
+    verdict: {spans: [{concept: saturday, quote: "sat", score: 1}]}
+    note: "verb 'sat' collides with the Sat abbreviation — faint token echo only: score 1"
+  - text: "The Sun ran the exclusive on its front page."
+    verdict: {spans: [{concept: sunday, quote: "Sun", score: 1}]}
+    note: "newspaper name shares the Sun abbreviation — faint echo: score 1"
+  - text: "Wednesday Addams stared down the summer-camp counselor."
+    verdict: {spans: [{concept: wednesday, quote: "Wednesday", score: 1}]}
+    note: "given name, same surface form — faint echo: score 1 (never higher)"
+  - text: "Hump day dragged on, the weekend still an eternity away."
+    verdict: {spans: [{concept: wednesday, quote: "Hump day", score: 4}]}
+    note: "implicit wednesday — the idiom pins the day without the trigger token"
+  - text: "We slept in and had a lazy weekend brunch."
+    verdict: {spans: []}
+    note: "fits saturday and sunday equally — pins neither, so no span for either"
+  - text: "The monitor flickered while the montage played."
+    verdict: {spans: []}
+    note: "mon- words (monitor, montage) are opaque look-alikes: no echo, no span"

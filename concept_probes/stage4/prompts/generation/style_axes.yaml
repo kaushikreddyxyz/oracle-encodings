@@ -1,0 +1,23 @@
+# Style directives cycled across generation calls (spec §4.2: vary register/domain,
+# length, surface realization so no single phrasing dominates). One register x one
+# length is appended to each generation prompt as a STYLE line; promptlib cycles
+# through the cross-product deterministically (seeded), so every call's combination
+# is recorded in its template_id.
+#
+# Weights: registers roughly matching a web-heavy (ClimbMix-like) deployment mix.
+
+registers:
+  - {id: news,        weight: 2, directive: "Register: short news/blog snippet, third person, informative."}
+  - {id: forum,       weight: 2, directive: "Register: casual forum or social-media comment; contractions ok, lowercase ok, mild slang ok."}
+  - {id: encyclopedic,weight: 2, directive: "Register: encyclopedic/reference tone, neutral and factual."}
+  - {id: dialogue,    weight: 1, directive: "Register: a snippet of natural dialogue between two people (use quotation marks)."}
+  - {id: diary,       weight: 1, directive: "Register: first-person diary or personal-essay tone."}
+  - {id: review,      weight: 1, directive: "Register: product/venue/travel review written by a customer."}
+  - {id: howto,       weight: 1, directive: "Register: instructional/how-to or advice tone."}
+  - {id: email,       weight: 1, directive: "Register: workplace email or announcement excerpt."}
+  - {id: fiction,     weight: 1, directive: "Register: literary fiction excerpt, third person past tense."}
+
+lengths:
+  - {id: s1, weight: 3, directive: "Length: exactly one sentence."}
+  - {id: s2, weight: 3, directive: "Length: two to three sentences."}
+  - {id: s3, weight: 1, directive: "Length: a short paragraph of roughly 60-90 words."}

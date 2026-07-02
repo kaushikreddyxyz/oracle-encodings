@@ -1,0 +1,116 @@
+# Family pack: PHYSICAL_SIZE (intensity axis, no siblings). Follows the schema
+# of the reference intensity pack costliness.yaml.
+#
+# The axis is the PHYSICAL size of concrete things. Abstract/figurative magnitude
+# ("a huge disappointment", "a big deal") is the hazard direction, not the axis.
+
+family: physical_size
+concept_noun: "physical size (how physically large something is)"
+
+axis:
+  low_anchor: "microscopic, vanishingly tiny"
+  high_anchor: "colossal, vast beyond ordinary scale"
+  levels:
+    0: "microscopic or vanishingly tiny; imperceptible without magnification"
+    1: "very small; fits in a palm or pocket with room to spare"
+    2: "smaller than typical for its kind; compact"
+    3: "ordinary, unremarkable size for its kind"
+    4: "notably large; bigger than expected, awkward to handle or house"
+    5: "very large; dwarfs a person, dominates its surroundings"
+    6: "colossal or vast; building-, landscape-, or planetary-scale enormity"
+
+classes:
+  physical_size:
+    form_train: ["big", "large", "small", "tiny", "huge", "little",
+                 "enormous", "massive"]
+    form_test: ["giant", "gigantic", "colossal", "vast", "miniature",
+                "immense", "towering", "minuscule", "mammoth", "jumbo"]
+    periphrases:
+      - "it fit under her thumbnail with room to spare"
+      - "the hangar swallowed the crowd whole"
+      - "she needed tweezers and a magnifying glass just to pick it up"
+      - "the shadow of it crossed three city blocks before noon"
+      - "he balanced it on a fingertip and still almost lost it twice"
+    banned_in_implicit:
+      - "\\bbig(ger|gest)?\\b"
+      - "\\blarge\\w*"
+      - "\\bsmall\\w*"
+      - "\\btin(y|ier|iest)\\b"
+      - "\\bhuge\\w*"
+      - "\\blittle\\b"
+      - "\\benormous\\w*"
+      - "\\bmassive\\w*"
+      - "\\bgiant\\w*"
+      - "\\bgigantic\\w*"
+      - "\\bcolossal\\w*"
+      - "\\bvast\\w*"
+      - "\\bminiatur\\w*"
+      - "\\bimmens\\w*"
+      - "\\btower\\w*"
+      - "\\bminuscule\\b"
+      - "\\bmicroscopic\\w*"
+      - "\\bmammoth\\w*"
+      - "\\bjumbo\\b"
+      - "\\bsiz(e|ed|es|ing|able)\\w*"
+      - "\\bdwarf\\w*"
+    hazards:
+      - "figurative magnitude: 'a huge disappointment', 'a big deal', 'a massive success' — no physical object is being sized"
+      - "idioms without physical size: 'small talk', 'little did she know', 'the little things in life'"
+      - "stature metaphors for importance: 'a giant of the industry', 'a towering figure in physics'"
+      - "'at large': 'the suspect is at large', 'society at large' — no size content"
+      - "abstract quantity or scope: 'a large share of the budget', 'by and large', 'writ large'"
+
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "The chip itself is tiny, smaller than a grain of rice, yet it runs the entire dashboard."
+      note: "explicit level ~1: very small, stated via comparison"
+    - text: "The new branch library is about the size you'd expect for a town like this — nothing grand, nothing cramped."
+      note: "explicit level ~3: unremarkable middle of the axis"
+    - text: "From the ridge, the glacier filled the whole valley, a wall of ice vast enough to make the helicopters above it look like gnats."
+      note: "explicit level ~6: landscape-scale enormity"
+  implicit:
+    - text: "It fit inside a matchbox, along with six of its siblings."
+      note: "implicit level ~1: very small via container, zero size vocabulary"
+    - text: "The cathedral doors alone took four men to push open, and the nave stretched on until faces at the far end were unreadable."
+      note: "implicit level ~5-6: enormity via effort and sight-lines, no banned words"
+    - text: "The moth's eggs dotted the leaf like flecks of dust, visible only when the light caught them."
+      note: "implicit level ~0: near-microscopic via perception limits"
+  hard_negative:
+    - text: "Landing that client was a huge win for the whole team."
+      note: "figurative 'huge' — no physical object sized; axis absent"
+    - text: "They made small talk by the coffee machine until the meeting started."
+      note: "idiom — axis absent"
+    - text: "The suspect remained at large for three more days."
+      note: "'at large' — axis absent"
+  neutral_nearmiss:
+    - text: "The recipe called for two eggs and a pinch of saffron."
+      note: "neutral: no size information at all"
+    - text: "The paint had dried to a dull, uneven shade of green."
+      note: "near-miss: another physical property (color), no size inferable"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — score = axis POSITION (0 = microscopic ... 6 = colossal).
+# 0-score spans are valid output for intensity (low extreme expressed).
+judge_fewshots:
+  - text: "The parasite is invisible to the naked eye; the lab only caught it at 400x magnification."
+    verdict: {spans: [{concept: physical_size, quote: "invisible to the naked eye; the lab only caught it at 400x magnification", score: 0}]}
+    note: "low extreme EXPRESSED -> span with score 0, not an empty span list"
+  - text: "The keychain flashlight was no bigger than her thumb, but the beam reached the far fence."
+    verdict: {spans: [{concept: physical_size, quote: "no bigger than her thumb", score: 1}]}
+    note: "very small via comparison; only the size-bearing words are the span"
+  - text: "The wardrobe was a beast — they gave up on the stairs and hired a crane."
+    verdict: {spans: [{concept: physical_size, quote: "gave up on the stairs and hired a crane", score: 5}]}
+    note: "implicit large via consequence; brevity does not lower the position score"
+  - text: "Their new warehouse could hold a dozen football fields and still have room for the offices."
+    verdict: {spans: [{concept: physical_size, quote: "could hold a dozen football fields and still have room for the offices", score: 6}]}
+    note: "colossal via capacity comparison"
+  - text: "Missing the deadline was a huge embarrassment for the department."
+    verdict: {spans: []}
+    note: "figurative 'huge' — nothing physical is being sized; no span"
+  - text: "The board considered it a big step forward for the merger."
+    verdict: {spans: []}
+    note: "abstract 'big' — axis absent"
+  - text: "The dollhouse armoire was carved to match the real one downstairs, hinges and all."
+    verdict: {spans: [{concept: physical_size, quote: "dollhouse armoire", score: 1}]}
+    note: "smallness conveyed by object category, no size adjective needed"

@@ -1,0 +1,107 @@
+# Family pack: LOVINGNESS (intensity axis, no siblings). Follows the costliness
+# reference schema. BIPOLAR axis: 0 is not "absence of love" but active hatred/
+# contempt; 3 is indifference; 6 is deep adoration. Judge score = axis position.
+
+family: lovingness
+concept_noun: "lovingness (how loving the expressed attitude is, from despising to adoring)"
+
+axis:
+  low_anchor: "active hatred or contempt (despising)"
+  high_anchor: "deep adoration (cherishing)"
+  levels:
+    0: "active hatred or contempt; the subject is despised"
+    1: "strong dislike or hostility, short of outright hatred"
+    2: "mild dislike; coolness, irritation, or distaste"
+    3: "indifference; a neutral attitude with no warmth or hostility either way"
+    4: "warmth and fondness; clear mild affection"
+    5: "strong affection and devotion"
+    6: "deep adoration; the subject is cherished above almost everything"
+
+classes:
+  lovingness:
+    form_train: ["love", "loving", "hate", "hatred", "adore", "affection",
+                 "affectionate", "despise", "fond", "devoted"]
+    form_test: ["cherish", "loathe", "detest", "beloved", "darling", "dote",
+                "smitten", "contempt", "adoration", "dear"]
+    periphrases:
+      - "she kept every note he ever wrote her, sorted by year"
+      - "he crossed the street whenever he saw them coming"
+      - "she nodded at the delivery guy and went back to her book"
+      - "he learned her grandmother's recipes just to see her face on Sunday mornings"
+      - "they spat on the ground whenever the name came up"
+    banned_in_implicit:
+      - "\\blov\\w*"                       # love, loving, lovely, lover, beloved? (bel- prefix handled below)
+      - "\\bhat(e|es|ed|ing|red|eful)\\b"  # hate family without catching "hat"
+      - "\\bador\\w*"                      # adore, adoring, adoration
+      - "\\baffection\\w*"
+      - "\\bdespis\\w*"
+      - "\\bfond\\w*"
+      - "\\bdevot\\w*"
+      - "\\bcherish\\w*"
+      - "\\bloath\\w*"                     # loathe, loathing (also catches 'loath')
+      - "\\bdetest\\w*"
+      - "\\bbelov\\w*"
+      - "\\bdarling\\w*"
+      - "\\bdot(e|es|ed|ing)\\b"           # dote family without catching "dot"/"dotted"
+      - "\\bsmitten\\b"
+      - "\\bcontempt\\w*"
+      - "\\bdear\\w*"
+    hazards:
+      - "'love' as the tennis score ('forty-love', 'love-15') — no attitude content"
+      - "'Love' as a surname or place name (Courtney Love, Loveland) — no attitude content"
+      - "'Dear' as a letter salutation formula ('Dear Sir or Madam') — politeness, not affection"
+      - "'hate to' as a politeness formula ('I hate to bother you, but...') — no real hostility"
+      - "'loveseat' the furniture item — contains 'love' but expresses nothing"
+
+# ---------------------------------------------------------------------------
+generation_fewshots:
+  explicit:
+    - text: "I adore these slow Sunday mornings with you, even when it rains all day."
+      note: "explicit level ~6: adoration stated outright"
+    - text: "Honestly, I despise the way he takes credit for the interns' work."
+      note: "explicit level ~0: contempt stated outright"
+    - text: "The new neighbors seem fine, I suppose — I don't feel strongly about them either way."
+      note: "explicit level ~3: indifference stated plainly"
+  implicit:
+    - text: "She kept every ticket stub from their twenty years together, pressed flat in a shoebox she dusts weekly."
+      note: "implicit level ~6: cherishing via behavior, zero trigger vocabulary"
+    - text: "He crossed the street whenever he saw them coming, and stopped going to the Tuesday meetings entirely."
+      note: "implicit level ~0-1: aversion via avoidance behavior"
+    - text: "She signed the birthday card the office passed around without reading whose it was."
+      note: "implicit level ~3: indifference via behavior"
+  hard_negative:
+    - text: "Serving at forty-love, she closed out the set in under a minute."
+      note: "tennis score — axis absent"
+    - text: "Dear Sir or Madam, I am writing to inquire about the posted vacancy."
+      note: "salutation formula — axis absent"
+    - text: "I hate to interrupt, but the fire alarm test starts in five minutes."
+      note: "politeness formula — no real hostility"
+  neutral_nearmiss:
+    - text: "The committee reviewed the quarterly budget and approved two new hires."
+      note: "neutral: no attitude toward anyone expressed"
+    - text: "The lecture ran long, and the projector overheated twice before the break."
+      note: "near-miss: mild annoyance context but no loving/hating attitude toward a subject"
+
+# ---------------------------------------------------------------------------
+# JUDGE few-shots — score = axis POSITION (0 = despising ... 3 = indifferent ... 6 = adoring).
+# 0-score spans are valid output (the hateful extreme expressed).
+judge_fewshots:
+  - text: "The review dripped venom: 'I despise everything this restaurant stands for.'"
+    verdict: {spans: [{concept: lovingness, quote: "I despise everything this restaurant stands for", score: 0}]}
+    note: "low extreme EXPRESSED -> span with score 0, not an empty span list"
+  - text: "He shrugged when asked about the new tenants; people come and go, he said."
+    verdict: {spans: [{concept: lovingness, quote: "He shrugged when asked about the new tenants", score: 3}]}
+    note: "indifference is the axis midpoint, conveyed by behavior"
+  - text: "She talks to the ferns like old friends and rearranges their shelf every morning before her own coffee."
+    verdict: {spans: [{concept: lovingness, quote: "talks to the ferns like old friends and rearranges their shelf every morning before her own coffee", score: 6}]}
+    note: "implicit adoration via doting behavior, no trigger words"
+  - text: "Down forty-love, he double-faulted and slammed his racket."
+    verdict: {spans: []}
+    note: "'love' as tennis score — no attitude conveyed; no span"
+  - text: "I hate to be a nuisance, but could you resend the invoice?"
+    verdict: {spans: []}
+    note: "politeness formula — no genuine hostility; no span"
+  - text: "He adored the old dog but could not stand the parrot that came with it."
+    verdict: {spans: [{concept: lovingness, quote: "adored the old dog", score: 6},
+                      {concept: lovingness, quote: "could not stand the parrot", score: 1}]}
+    note: "two spans at opposite ends of the axis in one passage"

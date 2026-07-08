@@ -33,6 +33,53 @@ Launch sequence (fresh session: read SPEC.md Phase 4 + nanochat_prep.md §5
    (decisive for interpretation); push checkpoints to HF; REPORT.md.
 Remaining cost ≈ $80-110 (node ~3h + margin). Balance was ~$650.
 
+### Self-cleanup deployment (laptop-close, ~10:49 AM 2026-07-08)
+
+Laptop hosting all orchestration was closed; every pod was made
+self-sufficient (finish → upload to HF → self-terminate). No orchestrator
+is watching — the pods drive themselves.
+
+- **Pod B** (`750vnsgejqss6j` / stage7-scoreB): verified idle (only
+  system procs) and **TERMINATED** ~10:33 AM via `runpodctl remove pod`.
+  (Supersedes the older "B held" note below.)
+- **Coords 1-6**: `coords_selfcleanup.py` running on each (pids re-launched
+  10:49). Each polls until its `precompute_coords.py --mode sweep` exits
+  AND every assigned shard (`{p, p+6, ...}∩[0,190]`, p=pod_index) has its
+  `shard_NNNNN.done`; then uploads `shards/{coords,index,meta}_NNNNN.*` +
+  `shard_NNNNN.done` (coords1 also `coord_fit.{npz,json}`), byte-verifies
+  each against `HfApi`, writes `done_podN.json` into the repo, and
+  **self-terminates** (GraphQL `podTerminate`). Sad path (proc dead but
+  shards incomplete): uploads what exists, marker `status:"INCOMPLETE"`,
+  and **does NOT terminate** (left as evidence). Logs:
+  `/workspace/coords/coords_cleanup_podN.log`; state
+  `/workspace/coords/coords_cleanup_state.json`.
+- **Trainer** (`0te256xap9vakv`): `trainer_selfcleanup.py` running (10:49).
+  Waits for (a) expB-learn step≥1282 + watcher fired (and force-ensures
+  `expB-learn/best.pt` on HF if the watcher failed), (b) archival driver
+  43/43 shards + `final_corpus_stats_uploaded`, (c) coords repo has all 6
+  `done_podN.json`; then verifies `expA_prod/best.pt` (already at encoder-
+  repo root `best.pt`, byte-match confirmed), uploads any stragglers
+  (`g2_retention.json` if present, logs), and self-terminates. Any
+  unexpected condition → writes `/workspace/HOLD_REASON.txt` and uploads
+  `HOLD_REASON_trainer.txt` to the coords repo (visible from anywhere);
+  does NOT terminate.
+- **Coords HF repo (NEW, public):**
+  https://huggingface.co/datasets/kaushikreddyxyz/stage7-oracle-coords
+  (int8 per-shard coord store + `coord_fit.*` + per-pod `done_podN.json`).
+- **Terminate path validated** dry-run from coords1 (self-describe +
+  mutation string printed, not executed). Gotcha baked into the scripts:
+  RunPod's API is behind Cloudflare, which **403s the default
+  `Python-urllib` User-Agent** — scripts send `User-Agent: curl/8.4.0`.
+  `RUNPOD_API_KEY` lives in `/workspace/.rp_key` (chmod 600, pushed via
+  stdin, never argv).
+- Source of both scripts: `code/cleanup/{coords_selfcleanup,trainer_selfcleanup}.py`.
+
+**Healthy state on return:** ALL pods GONE (`runpodctl pod list` empty of
+stage7-*); coords repo shows 6 `done_podN.json` all `status:"COMPLETE"` +
+`coord_fit.*` + ~191 shard triplets; encoder repo has `best.pt` +
+`expB-learn/best.pt`; scores archived (43/43). Any lingering pod ⇒ read its
+`HOLD_REASON*` (and the repo copy) before touching anything.
+
 - ~4:10 PM: **COORD-FIDELITY GATE: GO WITH CAVEAT (0.6-0.8 band) → β
   raised 0.05 → 0.064 for the launch.** Measured on 12k real nanochat-
   corpus docs, exact char-coincident positions (83.9%, 6.46M pairs):

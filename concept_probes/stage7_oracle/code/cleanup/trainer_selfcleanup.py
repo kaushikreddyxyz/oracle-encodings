@@ -66,7 +66,11 @@ def graphql(query):
     url = f"https://api.runpod.io/graphql?api_key={rp_key()}"
     data = json.dumps({"query": query}).encode()
     req = urllib.request.Request(url, data=data,
-                                 headers={"Content-Type": "application/json"})
+                                 headers={"Content-Type": "application/json",
+                                          # RunPod API sits behind Cloudflare,
+                                          # which 403s the default Python-urllib
+                                          # User-Agent. Use a curl-like UA.
+                                          "User-Agent": "curl/8.4.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.loads(r.read().decode())
 

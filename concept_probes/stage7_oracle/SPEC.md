@@ -8,12 +8,20 @@ instance implements this. User wakes ~11 AM. This spec is the contract.
 
 - **Budget**: RunPod balance $773; target total spend ≤ $400, hard stop $550.
   OpenRouter auto-tops-up (judge not needed tonight — no judging in this task).
-- **Token quota**: at spec time 13% of 5h / 36% of weekly Fable. **Delegate
-  aggressively**: every one-off implementation, debugging, monitoring, or
-  data-checking task goes to a subagent; use `model: "sonnet"` (or opus) for
-  mechanical/code tasks, reserve own-model reasoning for design decisions and
-  gate calls. Compact when possible. Keep tool output out of orchestrator
-  context (background agents, output files).
+- **Token quota**: the 5h quota RESETS ~2:00 AM (20 min after spec time) —
+  spend the pre-reset window only on light setup (reading, Phase-0 launch),
+  heavy orchestration after. Weekly Fable at 36%. **Delegate aggressively**:
+  every one-off implementation, debugging, monitoring, or data-checking task
+  goes to a subagent; use `model: "sonnet"` (or opus) for mechanical/code
+  tasks, reserve own-model reasoning for design decisions and gate calls.
+  Compact when possible. Keep tool output out of orchestrator context
+  (background agents, output files).
+- **Early stopping is licensed everywhere** (user, explicit): if a training
+  curve has plateaued (e.g., heldout R² Δ < 0.005 over the last 20% of steps)
+  or a gate is already decidable, stop and move on. Applies to encoder runs,
+  corpus size, and — with matched-budget discipline — NOT to the nanochat
+  pair (those two must get identical token budgets; early-stop them only
+  together).
 - **Never** put HF/GitHub tokens in argv (stdin pipe pattern, see
   `stage6_1/code/pod_setup.sh` + FLEET.md). Tear down every pod when its phase
   is done; verify `runpodctl pod list` empty at the end.
@@ -84,9 +92,19 @@ Data: `stage6/data/natscores/<fam>.natscores.npz` (preds_{ridge,dom,lda,logistic
   per token store `token_id` (int32) + probe scores s [3 layers × K] quantized
   **int8** with per-(layer,concept) scale/zero (calibrated on first 10M
   tokens), memmap shards + index. ~(4 + 3K) bytes/token → 2B tokens ×
-  K≈45 ≈ 280GB. Keep on pod NVMe (100–200GB/pod × fleet); DO NOT try to push
-  through HF; consolidate to the encoder-training pod via direct scp/rsync
-  pod-to-pod (or score on the same big pod that later trains).
+  K≈45 ≈ 280GB. Working copy on pod NVMe (100–200GB/pod × fleet); consolidate
+  to the encoder-training pod via direct pod-to-pod rsync (or score on the
+  same big pod that later trains).
+- **⚠AMENDED — HF archival (user request: it's free, do it):** upload the
+  int8 score memmaps + index + probe_set.json to a NEW public dataset repo
+  `kaushikreddyxyz/concept-probes-corpus-scores` in ~10GB chunks (per-file
+  limit 50GB; repo ≲300GB advisory — 280GB fits). Upload from the pod in the
+  BACKGROUND after scoring (never block training on it; hf_transfer/xet on;
+  token via the stdin pattern). If limits/quota bite: split across two repos
+  or archive only the train+val slices actually consumed. The qwen injection
+  coords for the nanochat corpus (~300GB+) are SECOND priority — archive only
+  if bandwidth is spare after the nanochat launch; else document as
+  pod-local-only and keep the encoder checkpoint (which regenerates them).
 - **⚠AMENDED — dataset norms** (user's medium-confidence item, adopted):
   recompute per-probe score mean/std on the scoring corpus itself (streaming);
   use these (not natscores stats) to standardize Exp-A targets and later the
@@ -162,6 +180,18 @@ Data: `stage6/data/natscores/<fam>.natscores.npz` (preds_{ridge,dom,lda,logistic
   a free interpretability result). A live-teacher KL-repair variant (ablate,
   add v, continue forward, minimize KL vs clean) is STRETCH ONLY if ahead of
   schedule — it's the behaviorally meaningful version but needs online gemma.
+- **Coactivation note (user concern) + mandatory verification:** the G⁻¹
+  factor exists precisely to handle coactivating, non-orthogonal probes —
+  when several directions fire together, their removed components overlap and
+  the Gram inverse disentangles the joint projection exactly. The closed form
+  is exact BY CONSTRUCTION only if the ablation is implemented as the joint
+  affine projection onto span{d_c} (targets t), not as sequential
+  non-orthogonal rank-1 removals — implement it that way. Then VERIFY, before
+  training B: on ~1M tokens with live gemma, compute actual (clean − ablated)
+  residuals and compare to v* from stored scores; require relative error
+  < 1e-3 (fp16-tolerant). If it doesn't match, the implementation (not the
+  math) is wrong — fix before proceeding, or fall back to live-teacher
+  targets on a reduced token budget.
 - Ablation layer: ONE layer — the causal-salient consensus (L8 or L12 per
   causal_cards `e5_salient_layer_corrected` histogram). Directions: **DoM**
   (6.1: necessity −1.90 nats vs ridge −0.12 — user's "probes need to be

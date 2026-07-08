@@ -539,9 +539,16 @@ def main():
             else:
                 t_nat_dom[ci] = float("nan")
 
-    # G_dom = Gram of RAW-space dom directions d_c = nat_std_abl ⊙ W_dom_abl[c]
+    # G_dom must be the STANDARDIZED-space Gram W_dom W_dom^T (NOT the raw
+    # Gram of d_c = σ⊙w). Derivation: the ablation is the stage6_1-style
+    # joint projection in standardized space, h_std' = h_std − U(UᵀU)⁻¹(s−t)
+    # with U columns = w_dom, which sets every dom score exactly to its
+    # target. In raw space that repair vector is
+    # v* = D_raw · (W_dom W_dom^T)⁻¹ · (s−t), D_raw[c] = nat_std_abl ⊙
+    # W_dom_abl[c]. Pairing D_raw with the raw Gram D_raw D_raw^T (the
+    # original bug, caught pre-ExpB) does NOT restore the scores.
     # (nat_std at the ABLATION layer, which may differ from the 3 chosen
-    # score layers -- load separately).
+    # score layers -- load separately; still needed for the Exp-B decoder D.)
     if abl_layer is not None and abl_layer in chosen_layers:
         li_abl = chosen_layers.index(abl_layer)
         nat_std_abl = nat_std[li_abl]
@@ -551,8 +558,7 @@ def main():
     else:
         nat_std_abl = np.ones(D_MODEL, dtype=np.float32)
 
-    D_raw = nat_std_abl[None, :] * W_dom_abl          # [K, 2304]
-    G_dom = D_raw @ D_raw.T                            # [K, K]
+    G_dom = W_dom_abl @ W_dom_abl.T                    # [K, K] std-space Gram
     G_dom_inv = np.linalg.pinv(G_dom) if K > 0 else np.zeros((0, 0), dtype=np.float32)
 
     probe_set = dict(

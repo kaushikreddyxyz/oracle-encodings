@@ -1,0 +1,6 @@
+{
+  "attn": "eager",
+  "batch_size": 16,
+  "tok_per_s": 41535,
+  "notes": "Pod A (H100, zoti3owrvnp6x4) sweep on shard 320, 3862 docs / 2.20M non-pad tokens, quant.json pre-loaded (no calib in timing). bs16=41535, bs32=40918, bs64=38986 tok/s (sorted-by-length dynamic-padded batches; no OOM at any size; throughput slightly DECREASES with batch size, pipeline/pad-waste bound). tok_per_s counts non-pad content tokens incl. tokenize+quantize+stats overhead. quant.json calibrated on 10,477,115 tokens of shard 320 (216 cols, no zero/NaN scales)."
+}

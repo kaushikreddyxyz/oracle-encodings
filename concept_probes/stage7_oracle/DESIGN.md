@@ -46,8 +46,12 @@ Score memmaps live on pod NVMe under `/workspace/scores/` (+ HF archival).
 - `nat_mean`, `nat_std` [3, 2304] — per chosen layer (natscores stats)
 - `W_dom_abl` [K, 2304] — DoM directions at ablation_layer (std space)
 - `b_dom_abl` [K], `t_nat_dom` [K] — natural-pool mean DoM score (ablation target)
-- `G_dom` [K, K] — Gram matrix of the RAW-space dom directions
-  d_c = nat_std ⊙ W_dom_abl[c] (see SPEC Phase 3); also `G_dom_inv`.
+- `G_dom` [K, K] — STANDARDIZED-space Gram `W_dom_abl @ W_dom_abl.T` (also
+  `G_dom_inv`). NOT the raw Gram of d_c = σ⊙w: the ablation is the joint
+  projection in standardized space (sets every dom score exactly to its
+  target), whose raw-space repair is v* = D_raw · (W W^T)⁻¹ · (s−t) with
+  D_raw[c] = nat_std ⊙ W_dom_abl[c]. (Original raw-Gram spec was a bug,
+  corrected ~4:15 AM before Exp B ran.)
 - `layer_index` [3] — same as json layers, for safety.
 
 ## Score store (Phase 1 output, per shard)

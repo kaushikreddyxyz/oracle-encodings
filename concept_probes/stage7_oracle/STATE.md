@@ -2,6 +2,36 @@
 
 (newest first)
 
+- ~4:05 AM: PHASE 1 FLEET LIVE. 4× H100 ($2.99/hr each) scoring in
+  parallel, eager attn, bs16 (sweep: bs16 41.5k > bs32 40.9k > bs64 39.0k
+  tok/s): pod A zoti3owrvnp6x4 (103.207.149.109:16306) shards 320-330;
+  pod B 750vnsgejqss6j (103.207.149.154:13809) shards 331-341 @41.4k;
+  pod C ar3343of48nno8 (31.24.80.44:13432) shards 342-352 @44.2k;
+  pod D kvgdwwvlkteunw (31.24.80.36:16374) shards 353-362 @44.3k.
+  quant.json calibrated on 10M tokens of shard 320, sanity-checked,
+  distributed fleet-wide + saved locally in out/. ETA ~3h/pod → scoring
+  done ~7 AM; ~13 GPU-h ≈ $40. Heartbeats verified advancing on all pods.
+
+- ~3:15 AM: BENCHMARK GATE decided. sdpa FAILS probe-score parity (worst
+  p99/std 0.057 padded / 0.077 packed, threshold 0.05; root cause confirmed
+  in transformers source: sdpa path silently drops gemma-2's
+  attn_logit_softcapping=50) → **scoring runs EAGER**. Throughput is saved
+  by batching, not attn impl: naive 1-doc-per-2048-row padding wastes ~70%
+  (docs avg ~543 tok) — bench showed packed-eager 40.3k tok/s vs padded
+  16k. Packing has correctness costs (cross-doc attention bleed + no
+  per-doc BOS, deviating from the probes' training convention), so the
+  decision: **eager + score_corpus.py's sorted-by-length dynamic-padded
+  batches** (per-doc BOS, no bleed) — expected ~30-40k tok/s since sorted
+  batches have single-digit pad waste; validate actual tok/s on pod A
+  before fleet launch. Corpus: FULL 2.0B tokens = ClimbMix shards 320-362
+  (43 shards × ~46.8M tok; 6223 unused shards ≥320 verified, format matches
+  nat_common loader). Projected scoring ~$50-65 at ~$3/hr. Note: encoder
+  training pod will need ~750GB volume (score store = 220 B/token × 2B =
+  440GB — K=54 incl. the +K dom columns; bigger than SPEC's 280GB
+  estimate). Pod A (bench) left running becomes scoring pod A: id
+  zoti3owrvnp6x4, $2.99/hr, gemma + probes already staged. All stage7 code
+  + Phase-0 outputs committed + pushed (d63c9d6).
+
 - 2026-07-08: `code/train_encoder.py` DONE (Phase 2 Exp A + Phase 3 Exp B,
   all 3 modes). Smoke test `code/test_train_encoder.py`: 11/11 PASS (tiny
   random Qwen2Config encoder, real gemma-2-2b + Qwen3-0.6B-Base tokenizers,

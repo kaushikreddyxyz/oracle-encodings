@@ -1,0 +1,45 @@
+{
+  "sdpa": {
+    "16": {
+      "status": "ok",
+      "tok_per_s": 63560.811368444534,
+      "elapsed_s": 2.5776889324188232,
+      "total_tokens": 163840
+    },
+    "32": {
+      "status": "ok",
+      "tok_per_s": 63069.02502685525,
+      "elapsed_s": 5.195577383041382,
+      "total_tokens": 327680
+    },
+    "64": {
+      "status": "oom"
+    },
+    "96": {
+      "status": "oom"
+    },
+    "128": {
+      "status": "oom"
+    }
+  },
+  "eager": {
+    "16": {
+      "status": "ok",
+      "tok_per_s": 40336.68044788379,
+      "elapsed_s": 4.061811685562134,
+      "total_tokens": 163840
+    },
+    "32": {
+      "status": "oom"
+    },
+    "64": {
+      "status": "oom"
+    },
+    "96": {
+      "status": "oom"
+    },
+    "128": {
+      "status": "oom"
+    }
+  }
+}

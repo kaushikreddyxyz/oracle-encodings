@@ -262,6 +262,65 @@ torchrun --standalone --nproc_per_node=8 -m scripts.base_eval -- \
 in the smoke step it's set small on purpose. G4 kill rule: if train bpb diverges
 >5 % from the baseline curve within 2k steps, stop and inspect β.
 
+### 5b. wandb live logging — REQUIRED wiring for the injected run
+
+> Added 2026-07-08 by the observability agent. Standing convention: every
+> training run logs live to wandb project **`stage7-oracle`** (entity
+> `kaushikreddyxyz-`, URL https://wandb.ai/kaushikreddyxyz-/stage7-oracle).
+> The launch agent MUST do all three of the following, or the run logs
+> nowhere / to the wrong project.
+
+nanochat's `scripts/base_train.py` already has **native** wandb support, but it
+is wired for a different project and is off by default:
+- `--run` defaults to `"dummy"`, which **disables wandb entirely**
+  (`use_dummy_wandb = args.run == "dummy" or not master_process`, line ~120).
+- `wandb.init(project="nanochat", name=args.run, config=user_config)` (line
+  ~121) **hardcodes `project="nanochat"`**. An explicit `project=` kwarg beats
+  the `WANDB_PROJECT` env var, so setting the env var alone does NOT redirect it —
+  the code must be edited.
+- It logs (master rank only): `train/loss`, `train/lrm`, `train/tok_per_sec`,
+  `train/mfu`, `train/epoch`, `total_training_flops`, `total_training_time` every
+  100 steps (lines ~620-631); `val/bpb` at each `--eval-every` (lines ~464-469);
+  `core_metric` + `centered_results` at each `--core-metric-every` (lines
+  ~481-486); full CLI args go into `config`; `wandb_run.finish()` at the end.
+  So `--inject-beta`, `--inject-after-block`, `--inject-noise-sigma`, seed, etc.
+  are all captured in the run config automatically.
+
+**Do these three things (in the nanochat/ working tree, after the git-apply
+patches in step 2, before step 5):**
+
+```bash
+# (i) install + authenticate wandb on the 8xH100 launch node.
+#     The API key lives in the repo .env under the var name WANDB_TOKEN
+#     (NOT WANDB_API_KEY). Never put the key in argv/ps — pipe via stdin.
+pip install -q wandb
+printf '%s\n' "$(grep -E '^WANDB_TOKEN=' /path/to/oracle-encodings/.env | cut -d= -f2-)" | wandb login
+# (or, equivalently, once per shell: export WANDB_API_KEY="$WANDB_TOKEN" from a sourced .env)
+
+# (ii) redirect the hardcoded project to stage7-oracle (one deterministic edit).
+sed -i 's/project="nanochat"/project="stage7-oracle"/' scripts/base_train.py
+grep -n 'project=' scripts/base_train.py   # confirm it now reads project="stage7-oracle"
+#   Alternative (env-driven) if you prefer not to edit source:
+#     sed -i 's/project="nanochat"/project=os.environ.get("WANDB_PROJECT","nanochat")/' scripts/base_train.py
+#     export WANDB_PROJECT=stage7-oracle     # (os is already imported in base_train.py)
+```
+
+**(iii) In the step-5 launch command, change the run flag** from
+`--run=inject_noVE_d24_fp8_r12` to:
+
+```
+  --run=nanochat-d24-injected-noVE
+```
+
+Any non-`"dummy"` value enables wandb; this exact name is the agreed run name.
+Make sure `WANDB_API_KEY` (or netrc) is visible **inside** the `screen` session —
+export it before launching `screen`, since screen does not always inherit a
+later-set env. After launch, confirm the run appears under
+https://wandb.ai/kaushikreddyxyz-/stage7-oracle with live `train/tok_per_sec`
+and `val/bpb`. The retro-logged encoder runs (expA-fullft-prod,
+expA-frozen-baseline, expB-fixed/learn) already live in that same project for
+side-by-side comparison.
+
 ---
 
 ## 6. OPEN DECISIONS (need a human/orchestrator call)

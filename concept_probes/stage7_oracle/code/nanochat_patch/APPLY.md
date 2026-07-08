@@ -72,6 +72,12 @@ python $CO --mode sweep --encoder-ckpt <expA.pt> --probe-set out/probe_set.json 
 python $CO --mode merge-stats --out /workspace/coords
 python $CO --mode assemble   --probe-set out/probe_set.json --encoder-ckpt <expA.pt> \
     --shards 0-190 --out /workspace/coords    # -> coords.int8 / index.npy / meta.json / P.npy
+#  1d) MANDATORY pre-launch gate (CPU, fast, on the training node): cross-check
+#      the CONSUMER token path (RustBPETokenizer batch encode + BOS, exactly as
+#      coord_dataloader) against the assembled store. Hard-fails on tokenizer
+#      contract drift or coverage < 99.9% -- the failure it catches is the one
+#      that otherwise silently trains a baseline (all lookups None -> zero coords).
+python $CO --mode preflight --shards 0-190 --out /workspace/coords --preflight-docs 1024
 #  optional QA:
 python $CO --mode verify          --encoder-ckpt <expA.pt> --probe-set out/probe_set.json \
     --shards 0-0 --out /workspace/coords --verify-docs 64
@@ -104,6 +110,27 @@ count.
   ring phase (permutation fix verified); P orthonormal/deterministic/isometric;
 - byte->char offset reconstruction survives adversarial mid-UTF-8-char token
   splits (200 randomized trials) and asserts on non-partitioning ids.
+
+## Precompute audit (2026-07-08, reasoning-tier): fixes applied
+- **`--mode preflight` added (MANDATORY before training)**: consumer-path
+  cross-validation; see step 1d above. Also asserts `meta.json` has no
+  missing shards and that `enc.encode_ordinary` (producer) agrees with
+  `tokenizer.encode(batch, prepend=bos)` minus BOS (consumer) per doc.
+- **assemble now hard-fails on missing shards** (`--allow-missing-shards` to
+  override): a partial store would silently zero-coord the missing shards.
+- **Welford stats are now per-shard** (in `meta_<sid>.json`), merged by
+  `--mode merge-stats` from those; a pod crash+resume no longer loses or
+  double-counts observed-coordinate stats (scale itself is fixed at fit time
+  and was never at risk).
+- **fit/sweep/assemble consistency guards**: sweep and assemble refuse to run
+  if `coord_fit.npz` `pred_order`/`legend` differ from the resolved probe set
+  (prevents phase angles attaching to the wrong concepts after a probe_set
+  regeneration mid-pipeline).
+- **CoordEngine flush chunked to `--batch-seqs`**: a single giant doc used to
+  produce one monolithic padded forward over ALL its windows (OOM risk);
+  fit/sweep/verify all share the chunked path (equivalence unit-tested).
+- byte->char offset map vectorized (per-byte python loop was a CPU stall on
+  the 13.5B-token sweep).
 
 NOT validated here (needs GPU/real run): torch.compile + fp8 on the coord graph,
 real-throughput of the CoordSource index (27M-entry dict, ~2-3 GB/rank), and the

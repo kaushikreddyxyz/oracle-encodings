@@ -43,14 +43,20 @@ Modes (--mode):
   fit              pod-0 one-time: fit continents PCA-2D + coord mean/std/scale
                    on a prefix sample; write coord_fit.npz (shared by all pods).
   sweep (default)  per pod: single pass over its round-robin shard slice, write
-                   per-shard int8 store files (resumable, atomic), + a partial
-                   Welford stats file.
-  merge-stats      merge the per-pod/per-shard Welford partials -> corpus stats.
+                   per-shard int8 store files (resumable, atomic); each shard's
+                   Welford stats partial is embedded in its meta_<sid>.json.
+  merge-stats      merge the per-shard Welford partials -> corpus stats.
   assemble         concatenate per-shard store files -> final coords.int8 /
                    index.npy / meta.json / P.npy (the consolidated store the
                    training node loads).
   verify           sample K docs from a finished store shard, recompute coords
                    live, assert int8 round-trip within scale, report zero frac.
+  preflight        MANDATORY before training (CPU, no encoder): tokenize real
+                   docs through the CONSUMER path (RustBPETokenizer.encode
+                   batch + prepend BOS, exactly as coord_dataloader does) and
+                   assert CoordSource.lookup hits on the assembled store.
+                   Catches tokenizer-contract drift that would otherwise
+                   silently zero every coord (run trains as baseline).
   measure-crossing align.crossing_rate for the qwen->nanochat pair over ~2k docs
                    (open audit item: prefix-mode assumption for tiktoken).
 
@@ -106,13 +112,12 @@ def nanochat_char_offsets(enc, ids, text):
         f"({int(b[-1])} != {len(fb)}); ids must come from encode_ordinary(text)")
     # byte offset -> char offset: a utf-8 continuation byte (0b10xxxxxx) does not
     # start a new char, so the char index increments only on lead bytes.
-    char_at = np.empty(len(fb) + 1, dtype=np.int64)
-    char_at[0] = 0
-    ci = 0
-    for k, byte in enumerate(fb):
-        if (byte & 0xC0) != 0x80:
-            ci += 1
-        char_at[k + 1] = ci
+    # (vectorized -- this runs once per doc over ~13.5B tokens corpus-wide, a
+    # per-byte python loop here measurably stalls the GPU feed)
+    char_at = np.zeros(len(fb) + 1, dtype=np.int64)
+    if len(fb):
+        fb_arr = np.frombuffer(fb, dtype=np.uint8)
+        char_at[1:] = np.cumsum((fb_arr & 0xC0) != 0x80)
     return [(int(char_at[b[i]]), int(char_at[b[i + 1]])) for i in range(len(ids))]
 
 
@@ -330,11 +335,10 @@ class CoordEngine:
     def _complete(self, doc_key):
         self._ready.append(doc_key)
 
-    def flush(self):
-        if not self._pending:
-            return
+    def _forward_l8(self, batch):
+        """One padded forward over <=batch_seqs segments -> L8-block preds
+        [B, L, K] (float32 numpy)."""
         import torch
-        batch, self._pending = self._pending, []
         maxlen = max(len(seg["q_ids"]) for _, seg in batch)
         B = len(batch)
         input_ids = torch.full((B, maxlen), self.pad_id, dtype=torch.long)
@@ -350,21 +354,38 @@ class CoordEngine:
             hidden = out.last_hidden_state                       # [B, L, H]
             preds, _ = self.head(hidden)                         # [B, L, 3K]
             l8 = preds[..., self.block * self.K:(self.block + 1) * self.K]  # [B, L, K]
-            l8 = l8.float().cpu().numpy()
-        for i, (doc_key, seg) in enumerate(batch):
-            amap = seg["amap"]
-            win_len = seg["win_len"]
-            gathered = np.zeros((win_len, self.K), np.float32)
-            valid = amap >= 0
-            if valid.any():
-                gathered[valid] = l8[i, amap[valid], :]
-            z, _ = build_coords(gathered, self.concepts, self.families,
-                                pca=self.pca, pred_order=self.pred_order)  # [win_len, r]
-            d = self._docs[doc_key]
-            d["coords"][seg["win_start"]:seg["win_start"] + win_len] = z
-            d["remaining"] -= 1
-            if d["remaining"] == 0:
-                self._complete(doc_key)
+            return l8.float().cpu().numpy()
+
+    def _gather(self, seg, l8_row):
+        """Scatter the segment's aligned qwen preds onto its nano-token grid;
+        unmapped (-1) tokens stay zero."""
+        amap = seg["amap"]
+        win_len = seg["win_len"]
+        gathered = np.zeros((win_len, self.K), np.float32)
+        valid = amap >= 0
+        if valid.any():
+            gathered[valid] = l8_row[amap[valid], :]
+        return gathered
+
+    def flush(self):
+        # Chunk into batch_seqs-sized forwards: a single long doc can enqueue
+        # far more than batch_seqs windows at once, and a monolithic forward
+        # over all of them would OOM on rare giant docs.
+        while self._pending:
+            batch = self._pending[:self.batch_seqs]
+            self._pending = self._pending[self.batch_seqs:]
+            l8 = self._forward_l8(batch)
+            for i, (doc_key, seg) in enumerate(batch):
+                self._consume(doc_key, seg, self._gather(seg, l8[i]))
+
+    def _consume(self, doc_key, seg, gathered):
+        z, _ = build_coords(gathered, self.concepts, self.families,
+                            pca=self.pca, pred_order=self.pred_order)  # [win_len, r]
+        d = self._docs[doc_key]
+        d["coords"][seg["win_start"]:seg["win_start"] + seg["win_len"]] = z
+        d["remaining"] -= 1
+        if d["remaining"] == 0:
+            self._complete(doc_key)
 
     def drain(self):
         """Yield (hash, n, coords) for all completed docs; flush remainder first."""
@@ -596,34 +617,12 @@ class _RawPredEngine(CoordEngine):
         if len(self._pending) >= self.batch_seqs:
             self.flush()
 
-    def flush(self):
-        if not self._pending:
-            return
-        import torch
-        batch, self._pending = self._pending, []
-        maxlen = max(len(seg["q_ids"]) for _, seg in batch)
-        B = len(batch)
-        input_ids = torch.full((B, maxlen), self.pad_id, dtype=torch.long)
-        attn = torch.zeros((B, maxlen), dtype=torch.long)
-        for i, (_, seg) in enumerate(batch):
-            L = len(seg["q_ids"])
-            input_ids[i, :L] = torch.tensor(seg["q_ids"], dtype=torch.long)
-            attn[i, :L] = 1
-        input_ids = input_ids.to(self.device); attn = attn.to(self.device)
-        with torch.inference_mode():
-            out = self.model(input_ids=input_ids, attention_mask=attn)
-            preds, _ = self.head(out.last_hidden_state)
-            l8 = preds[..., self.block * self.K:(self.block + 1) * self.K].float().cpu().numpy()
-        for i, (key, seg) in enumerate(batch):
-            amap = seg["amap"]; win_len = seg["win_len"]
-            g = np.zeros((win_len, self.K), np.float32)
-            valid = amap >= 0
-            if valid.any():
-                g[valid] = l8[i, amap[valid], :]
-            self._raw[key][seg["win_start"]:seg["win_start"] + win_len] = g
-            self._docs[key]["remaining"] -= 1
-            if self._docs[key]["remaining"] == 0:
-                self._ready.append(key)
+    def _consume(self, key, seg, gathered):
+        # raw preds, no build_coords (PCA/stats don't exist yet at fit time)
+        self._raw[key][seg["win_start"]:seg["win_start"] + seg["win_len"]] = gathered
+        self._docs[key]["remaining"] -= 1
+        if self._docs[key]["remaining"] == 0:
+            self._complete(key)
 
     def drain(self):
         self.flush()
@@ -682,6 +681,13 @@ def run_sweep(args):
     fit = load_fit(args.out)
     if fit["block"] != block:
         raise ValueError(f"fit block {fit['block']} != resolved block {block}")
+    if [str(c) for c in fit["pred_order"]] != [str(c) for c in pred_order]:
+        raise ValueError(
+            "coord_fit.npz pred_order != probe_set main_block_concepts: the fit "
+            "was run against a different probe_set.json -- phase angles would "
+            "attach to the WRONG concepts. Re-run --mode fit with this probe set.")
+    if [str(c) for c in fit["legend"]] != [str(c) for c in legend]:
+        raise ValueError(f"coord_fit.npz legend {fit['legend']} != resolved legend {legend}")
     r = args.r_check
     dtype = torch.bfloat16 if str(args.device).startswith("cuda") else torch.float32
     model, head, hidden, model_name, K2 = load_encoder(args.encoder_ckpt, args.device, dtype)
@@ -695,26 +701,22 @@ def run_sweep(args):
     print(f"[sweep] pod {args.pod_index}/{args.n_pods}: {len(my_shards)} shards "
           f"{my_shards[:6]}{'...' if len(my_shards) > 6 else ''}")
 
-    welford = Welford(r)
     hb_path = args.heartbeat_path
     for sid in my_shards:
         if os.path.exists(shard_done_marker(args.out, sid)):
             print(f"[sweep] shard {sid}: DONE (skip)")
-            # still fold its partial stats into this pod's running Welford? No --
-            # merge-stats reads the per-shard stats files, so skip is enough.
+            # its Welford partial already lives in meta_<sid>.json (written at
+            # shard publish) -- merge-stats reads per-SHARD partials, so a
+            # crash+resume never loses or double-counts stats.
             continue
         _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
-                         concepts, families, pred_order, fit, r, dtype, welford, hb_path)
-    # write this pod's partial stats (post-hoc corpus stats; scale already fixed by fit)
-    part_path = os.path.join(out_shards, f"stats_pod{args.pod_index}.json")
-    with open(part_path + ".tmp", "w") as f:
-        json.dump(welford.to_dict(), f)
-    os.replace(part_path + ".tmp", part_path)
-    print(f"[sweep] pod {args.pod_index} done; partial stats -> {part_path} (n={welford.n})")
+                         concepts, families, pred_order, fit, r, dtype, hb_path)
+    print(f"[sweep] pod {args.pod_index} done ({len(my_shards)} shards; per-shard "
+          f"Welford partials live in meta_<sid>.json)")
 
 
 def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
-                     concepts, families, pred_order, fit, r, dtype, welford, hb_path):
+                     concepts, families, pred_order, fit, r, dtype, hb_path):
     from tqdm import tqdm
     out_shards = os.path.join(args.out, "shards")
     tmp_int8 = os.path.join(out_shards, f"coords_{sid:05d}.int8.tmp")
@@ -722,6 +724,7 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
     engine = CoordEngine(model, head, block, K, concepts, families, fit["pca"], pred_order,
                          r, args.device, dtype, qwen_tok.pad_token_id, args.batch_seqs)
     scale = fit["scale"]
+    welford = Welford(r)  # per-SHARD partial, persisted in meta_<sid>.json
     recs = []
     off = 0
     n_docs = 0
@@ -767,7 +770,8 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
     meta = {"sid": sid, "n_docs": n_docs, "n_tokens": n_tokens,
             "n_zero_tokens": n_zero_tokens,
             "zero_frac": (n_zero_tokens / n_tokens if n_tokens else 0.0),
-            "scale": scale}
+            "scale": scale,
+            "welford": welford.to_dict()}
     with open(os.path.join(out_shards, f"meta_{sid:05d}.json"), "w") as f:
         json.dump(meta, f)
     # done marker last (resumability gate)
@@ -792,17 +796,19 @@ def _heartbeat(path, **fields):
 def run_merge_stats(args):
     out_shards = os.path.join(args.out, "shards")
     parts = []
-    for p in sorted(glob.glob(os.path.join(out_shards, "stats_pod*.json"))):
+    for p in sorted(glob.glob(os.path.join(out_shards, "meta_*.json"))):
         with open(p) as f:
-            parts.append(json.load(f))
+            m = json.load(f)
+        if "welford" in m:
+            parts.append(m["welford"])
     if not parts:
-        print("[merge-stats] no stats_pod*.json partials found")
+        print("[merge-stats] no per-shard Welford partials found in meta_*.json")
         return
     n, mean, std = Welford.merge_dicts(parts)
     out = {"n": int(n), "coord_mean_observed": mean.tolist(), "coord_std_observed": std.tolist()}
     with open(os.path.join(args.out, "corpus_coord_stats.json"), "w") as f:
         json.dump(out, f, indent=2)
-    print(f"[merge-stats] merged {len(parts)} partials over n={n} tokens -> corpus_coord_stats.json")
+    print(f"[merge-stats] merged {len(parts)} shard partials over n={n} tokens -> corpus_coord_stats.json")
 
 
 # --------------------------------------------------------------------------- #
@@ -814,6 +820,10 @@ def run_assemble(args):
     ps = load_probe_meta(args.probe_set)
     concepts, families, pred_order, block, K, legend = resolve_layout(ps, args.layer8_block, args.r_check)
     fit = load_fit(args.out)
+    if [str(c) for c in fit["pred_order"]] != [str(c) for c in pred_order]:
+        raise ValueError(
+            "coord_fit.npz pred_order != probe_set main_block_concepts: the store "
+            "was swept against a different probe_set.json than this assemble.")
     r = args.r_check
     P = make_orthonormal_P(args.n_embd, r=r, seed=args.p_seed)
     np.save(os.path.join(args.out, "P.npy"), P.astype(np.float32))
@@ -848,6 +858,14 @@ def run_assemble(args):
                 n_docs_total += m["n_docs"]
                 n_tokens_total += m["n_tokens"]
                 n_zero_total += m.get("n_zero_tokens", 0)
+    if missing and not getattr(args, "allow_missing_shards", False):
+        os.remove(coords_out + ".tmp")
+        raise SystemExit(
+            f"[assemble] REFUSING to publish a partial store: {len(missing)} of "
+            f"{len(all_shards)} shards missing ({missing[:12]}{'...' if len(missing) > 12 else ''}). "
+            f"Docs from missing shards would silently train with zero coords "
+            f"(injection no-op). Finish the sweep, or pass --allow-missing-shards "
+            f"to publish anyway.")
     os.replace(coords_out + ".tmp", coords_out)
     index = np.array(idx_recs, dtype=INDEX_DTYPE)
     np.save(os.path.join(args.out, "index.npy"), index)
@@ -970,6 +988,97 @@ def run_verify(args):
 
 
 # --------------------------------------------------------------------------- #
+# PREFLIGHT: consumer-path cross-validation (CPU, no encoder, run BEFORE train)
+# --------------------------------------------------------------------------- #
+def preflight_check(tok, texts, cs, batch_size=128, num_threads=4):
+    """Cross-validate the CONSUMER contract on real docs: tokenize with the
+    exact call coord_dataloader makes (`tok.encode(batch, prepend=bos,
+    num_threads=...)`, i.e. tiktoken encode_ordinary_batch + BOS insert), take
+    n_body = len(t)-1, and require CoordSource.lookup(text, n_body) to hit.
+
+    This is the check that catches a broken producer<->consumer token-count
+    contract BEFORE training: a systematic drift (e.g. encode vs
+    encode_ordinary special handling, wrong tokenizer.pkl) makes every lookup
+    return None -> all-zero coords -> the injected run silently trains as a
+    baseline. `tok` is the full nanochat tokenizer (RustBPETokenizer);
+    `cs` a CoordSource over the ASSEMBLED store. Returns a stats dict."""
+    bos = tok.get_bos_token_id()
+    enc = getattr(tok, "enc", None)  # producer-side path, for the direct contract check
+    n_docs = n_cov = n_miss = n_empty = n_contract = n_bos_bad = 0
+    tok_total = tok_cov = zero_rows = 0
+    for i in range(0, len(texts), batch_size):
+        batch = list(texts[i:i + batch_size])
+        toks = tok.encode(batch, prepend=bos, num_threads=num_threads)
+        for text, t in zip(batch, toks):
+            if len(t) == 0 or t[0] != bos:
+                n_bos_bad += 1
+                continue
+            n_body = len(t) - 1                       # what coord_dataloader computes
+            if enc is not None and len(enc.encode_ordinary(text)) != n_body:
+                n_contract += 1                       # producer path disagrees with consumer path
+            if n_body == 0:
+                n_empty += 1
+                continue
+            n_docs += 1
+            tok_total += n_body
+            z, _ = cs.lookup(text, n_body)
+            if z is None:
+                n_miss += 1
+            else:
+                n_cov += 1
+                tok_cov += n_body
+                zero_rows += int(np.all(z == 0.0, axis=1).sum())
+    return {"n_docs": n_docs, "n_covered": n_cov, "n_missing": n_miss,
+            "n_empty": n_empty, "n_contract_mismatch": n_contract,
+            "n_bos_bad": n_bos_bad,
+            "doc_coverage": (n_cov / n_docs if n_docs else 0.0),
+            "token_coverage": (tok_cov / tok_total if tok_total else 0.0),
+            "zero_row_frac_covered": (zero_rows / tok_cov if tok_cov else 0.0)}
+
+
+def run_preflight(args):
+    from coords_store import CoordSource
+    from nanochat.tokenizer import RustBPETokenizer
+    tok = RustBPETokenizer.from_directory(args.nano_tokenizer_dir)
+    cs = CoordSource(args.out, noise_sigma=0.0)
+    with open(os.path.join(args.out, "meta.json")) as f:
+        meta = json.load(f)
+    problems = []
+    if meta.get("missing_shards"):
+        problems.append(f"meta.json missing_shards={meta['missing_shards']}")
+    shards = parse_shard_range(args.shards)
+    per_shard = max(1, args.preflight_docs // len(shards))
+    texts = []
+    for sid in shards:
+        got = 0
+        for t in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
+            texts.append(t)
+            got += 1
+            if got >= per_shard:
+                break
+    res = preflight_check(tok, texts, cs)
+    print(f"[preflight] {len(texts)} docs from {len(shards)} shards: "
+          f"doc_coverage={res['doc_coverage']:.4%} token_coverage={res['token_coverage']:.4%} "
+          f"missing={res['n_missing']} empty={res['n_empty']} "
+          f"contract_mismatch={res['n_contract_mismatch']} bos_bad={res['n_bos_bad']} "
+          f"zero_row_frac(covered)={res['zero_row_frac_covered']:.3%}")
+    if res["n_contract_mismatch"] or res["n_bos_bad"]:
+        problems.append(
+            f"{res['n_contract_mismatch']} producer/consumer token-count mismatches, "
+            f"{res['n_bos_bad']} bad-BOS docs: the tokenizer contract is BROKEN "
+            f"(wrong tokenizer.pkl or encode semantics drift)")
+    if res["token_coverage"] < args.preflight_min_coverage:
+        problems.append(
+            f"token_coverage {res['token_coverage']:.4%} < required "
+            f"{args.preflight_min_coverage:.4%}: docs would fall back to zero "
+            f"coords (silent baseline)")
+    if problems:
+        raise SystemExit("[preflight] FAIL:\n  - " + "\n  - ".join(problems))
+    print("[preflight] OK: store covers the consumer token path -- safe to launch.")
+    return res
+
+
+# --------------------------------------------------------------------------- #
 # MEASURE-CROSSING: prefix-mode crossing rate for the qwen<->nanochat pair
 # --------------------------------------------------------------------------- #
 def run_measure_crossing(args):
@@ -1010,7 +1119,7 @@ def build_argparser():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--mode", default="sweep",
                     choices=["fit", "sweep", "merge-stats", "assemble", "verify",
-                             "measure-crossing"])
+                             "preflight", "measure-crossing"])
     ap.add_argument("--encoder-ckpt", help="expA best.pt (Qwen full-FT + 1024->162 head)")
     ap.add_argument("--probe-set", help="probe_set.json file or its dir")
     ap.add_argument("--shards", default="0-190", help="e.g. 0-190 or 0-3,10")
@@ -1049,6 +1158,13 @@ def build_argparser():
                     help="no-op (noise is added by the loader, never baked here)")
     ap.add_argument("--verify-docs", type=int, default=64)
     ap.add_argument("--crossing-docs", type=int, default=2000)
+    ap.add_argument("--preflight-docs", type=int, default=512,
+                    help="docs sampled across --shards for the consumer-path check")
+    ap.add_argument("--preflight-min-coverage", type=float, default=0.999,
+                    help="minimum token coverage required by --mode preflight")
+    ap.add_argument("--allow-missing-shards", action="store_true",
+                    help="let assemble publish a partial store (missing shards' "
+                         "docs fall back to zero coords at train time)")
     ap.add_argument("--heartbeat-path", default=None)
     return ap
 
@@ -1082,6 +1198,8 @@ def main():
     elif args.mode == "verify":
         _require(args, ["encoder_ckpt", "probe_set"])
         run_verify(args)
+    elif args.mode == "preflight":
+        run_preflight(args)
     elif args.mode == "measure-crossing":
         run_measure_crossing(args)
 

@@ -218,6 +218,7 @@ python $CO --mode fit   --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-3   
 python $CO --mode sweep --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-190 --out /workspace/coords --pod-index $P --n-pods $NP  # every pod (round-robin, resumable)
 python $CO --mode merge-stats --out /workspace/coords                                                    # after fleet done, one node
 python $CO --mode assemble --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-190 --out /workspace/coords
+python $CO --mode preflight --shards 0-190 --out /workspace/coords --preflight-docs 1024                 # MANDATORY gate (CPU): consumer-path lookup coverage; hard-fails on tokenizer drift / <99.9% coverage
 #    -> coords.int8 / index.npy / P.npy / meta.json consolidated onto the training node.
 #    NOTE: coord quantization is zero-preserving (no mean-centering) so concept-free
 #    tokens (raw coord 0) stay int8 0 => injection no-op; loader applies the single

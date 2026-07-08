@@ -469,5 +469,121 @@ else:
 
 
 # --------------------------------------------------------------------------- #
+# [9] flush chunking: batch_seqs=1 vs 4 produce the same coords (OOM-guard path)
+# --------------------------------------------------------------------------- #
+print("\n[9] chunked flush equivalence (batch_seqs=1 vs 4)")
+prod_by_bs = {}
+for bs in (1, 4):
+    eng = pc.CoordEngine(model, head, block, K, concepts, families, pca, pred_order,
+                         14, "cpu", torch.float32, pad_id, batch_seqs=bs)
+    got = {}
+    for d_i, text in enumerate(docs):
+        hsh, n, segs = pc.iter_doc_segments(text, enc8, qwen_encode, max_nano=40, max_qwen=4096)
+        eng.add_doc(("c", d_i), hsh, n, segs)
+        for chsh, cn, cc in eng.drain():
+            got[int(chsh)] = cc
+    for chsh, cn, cc in eng.drain():
+        got[int(chsh)] = cc
+    prod_by_bs[bs] = got
+ok9 = set(prod_by_bs[1]) == set(prod_by_bs[4]) and all(
+    np.allclose(prod_by_bs[1][h], prod_by_bs[4][h], atol=1e-4) for h in prod_by_bs[1])
+check(ok9, "coords identical across flush chunk sizes (long doc spans >1 chunk)")
+
+# _RawPredEngine (fit mode) through the same chunked-flush path: raw L8 preds,
+# per-doc row counts, and consistency with CoordEngine's build_coords output.
+raw_eng = pc._RawPredEngine(model, head, block, K, "cpu", torch.float32, pad_id, batch_seqs=2)
+raw_rows = []
+for text in docs:
+    hsh, n, segs = pc.iter_doc_segments(text, enc8, qwen_encode, max_nano=40, max_qwen=4096)
+    raw_eng.add_doc(hsh, n, segs)
+    for preds in raw_eng.drain():
+        raw_rows.append(preds)
+for preds in raw_eng.drain_final():
+    raw_rows.append(preds)
+n_expected = sum(len(enc8.encode_ordinary(t)) for t in docs)
+raw_all = np.concatenate(raw_rows, axis=0)
+check(raw_all.shape == (n_expected, K),
+      f"_RawPredEngine emits raw preds [{n_expected},{K}] across all docs (got {raw_all.shape})")
+# building coords from one raw doc's preds must equal the CoordEngine output
+h0 = int(doc_hash(docs[0]))
+raw0 = next(rr for rr in raw_rows if rr.shape[0] == len(enc8.encode_ordinary(docs[0]))
+            and np.allclose(pc.build_coords(rr, concepts, families, pca=pca,
+                                            pred_order=pred_order)[0], prod_by_bs[4][h0], atol=1e-4))
+check(raw0 is not None, "build_coords(_RawPredEngine preds) == CoordEngine coords (fit/sweep parity)")
+
+
+# --------------------------------------------------------------------------- #
+# [10] preflight: consumer-path (encode batch + prepend BOS) lookup coverage
+# --------------------------------------------------------------------------- #
+print("\n[10] preflight consumer-path cross-check")
+
+
+class FakeFullTok:
+    """RustBPETokenizer stand-in: .enc + get_bos_token_id + batch encode with
+    prepend, mirroring exactly the call coord_dataloader makes."""
+
+    def __init__(self, enc, bos_id=99991, extra_tail=0):
+        self.enc = enc
+        self._bos = bos_id
+        self._extra = extra_tail  # simulate a drifting tokenizer (appends ids)
+
+    def get_bos_token_id(self):
+        return self._bos
+
+    def encode(self, texts, prepend=None, append=None, num_threads=8):
+        out = []
+        for t in texts:
+            ids = list(self.enc.encode_ordinary(t))
+            ids += [1] * self._extra
+            if prepend is not None:
+                ids.insert(0, prepend)
+            out.append(ids)
+        return out
+
+
+good_tok = FakeFullTok(enc8)
+res_ok = pc.preflight_check(good_tok, docs, cs, batch_size=3)
+check(res_ok["token_coverage"] == 1.0 and res_ok["doc_coverage"] == 1.0,
+      f"healthy store+tokenizer -> 100% coverage (got {res_ok['token_coverage']:.2%})")
+check(res_ok["n_contract_mismatch"] == 0 and res_ok["n_bos_bad"] == 0,
+      "producer/consumer token counts agree on every doc")
+# unknown docs are misses, not crashes
+res_unk = pc.preflight_check(good_tok, ["never stored doc one", "never stored two"], cs)
+check(res_unk["n_missing"] == 2 and res_unk["token_coverage"] == 0.0,
+      "docs absent from the store are reported as misses")
+# a drifted tokenizer (extra appended token per doc) MUST be caught two ways:
+drift_tok = FakeFullTok(enc8, extra_tail=1)
+res_bad = pc.preflight_check(drift_tok, docs, cs, batch_size=3)
+check(res_bad["n_contract_mismatch"] == len(docs),
+      "tokenizer drift flagged as producer/consumer contract mismatch on every doc")
+check(res_bad["token_coverage"] == 0.0,
+      "tokenizer drift -> every lookup misses (the silent-baseline failure made LOUD)")
+
+
+# --------------------------------------------------------------------------- #
+# [11] per-shard Welford partials -> merge-stats (crash/resume-safe stats)
+# --------------------------------------------------------------------------- #
+print("\n[11] merge-stats from per-shard meta welford partials")
+STATS = tempfile.mkdtemp(prefix="stage7_stats_test_")
+os.makedirs(os.path.join(STATS, "shards"), exist_ok=True)
+rng11 = np.random.default_rng(11)
+xa = rng11.normal(1.0, 2.0, size=(1000, 14))
+xb = rng11.normal(-0.5, 0.7, size=(300, 14))
+wa, wb = pc.Welford(14), pc.Welford(14)
+wa.update(xa)
+wb.update(xb)
+json.dump({"sid": 0, "welford": wa.to_dict()}, open(os.path.join(STATS, "shards", "meta_00000.json"), "w"))
+json.dump({"sid": 1, "welford": wb.to_dict()}, open(os.path.join(STATS, "shards", "meta_00001.json"), "w"))
+json.dump({"sid": 2}, open(os.path.join(STATS, "shards", "meta_00002.json"), "w"))  # no welford: tolerated
+pc.run_merge_stats(types.SimpleNamespace(out=STATS))
+cst = json.load(open(os.path.join(STATS, "corpus_coord_stats.json")))
+xall = np.concatenate([xa, xb], axis=0)
+check(cst["n"] == 1300
+      and np.allclose(cst["coord_mean_observed"], xall.mean(0), atol=1e-9)
+      and np.allclose(cst["coord_std_observed"], xall.std(0), atol=1e-9),
+      "merged per-shard Welford == direct mean/std over the union")
+
+
+# --------------------------------------------------------------------------- #
 print("\n" + ("ALL CHECKS PASSED" if not fails else f"{len(fails)} FAILURES: {fails}"))
 sys.exit(1 if fails else 0)

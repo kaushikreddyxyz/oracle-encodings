@@ -2,6 +2,20 @@
 
 (newest first)
 
+- ~1:00 PM: pod A VERIFIED + RETIRED (all closed-form checks PASS: score
+  restoration 2.1e-4, identity p99 5e-7, quant path p50 3.6%, v* crosscheck
+  exact 0.0; report committed; 33/33 files byte-confirmed on trainer incl.
+  a manual shard-330 pull; pod deleted). Exp B launched on trainer (fixed
+  then learn, frozen Exp-A encoder). Coords throughput: feeder-pool fix
+  was a validated NEGATIVE — job is GPU-FORWARD-bound (86% of wall;
+  latency-bound ragged batches), not CPU-bound; serial path restored
+  md5-clean on coords1. New fix dispatched: cross-doc length-bucketed
+  batching + token-budget batches + tf32 behind --fast-forward, relaxed
+  equivalence contract (one int8 step, exact zero positions; completed
+  shards kept, fit frozen). If ≥2.5×: coords done ~7-9 PM, nanochat
+  tonight. If not: decide between 12-pod fleet (halve wall, same ~$305)
+  or SPEC's first-N-tokens + β-anneal fallback.
+
 - ~12:20 PM: **frozen-encoder baseline COMPLETE** (spec's MLP-only arm,
   converged: early-stop fired at final step): heldout median R² **0.1823**
   vs full-FT **0.6371** on identical data/splits — 3.5× gap; the oracle

@@ -239,7 +239,7 @@ class Args:
 
 
 def make_args(fx, out_dir, mode, freeze_encoder, max_steps=20, eval_every=5,
-              gemma_model=GEMMA_MODEL, resume=None):
+              gemma_model=GEMMA_MODEL, resume=None, encoder_from=None):
     return Args(
         scores=fx["scores_dir"], climbmix_dir=fx["climbmix_dir"],
         probe_set=fx["probe_set_dir"], mode=mode, freeze_encoder=freeze_encoder,
@@ -249,6 +249,7 @@ def make_args(fx, out_dir, mode, freeze_encoder, max_steps=20, eval_every=5,
         eval_tokens=5000, max_gemma_tokens=64, max_qwen_tokens=96,
         min_gemma_tokens=16, assert_first_n_docs=15, early_stop_r2_delta=0.005,
         early_stop_window_frac=0.2, seed=0, device="cpu", resume=resume,
+        encoder_from=encoder_from,
         heartbeat_path=os.path.join(out_dir, "hb_train.txt"), heartbeat_interval=1000.0,
         out=out_dir,
     )
@@ -445,6 +446,36 @@ def test_checkpoint_resume(fx, gemma_tok, qwen_tok, workdir):
     assert r2["final_step"] <= step1 + 6
 
 
+def test_encoder_from(fx, gemma_tok, qwen_tok, workdir):
+    """--encoder-from loads a full-FT checkpoint's encoder_state (strict) into
+    the base model before a FROZEN Exp-B run (SPEC Phase 3 encoder-reuse path).
+    """
+    # 1) make a full-FT expA checkpoint whose encoder weights differ from init.
+    src_dir = os.path.join(workdir, "out_encfrom_src")
+    model_src, tok, name = build_tiny_model(qwen_tok, seed=3)
+    args_src = make_args(fx, src_dir, "expA", False, max_steps=6, eval_every=3)
+    te.run_training(args_src, encoder_and_tok=(model_src, tok, name))
+    ckpt_path = os.path.join(src_dir, "last.pt")
+    saved_enc = torch.load(ckpt_path, map_location="cpu", weights_only=False)["encoder_state"]
+
+    # 2) fresh, DIFFERENTLY-seeded encoder; frozen expB-fixed run with --encoder-from.
+    dst_dir = os.path.join(workdir, "out_encfrom_dst")
+    model_dst, tok2, name2 = build_tiny_model(qwen_tok, seed=99)
+    before = {k: v.clone() for k, v in model_dst.state_dict().items()}
+    # sanity: the two inits genuinely differ
+    assert any(not torch.allclose(before[k], saved_enc[k]) for k in before), \
+        "test setup: seeds should differ so the load is observable"
+    args_dst = make_args(fx, dst_dir, "expB-fixed", True, max_steps=6, eval_every=3,
+                         encoder_from=ckpt_path)
+    result = te.run_training(args_dst, encoder_and_tok=(model_dst, tok2, name2))
+    after = model_dst.state_dict()
+    # 3) frozen encoder must now EQUAL the loaded checkpoint (unchanged by training).
+    for k in saved_enc:
+        assert torch.allclose(after[k].cpu(), saved_enc[k].cpu(), atol=1e-5), \
+            f"--encoder-from did not load param {k}"
+    _assert_common(dst_dir, result, "expB-fixed")
+
+
 # ======================================================================= main
 def main():
     workdir = tempfile.mkdtemp(prefix="stage7_train_encoder_smoke_")
@@ -471,6 +502,7 @@ def main():
         check("mode_expB_learn_20steps", lambda: test_mode_expB_learn(fx, gemma_tok, qwen_tok, workdir))
         check("mode_full_ft_encoder_updates", lambda: test_mode_full_ft(fx, gemma_tok, qwen_tok, workdir))
         check("checkpoint_resume", lambda: test_checkpoint_resume(fx, gemma_tok, qwen_tok, workdir))
+        check("encoder_from_loads_strict", lambda: test_encoder_from(fx, gemma_tok, qwen_tok, workdir))
     finally:
         n_fail = sum(1 for _, ok, _ in RESULTS if not ok)
         print("\n===== SUMMARY =====")

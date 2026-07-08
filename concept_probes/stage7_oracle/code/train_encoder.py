@@ -696,6 +696,14 @@ def build_argparser():
     p.add_argument("--seed", type=int, default=0)
     p.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     p.add_argument("--resume", default=None)
+    p.add_argument("--encoder-from", default=None,
+                    help="path to an Exp-A full-FT checkpoint; load its "
+                         "'encoder_state' (strict) into the base encoder model "
+                         "before training. The head is NOT loaded (its shape "
+                         "differs across modes). Used to reuse the Exp-A "
+                         "fine-tuned Qwen as a FROZEN feature extractor for "
+                         "Exp B (SPEC.md Phase 3). No effect on any other "
+                         "behavior; combine with --freeze-encoder.")
     p.add_argument("--heartbeat-path", default="/workspace/hb_train.txt")
     p.add_argument("--heartbeat-interval", type=float, default=60.0)
     p.add_argument("--out", required=True)
@@ -734,6 +742,24 @@ def run_training(args, encoder_and_tok=None):
     else:
         model, qwen_tok, model_name = load_encoder(args.model, dtype, args.device)
     gemma_tok = load_gemma_tokenizer(args.gemma_model)
+
+    # --encoder-from: initialize the base encoder from an Exp-A full-FT
+    # checkpoint's encoder_state (strict) before training. Head weights are
+    # deliberately NOT touched (mode-dependent shape). This lets Exp B reuse
+    # the Exp-A fine-tuned Qwen as a frozen feature extractor (SPEC Phase 3).
+    if getattr(args, "encoder_from", None):
+        ck = torch.load(args.encoder_from, map_location=args.device, weights_only=False)
+        if "encoder_state" not in ck:
+            raise ValueError(
+                f"--encoder-from {args.encoder_from} has no 'encoder_state' key: "
+                f"only full-FT checkpoints save the encoder weights (frozen-"
+                f"encoder runs save the head only). Point at an Exp-A full-FT "
+                f"best.pt/last.pt."
+            )
+        model.load_state_dict(ck["encoder_state"], strict=True)
+        model.to(args.device)
+        print(f"[{SCRIPT}] loaded encoder_state from {args.encoder_from} "
+              f"(strict); head left at fresh init")
 
     hidden_size = model.config.hidden_size
     head = EncoderHead(hidden_size, ps.K, args.mode).to(args.device)

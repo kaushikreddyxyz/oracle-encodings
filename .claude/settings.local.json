@@ -12,7 +12,21 @@
       "Bash(echo \"\\(exit $?\\)\")",
       "Bash(/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/.venv/bin/python -c \"import dotenv, sys; print\\('dotenv OK', dotenv.__version__ if hasattr\\(dotenv,'__version__'\\) else ''\\)\")",
       "Bash(python3 *)",
-      "Bash(python -c \"import dotenv; print\\('python-dotenv available:', dotenv.__version__\\)\")"
+      "Bash(python -c \"import dotenv; print\\('python-dotenv available:', dotenv.__version__\\)\")",
+      "Read(//Users/kaushikreddy/Downloads/**)",
+      "Bash(curl -s https://openrouter.ai/api/v1/models)",
+      "Bash(pkill -f \"bash .*/judge_lane.sh\")",
+      "Bash(pkill -f \"python3 judge.py --family\")",
+      "Bash(bash /Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/concept_probes/stage4/code/judge_lane.sh)",
+      "Bash(awk '{s+=$1} END {print NR\" dirs\"}')",
+      "Bash(awk '{s+=$1} END {print \"judged total MB:\", s}')",
+      "Bash(awk '{s+=$1} END {print \"final total MB:\", s}')",
+      "Bash(git commit -m 'concept_probes Stage 4: full data pipeline \\(generation, K=3 judging, curation, assembly\\) *)",
+      "Bash(git push *)",
+      "Bash(git check-ignore *)"
     ]
+  },
+  "remote": {
+    "defaultEnvironmentId": "env_016898qnDsfiKSake6frwftG"
   }
 }

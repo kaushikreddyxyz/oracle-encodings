@@ -233,3 +233,9 @@ concept_probes/stage6/reports/concepts/
 concept_probes/stage6/reports/part_*/
 concept_probes/stage6_1/out/
 concept_probes/stage6_1/figures/
+
+# bulky run datasets — archived on HuggingFace, not tracked in git
+# overnight_run/data  -> hf.co/datasets/kaushikreddyxyz/concept-probes-overnight
+# overnight_run2/data -> hf.co/datasets/kaushikreddyxyz/concept-probes-v2-datasets
+overnight_run/data/
+overnight_run2/data/

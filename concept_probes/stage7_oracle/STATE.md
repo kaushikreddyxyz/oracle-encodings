@@ -2,6 +2,19 @@
 
 (newest first)
 
+- ~10:40 AM: **GATE G2 = GO (clean, both inputs).** Exp-A early-stopped at
+  step 5600/6800 (plateau rule): final heldout median R² **0.6371** ≥ 0.6.
+  Natural-eval AUROC retention (audited gate, 7488 judged examples, 54
+  concepts): median chance-corrected ratio **0.9659** (raw 0.9836) vs bar
+  0.90; all 7 families ≥ 0.90; conservative fixed-layer secondaries
+  L6/L8/L14 = 0.929/0.942/0.924 all clear → marginal-band rule not
+  triggered. best.pt (3.6GB, val-best) is the deployed encoder.
+  LAUNCHING: coords fit+sweep on the pre-provisioned 6-pod fleet
+  (checkpoint distributed via HF), frozen-encoder baseline on the freed
+  trainer GPU (same shards as full-FT, for the spec's MLP-only arm
+  comparison). Exp B waits for the closed-form verifier verdict (pod A,
+  in flight). g2_retention.json copied to out/.
+
 - ~9:25 AM: post-scoring wave dispatched. Fleet: pod D DONE (10/10),
   A/B/C on last 1-3 shards. Exp-A step 4206/6800, R² 0.634 rising.
   Fable audit of precompute_coords: GO — added the **preflight gate**

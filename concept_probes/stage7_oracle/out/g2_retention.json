@@ -1,0 +1,2294 @@
+{
+  "gate": "G2_natural_retention",
+  "encoder_ckpt": "/workspace/expA_prod/best.pt",
+  "probe_set": "/workspace/stage7",
+  "eval_data": "/workspace/stage7/g2_eval_data",
+  "model_name": "/workspace/models/Qwen3-0.6B-Base",
+  "mode": "expA",
+  "K": 54,
+  "layers": [
+    6,
+    8,
+    14
+  ],
+  "ymax_thresh": 0.34,
+  "min_denom": 0.05,
+  "reference_source": [
+    "probe_set_stored"
+  ],
+  "reference_auroc_method": "labels + test split + texts all from eval/<fam>.jsonl (single source of truth; ymax>=0.34 max-pool over token targets). gemma reference AUROC = recomputed from natscores.npz on the IDENTICAL examples/labels (max-pool over token2ex) where natscores is present; else probe_set.json stored selection AUROC (equivalent: same example set + labels, verified max|\u0394|=0). See reference_source.",
+  "encoder_score_method": "max-pool of head per-position predictions over all real qwen positions; AUROC is rank-based so standardization is not applied",
+  "gemma_stored_vs_recomputed_max_absdiff": null,
+  "per_family_n_test_examples": {
+    "color_wheel": 1356,
+    "continents": 983,
+    "directions": 1083,
+    "months": 1365,
+    "moon_phases": 892,
+    "seasons": 835,
+    "weekdays": 974
+  },
+  "verdict": {
+    "pass_gate": true,
+    "retain_bar": 0.9,
+    "gate_metric": "median chance-corrected retention ratio (best-encoder layer per concept)",
+    "median_cc_ratio": 0.9658708189618673,
+    "median_raw_ratio": 0.9835908483893856,
+    "share_cc_ge_0.9": 0.7962962962962963,
+    "share_raw_ge_0.9": 1.0,
+    "n_concepts_scored": 54,
+    "n_concepts_cc_defined": 54,
+    "n_concepts_cc_excluded": 0,
+    "cc_excluded_concepts": [],
+    "secondary_median_cc_ratio_fixed_layer": {
+      "6": 0.9292796463582204,
+      "8": 0.9423232476355625,
+      "14": 0.9237558954559686
+    },
+    "secondary_note": "conservative variant: median cc ratio at a single fixed layer for both encoder and gemma; immune to best-of-3 layer-selection inflation of the primary metric (~+0.01-0.02 cc units)"
+  },
+  "per_family": {
+    "color_wheel": {
+      "n_concepts": 9,
+      "n_test_examples": 1356,
+      "median_cc_ratio": 0.956488418100913,
+      "median_raw_ratio": 0.9794596231833658,
+      "median_enc_auroc": 0.9347214485463333,
+      "median_gemma_auroc": 0.9606631948801606
+    },
+    "continents": {
+      "n_concepts": 6,
+      "n_test_examples": 983,
+      "median_cc_ratio": 0.9668655936374393,
+      "median_raw_ratio": 0.9839769459831311,
+      "median_enc_auroc": 0.9490417313339463,
+      "median_gemma_auroc": 0.9601081056327581
+    },
+    "directions": {
+      "n_concepts": 8,
+      "n_test_examples": 1083,
+      "median_cc_ratio": 0.9711651364633683,
+      "median_raw_ratio": 0.9858508932589831,
+      "median_enc_auroc": 0.9635521835068002,
+      "median_gemma_auroc": 0.9749314788976169
+    },
+    "months": {
+      "n_concepts": 12,
+      "n_test_examples": 1365,
+      "median_cc_ratio": 0.9023975910557742,
+      "median_raw_ratio": 0.9527610374299862,
+      "median_enc_auroc": 0.9342795701025092,
+      "median_gemma_auroc": 0.9853055012604671
+    },
+    "moon_phases": {
+      "n_concepts": 8,
+      "n_test_examples": 892,
+      "median_cc_ratio": 0.9921376431968594,
+      "median_raw_ratio": 0.996093331473509,
+      "median_enc_auroc": 0.9891417997254722,
+      "median_gemma_auroc": 0.9934770708324889
+    },
+    "seasons": {
+      "n_concepts": 4,
+      "n_test_examples": 835,
+      "median_cc_ratio": 0.9845405424012232,
+      "median_raw_ratio": 0.9923780858547011,
+      "median_enc_auroc": 0.977892110171348,
+      "median_gemma_auroc": 0.9856894085435699
+    },
+    "weekdays": {
+      "n_concepts": 7,
+      "n_test_examples": 974,
+      "median_cc_ratio": 0.9381452454430408,
+      "median_raw_ratio": 0.9694654815269451,
+      "median_enc_auroc": 0.9573051948051948,
+      "median_gemma_auroc": 0.984014190725044
+    }
+  },
+  "per_layer": {
+    "6": {
+      "median_cc_ratio": 0.9292796463582204,
+      "median_raw_ratio": 0.9651456567195902,
+      "median_enc_auroc": 0.9423872943231253,
+      "median_gemma_auroc": 0.9853595662071828,
+      "n_concepts": 54
+    },
+    "8": {
+      "median_cc_ratio": 0.9423232476355625,
+      "median_raw_ratio": 0.9714219307538199,
+      "median_enc_auroc": 0.9464865415783454,
+      "median_gemma_auroc": 0.9837367585690338,
+      "n_concepts": 54
+    },
+    "14": {
+      "median_cc_ratio": 0.9237558954559686,
+      "median_raw_ratio": 0.9625334742360012,
+      "median_enc_auroc": 0.9430952514234534,
+      "median_gemma_auroc": 0.9803478811513238,
+      "n_concepts": 54
+    }
+  },
+  "per_concept": {
+    "blue": {
+      "family": "color_wheel",
+      "n_pos": 147,
+      "n_neg": 1209,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9347214485463333,
+      "gemma_auroc": 0.9507717065320752,
+      "raw_ratio": 0.9831187046527868,
+      "cc_ratio": 0.964393821188953,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9313032078009037,
+          "gemma_auroc": 0.9497645211930926,
+          "gemma_auroc_stored": 0.9497645211930926,
+          "raw_ratio": 0.9805622204449185,
+          "cc_ratio": 0.9589533799971227
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9347214485463333,
+          "gemma_auroc": 0.9507717065320752,
+          "gemma_auroc_stored": 0.9507717065320752,
+          "raw_ratio": 0.9831187046527868,
+          "cc_ratio": 0.964393821188953
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9265936316627561,
+          "gemma_auroc": 0.9375545089830805,
+          "gemma_auroc_stored": 0.9375545089830805,
+          "raw_ratio": 0.9883090772693173,
+          "cc_ratio": 0.9749496871925775
+        }
+      ]
+    },
+    "blue-green": {
+      "family": "color_wheel",
+      "n_pos": 38,
+      "n_neg": 1318,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9708090408114368,
+      "gemma_auroc": 0.9543367143199425,
+      "raw_ratio": 1.0172604975207649,
+      "cc_ratio": 1.036255767963085,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9394916540212443,
+          "gemma_auroc": 0.9833479754013258,
+          "gemma_auroc_stored": 0.9833479754013258,
+          "raw_ratio": 0.9554010152284265,
+          "cc_ratio": 0.9092655320555189
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.943145515533903,
+          "gemma_auroc": 0.9478276495487581,
+          "gemma_auroc_stored": 0.9478276495487581,
+          "raw_ratio": 0.9950601419814202,
+          "cc_ratio": 0.9895447857684248
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9708090408114368,
+          "gemma_auroc": 0.9543367143199425,
+          "gemma_auroc_stored": 0.9543367143199425,
+          "raw_ratio": 1.0172604975207649,
+          "cc_ratio": 1.036255767963085
+        }
+      ]
+    },
+    "green": {
+      "family": "color_wheel",
+      "n_pos": 130,
+      "n_neg": 1226,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9507654661814531,
+      "gemma_auroc": 0.9606631948801606,
+      "raw_ratio": 0.9896969835510954,
+      "cc_ratio": 0.9785141751963007,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9256713514870122,
+          "gemma_auroc": 0.9485474965491278,
+          "gemma_auroc_stored": 0.9485474965491278,
+          "raw_ratio": 0.9758829735513083,
+          "cc_ratio": 0.9489995034235797
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9279426527795206,
+          "gemma_auroc": 0.9649140419124106,
+          "gemma_auroc_stored": 0.9649140419124106,
+          "raw_ratio": 0.9616842666527947,
+          "cc_ratio": 0.9204769359496882
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9507654661814531,
+          "gemma_auroc": 0.9606631948801606,
+          "gemma_auroc_stored": 0.9606631948801606,
+          "raw_ratio": 0.9896969835510954,
+          "cc_ratio": 0.9785141751963007
+        }
+      ]
+    },
+    "orange": {
+      "family": "color_wheel",
+      "n_pos": 78,
+      "n_neg": 1278,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.961438144536736,
+      "gemma_auroc": 0.99083604189238,
+      "raw_ratio": 0.9703302099311029,
+      "cc_ratio": 0.9401064819072728,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9543808434653505,
+          "gemma_auroc": 0.9860509209100758,
+          "gemma_auroc_stored": 0.9860509209100758,
+          "raw_ratio": 0.9678819047037698,
+          "cc_ratio": 0.9348420585533986
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.961438144536736,
+          "gemma_auroc": 0.99083604189238,
+          "gemma_auroc_stored": 0.99083604189238,
+          "raw_ratio": 0.9703302099311029,
+          "cc_ratio": 0.9401064819072728
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9177601219854741,
+          "gemma_auroc": 0.9813661169294972,
+          "gemma_auroc_stored": 0.9813661169294972,
+          "raw_ratio": 0.9351862736579557,
+          "cc_ratio": 0.8678635809480145
+        }
+      ]
+    },
+    "red": {
+      "family": "color_wheel",
+      "n_pos": 149,
+      "n_neg": 1207,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.929052006472312,
+      "gemma_auroc": 0.9345039840305155,
+      "raw_ratio": 0.9941659129855294,
+      "cc_ratio": 0.9874524106600123,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9101494080948382,
+          "gemma_auroc": 0.9460307045589764,
+          "gemma_auroc_stored": 0.9460307045589764,
+          "raw_ratio": 0.9620717421842397,
+          "cc_ratio": 0.9195542008714026
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9191544847450276,
+          "gemma_auroc": 0.9504345456870715,
+          "gemma_auroc_stored": 0.9504345456870715,
+          "raw_ratio": 0.9670886742448619,
+          "cc_ratio": 0.9305558127333888
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.929052006472312,
+          "gemma_auroc": 0.9345039840305155,
+          "gemma_auroc_stored": 0.9345039840305155,
+          "raw_ratio": 0.9941659129855294,
+          "cc_ratio": 0.9874524106600123
+        }
+      ]
+    },
+    "red-orange": {
+      "family": "color_wheel",
+      "n_pos": 47,
+      "n_neg": 1309,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9551549826894007,
+      "gemma_auroc": 0.9869642247614713,
+      "raw_ratio": 0.967770623013455,
+      "cc_ratio": 0.9346784826182013,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9551549826894007,
+          "gemma_auroc": 0.9869642247614713,
+          "gemma_auroc_stored": 0.9869642247614713,
+          "raw_ratio": 0.967770623013455,
+          "cc_ratio": 0.9346784826182013
+        },
+        {
+          "layer": 8,
+          "arm": "dom",
+          "enc_auroc": 0.8569234270110365,
+          "gemma_auroc": 0.9650212115794093,
+          "gemma_auroc_stored": 0.9650212115794093,
+          "raw_ratio": 0.8879840326085126,
+          "cc_ratio": 0.767542249951939
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9349023942265494,
+          "gemma_auroc": 0.9783658144108708,
+          "gemma_auroc_stored": 0.9783658144108708,
+          "raw_ratio": 0.9555754917597022,
+          "cc_ratio": 0.90914187662459
+        }
+      ]
+    },
+    "violet": {
+      "family": "color_wheel",
+      "n_pos": 14,
+      "n_neg": 1342,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9222109857355759,
+      "gemma_auroc": 0.9618107302533532,
+      "raw_ratio": 0.9588279239644726,
+      "cc_ratio": 0.9142511381317352,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9204811581860762,
+          "gemma_auroc": 0.9895411965084097,
+          "gemma_auroc_stored": 0.9895411965084097,
+          "raw_ratio": 0.9302100422235968,
+          "cc_ratio": 0.8589290568089154
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9101021928890781,
+          "gemma_auroc": 0.9918298914200554,
+          "gemma_auroc_stored": 0.9918298914200554,
+          "raw_ratio": 0.9175990769808687,
+          "cc_ratio": 0.8338293382392726
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9222109857355759,
+          "gemma_auroc": 0.9618107302533532,
+          "gemma_auroc_stored": 0.9618107302533532,
+          "raw_ratio": 0.9588279239644726,
+          "cc_ratio": 0.9142511381317352
+        }
+      ]
+    },
+    "yellow": {
+      "family": "color_wheel",
+      "n_pos": 157,
+      "n_neg": 1199,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9276360873976721,
+      "gemma_auroc": 0.9470896660167974,
+      "raw_ratio": 0.9794596231833658,
+      "cc_ratio": 0.956488418100913,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9197048495827203,
+          "gemma_auroc": 0.9389459369007082,
+          "gemma_auroc_stored": 0.9389459369007082,
+          "raw_ratio": 0.9795077793493635,
+          "cc_ratio": 0.9561652456476882
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9276360873976721,
+          "gemma_auroc": 0.9470896660167974,
+          "gemma_auroc_stored": 0.9470896660167974,
+          "raw_ratio": 0.9794596231833658,
+          "cc_ratio": 0.956488418100913
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9122809347492337,
+          "gemma_auroc": 0.9349511004393257,
+          "gemma_auroc_stored": 0.9349511004393257,
+          "raw_ratio": 0.975752565370061,
+          "cc_ratio": 0.9478788174873132
+        }
+      ]
+    },
+    "yellow-green": {
+      "family": "color_wheel",
+      "n_pos": 44,
+      "n_neg": 1312,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.8907635809312638,
+      "gemma_auroc": 0.9793860864745011,
+      "raw_ratio": 0.9095121864940394,
+      "cc_ratio": 0.8151333381513334,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.8907635809312638,
+          "gemma_auroc": 0.9793860864745011,
+          "gemma_auroc_stored": 0.9793860864745011,
+          "raw_ratio": 0.9095121864940394,
+          "cc_ratio": 0.8151333381513334
+        },
+        {
+          "layer": 8,
+          "arm": "dom",
+          "enc_auroc": 0.8011450249445676,
+          "gemma_auroc": 0.9458495011086474,
+          "gemma_auroc_stored": 0.9458495011086474,
+          "raw_ratio": 0.8470110984945607,
+          "cc_ratio": 0.6754409822052996
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.8903131929046563,
+          "gemma_auroc": 0.9605217572062085,
+          "gemma_auroc_stored": 0.9605217572062085,
+          "raw_ratio": 0.9269058053346317,
+          "cc_ratio": 0.8475456084258038
+        }
+      ]
+    },
+    "africa": {
+      "family": "continents",
+      "n_pos": 76,
+      "n_neg": 907,
+      "best_layer": 14,
+      "best_arm": "dom",
+      "enc_auroc": 0.9085983287877909,
+      "gemma_auroc": 0.9610195555039749,
+      "raw_ratio": 0.9454524869801495,
+      "cc_ratio": 0.8862928348909659,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.892473742238728,
+          "gemma_auroc": 0.9717692798700168,
+          "gemma_auroc_stored": 0.9717692798700168,
+          "raw_ratio": 0.9184008598811692,
+          "cc_ratio": 0.8319188191881919
+        },
+        {
+          "layer": 8,
+          "arm": "dom",
+          "enc_auroc": 0.8921690941797714,
+          "gemma_auroc": 0.9614112458654906,
+          "gemma_auroc_stored": 0.9614112458654906,
+          "raw_ratio": 0.9279786335103815,
+          "cc_ratio": 0.8499339747217507
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9085983287877909,
+          "gemma_auroc": 0.9610195555039749,
+          "gemma_auroc_stored": 0.9610195555039749,
+          "raw_ratio": 0.9454524869801495,
+          "cc_ratio": 0.8862928348909659
+        }
+      ]
+    },
+    "asia": {
+      "family": "continents",
+      "n_pos": 82,
+      "n_neg": 901,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9422457432121492,
+      "gemma_auroc": 0.954291979101811,
+      "raw_ratio": 0.9873767817885257,
+      "cc_ratio": 0.9734834942199978,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.8719106142226795,
+          "gemma_auroc": 0.9545491459354105,
+          "gemma_auroc_stored": 0.9545491459354105,
+          "raw_ratio": 0.9134266349044298,
+          "cc_ratio": 0.8181967066670638
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9422457432121492,
+          "gemma_auroc": 0.954291979101811,
+          "gemma_auroc_stored": 0.954291979101811,
+          "raw_ratio": 0.9873767817885257,
+          "cc_ratio": 0.9734834942199978
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9006388565550473,
+          "gemma_auroc": 0.9587179556590238,
+          "gemma_auroc_stored": 0.9587179556590238,
+          "raw_ratio": 0.9394200361418569,
+          "cc_ratio": 0.8733882151603671
+        }
+      ]
+    },
+    "europe": {
+      "family": "continents",
+      "n_pos": 74,
+      "n_neg": 909,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9581289210002081,
+      "gemma_auroc": 0.9551036184699551,
+      "raw_ratio": 1.0031675123743111,
+      "cc_ratio": 1.0066475026949335,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9479157375196979,
+          "gemma_auroc": 0.9585526120179586,
+          "gemma_auroc_stored": 0.9585526120179586,
+          "raw_ratio": 0.9889031917863457,
+          "cc_ratio": 0.9768033716971956
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9533791216959534,
+          "gemma_auroc": 0.9643653554544643,
+          "gemma_auroc_stored": 0.9643653554544643,
+          "raw_ratio": 0.9886078095854723,
+          "cc_ratio": 0.9763414009476247
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9581289210002081,
+          "gemma_auroc": 0.9551036184699551,
+          "gemma_auroc_stored": 0.9551036184699551,
+          "raw_ratio": 1.0031675123743111,
+          "cc_ratio": 1.0066475026949335
+        }
+      ]
+    },
+    "north_america": {
+      "family": "continents",
+      "n_pos": 66,
+      "n_neg": 917,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9548428670566075,
+      "gemma_auroc": 0.9591966557615412,
+      "raw_ratio": 0.9954610051246716,
+      "cc_ratio": 0.9905186837702175,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9515465450579954,
+          "gemma_auroc": 0.9596427745282707,
+          "gemma_auroc_stored": 0.9596427745282707,
+          "raw_ratio": 0.9915632882514483,
+          "cc_ratio": 0.9823858223843843
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9548428670566075,
+          "gemma_auroc": 0.9591966557615412,
+          "gemma_auroc_stored": 0.9591966557615412,
+          "raw_ratio": 0.9954610051246716,
+          "cc_ratio": 0.9905186837702175
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9534879878391329,
+          "gemma_auroc": 0.9597088661974158,
+          "gemma_auroc_stored": 0.9597088661974158,
+          "raw_ratio": 0.9935179526027186,
+          "cc_ratio": 0.9864677868631504
+        }
+      ]
+    },
+    "oceania": {
+      "family": "continents",
+      "n_pos": 46,
+      "n_neg": 937,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.95871421279755,
+      "gemma_auroc": 0.9777040508561088,
+      "raw_ratio": 0.9805771101777366,
+      "cc_ratio": 0.9602476930548809,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.95871421279755,
+          "gemma_auroc": 0.9777040508561088,
+          "gemma_auroc_stored": 0.9777040508561088,
+          "raw_ratio": 0.9805771101777366,
+          "cc_ratio": 0.9602476930548809
+        },
+        {
+          "layer": 8,
+          "arm": "dom",
+          "enc_auroc": 0.9540856572780846,
+          "gemma_auroc": 0.9696533803535798,
+          "gemma_auroc_stored": 0.9696533803535798,
+          "raw_ratio": 0.9839450638847682,
+          "cc_ratio": 0.9668527392184955
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9402811934480999,
+          "gemma_auroc": 0.9837594543176651,
+          "gemma_auroc_stored": 0.9837594543176651,
+          "raw_ratio": 0.9558039715107778,
+          "cc_ratio": 0.9101242146659633
+        }
+      ]
+    },
+    "south_america": {
+      "family": "continents",
+      "n_pos": 55,
+      "n_neg": 928,
+      "best_layer": 14,
+      "best_arm": "dom",
+      "enc_auroc": 0.9432405956112853,
+      "gemma_auroc": 0.9882641065830721,
+      "raw_ratio": 0.954441823120081,
+      "cc_ratio": 0.9077886120139642,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9120689655172414,
+          "gemma_auroc": 0.9893416927899686,
+          "gemma_auroc_stored": 0.9893416927899686,
+          "raw_ratio": 0.9218948035487959,
+          "cc_ratio": 0.842088404868674
+        },
+        {
+          "layer": 8,
+          "arm": "dom",
+          "enc_auroc": 0.8590517241379311,
+          "gemma_auroc": 0.9879310344827587,
+          "gemma_auroc_stored": 0.9879310344827587,
+          "raw_ratio": 0.8695462478184991,
+          "cc_ratio": 0.7358657243816255
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9432405956112853,
+          "gemma_auroc": 0.9882641065830721,
+          "gemma_auroc_stored": 0.9882641065830721,
+          "raw_ratio": 0.954441823120081,
+          "cc_ratio": 0.9077886120139642
+        }
+      ]
+    },
+    "east": {
+      "family": "directions",
+      "n_pos": 36,
+      "n_neg": 1047,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9780059429056563,
+      "gemma_auroc": 0.9858723336517032,
+      "raw_ratio": 0.9920208829505242,
+      "cc_ratio": 0.983809757828924,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9686405603311048,
+          "gemma_auroc": 0.9874641833810889,
+          "gemma_auroc_stored": 0.9874641833810889,
+          "raw_ratio": 0.9809374118405675,
+          "cc_ratio": 0.9613846028247204
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.969595670168736,
+          "gemma_auroc": 0.9847049771834873,
+          "gemma_auroc_stored": 0.9847049771834873,
+          "raw_ratio": 0.9846560062507577,
+          "cc_ratio": 0.9688278278004323
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9780059429056563,
+          "gemma_auroc": 0.9858723336517032,
+          "gemma_auroc_stored": 0.9858723336517032,
+          "raw_ratio": 0.9920208829505242,
+          "cc_ratio": 0.983809757828924
+        }
+      ]
+    },
+    "north": {
+      "family": "directions",
+      "n_pos": 36,
+      "n_neg": 1047,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9659476812055608,
+      "gemma_auroc": 0.9799294279953306,
+      "raw_ratio": 0.985731883959876,
+      "cc_ratio": 0.9708670775864452,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9528945134245994,
+          "gemma_auroc": 0.9784702324100605,
+          "gemma_auroc_stored": 0.9784702324100605,
+          "raw_ratio": 0.9738615257385339,
+          "cc_ratio": 0.9465468962266768
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9583068025045103,
+          "gemma_auroc": 0.9808580070041388,
+          "gemma_auroc_stored": 0.9808580070041388,
+          "raw_ratio": 0.9770086961225842,
+          "cc_ratio": 0.9531021545421943
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9659476812055608,
+          "gemma_auroc": 0.9799294279953306,
+          "gemma_auroc_stored": 0.9799294279953306,
+          "raw_ratio": 0.985731883959876,
+          "cc_ratio": 0.9708670775864452
+        }
+      ]
+    },
+    "northeast": {
+      "family": "directions",
+      "n_pos": 33,
+      "n_neg": 1050,
+      "best_layer": 14,
+      "best_arm": "dom",
+      "enc_auroc": 0.9173448773448774,
+      "gemma_auroc": 0.9617316017316018,
+      "raw_ratio": 0.9538470771816108,
+      "cc_ratio": 0.9038689918119882,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.8992496392496393,
+          "gemma_auroc": 0.9724675324675325,
+          "gemma_auroc_stored": 0.9724675324675325,
+          "raw_ratio": 0.9247091642924976,
+          "cc_ratio": 0.8450308472298578
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.8530735930735931,
+          "gemma_auroc": 0.9631746031746031,
+          "gemma_auroc_stored": 0.9631746031746031,
+          "raw_ratio": 0.8856894588601907,
+          "cc_ratio": 0.7622904853884979
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9173448773448774,
+          "gemma_auroc": 0.9617316017316018,
+          "gemma_auroc_stored": 0.9617316017316018,
+          "raw_ratio": 0.9538470771816108,
+          "cc_ratio": 0.9038689918119882
+        }
+      ]
+    },
+    "northwest": {
+      "family": "directions",
+      "n_pos": 31,
+      "n_neg": 1052,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9432417515025144,
+      "gemma_auroc": 0.9393321476757022,
+      "raw_ratio": 1.004162110108215,
+      "cc_ratio": 1.0088989705112548,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9302557340856127,
+          "gemma_auroc": 0.9555531706120447,
+          "gemma_auroc_stored": 0.9555531706120447,
+          "raw_ratio": 0.97352587244284,
+          "cc_ratio": 0.9444687510517281
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9359284925794186,
+          "gemma_auroc": 0.949420458726849,
+          "gemma_auroc_stored": 0.949420458726849,
+          "raw_ratio": 0.9857892612030682,
+          "cc_ratio": 0.9699791901204243
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9432417515025144,
+          "gemma_auroc": 0.9393321476757022,
+          "gemma_auroc_stored": 0.9393321476757022,
+          "raw_ratio": 1.004162110108215,
+          "cc_ratio": 1.0088989705112548
+        }
+      ]
+    },
+    "south": {
+      "family": "directions",
+      "n_pos": 30,
+      "n_neg": 1053,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9582621082621082,
+      "gemma_auroc": 0.9731402342513453,
+      "raw_ratio": 0.9847112209879153,
+      "cc_ratio": 0.9685545110895527,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.944903450459006,
+          "gemma_auroc": 0.967505539727762,
+          "gemma_auroc_stored": 0.967505539727762,
+          "raw_ratio": 0.9766388011844193,
+          "cc_ratio": 0.951653857873176
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9533713200379867,
+          "gemma_auroc": 0.9741848686293131,
+          "gemma_auroc_stored": 0.9741848686293131,
+          "raw_ratio": 0.9786349087718729,
+          "cc_ratio": 0.9561066791281418
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9582621082621082,
+          "gemma_auroc": 0.9731402342513453,
+          "gemma_auroc_stored": 0.9731402342513453,
+          "raw_ratio": 0.9847112209879153,
+          "cc_ratio": 0.9685545110895527
+        }
+      ]
+    },
+    "southeast": {
+      "family": "directions",
+      "n_pos": 23,
+      "n_neg": 1060,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9611566858080394,
+      "gemma_auroc": 0.9767227235438884,
+      "raw_ratio": 0.9840629921259842,
+      "cc_ratio": 0.9673478167347817,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9279532403609516,
+          "gemma_auroc": 0.987715340442986,
+          "gemma_auroc_stored": 0.987715340442986,
+          "raw_ratio": 0.9394946118228442,
+          "cc_ratio": 0.8774652033135697
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9519278096800656,
+          "gemma_auroc": 0.9839007383100903,
+          "gemma_auroc_stored": 0.9839007383100903,
+          "raw_ratio": 0.9675039082855653,
+          "cc_ratio": 0.9339266793812248
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9611566858080394,
+          "gemma_auroc": 0.9767227235438884,
+          "gemma_auroc_stored": 0.9767227235438884,
+          "raw_ratio": 0.9840629921259842,
+          "cc_ratio": 0.9673478167347817
+        }
+      ]
+    },
+    "southwest": {
+      "family": "directions",
+      "n_pos": 25,
+      "n_neg": 1058,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9697731568998109,
+      "gemma_auroc": 0.9835727788279773,
+      "raw_ratio": 0.9859699025580902,
+      "cc_ratio": 0.9714631953402915,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9500189035916824,
+          "gemma_auroc": 0.9837240075614366,
+          "gemma_auroc_stored": 0.9837240075614366,
+          "raw_ratio": 0.9657372355348873,
+          "cc_ratio": 0.930321622572199
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9697731568998109,
+          "gemma_auroc": 0.9835727788279773,
+          "gemma_auroc_stored": 0.9835727788279773,
+          "raw_ratio": 0.9859699025580902,
+          "cc_ratio": 0.9714631953402915
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9673534971644613,
+          "gemma_auroc": 0.985274102079395,
+          "gemma_auroc_stored": 0.985274102079395,
+          "raw_ratio": 0.981811553884231,
+          "cc_ratio": 0.9630711698025011
+        }
+      ]
+    },
+    "west": {
+      "family": "directions",
+      "n_pos": 25,
+      "n_neg": 1058,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.97117202268431,
+      "gemma_auroc": 0.9662192816635161,
+      "raw_ratio": 1.0051258975211785,
+      "cc_ratio": 1.0106232007460567,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9424385633270321,
+          "gemma_auroc": 0.9752173913043478,
+          "gemma_auroc_stored": 0.9752173913043478,
+          "raw_ratio": 0.9663881835274962,
+          "cc_ratio": 0.9310235092883568
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9680151228733459,
+          "gemma_auroc": 0.9768431001890359,
+          "gemma_auroc_stored": 0.9768431001890359,
+          "raw_ratio": 0.9909627479438801,
+          "cc_ratio": 0.9814866204162538
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.97117202268431,
+          "gemma_auroc": 0.9662192816635161,
+          "gemma_auroc_stored": 0.9662192816635161,
+          "raw_ratio": 1.0051258975211785,
+          "cc_ratio": 1.0106232007460567
+        }
+      ]
+    },
+    "april": {
+      "family": "months",
+      "n_pos": 75,
+      "n_neg": 1290,
+      "best_layer": 8,
+      "best_arm": "lda",
+      "enc_auroc": 0.9648682170542635,
+      "gemma_auroc": 0.9911731266149871,
+      "raw_ratio": 0.9734608325686159,
+      "cc_ratio": 0.9464447296984488,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9384857881136951,
+          "gemma_auroc": 0.9857054263565892,
+          "gemma_auroc_stored": 0.9857054263565892,
+          "raw_ratio": 0.9520955886208017,
+          "cc_ratio": 0.9027813244807626
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9648682170542635,
+          "gemma_auroc": 0.9911731266149871,
+          "gemma_auroc_stored": 0.9911731266149871,
+          "raw_ratio": 0.9734608325686159,
+          "cc_ratio": 0.9464447296984488
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9339379844961241,
+          "gemma_auroc": 0.9767235142118863,
+          "gemma_auroc_stored": 0.9767235142118863,
+          "raw_ratio": 0.956194840102436,
+          "cc_ratio": 0.9102508509854087
+        }
+      ]
+    },
+    "august": {
+      "family": "months",
+      "n_pos": 59,
+      "n_neg": 1306,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.949613258234485,
+      "gemma_auroc": 0.9866327510576998,
+      "raw_ratio": 0.9624789540145218,
+      "cc_ratio": 0.9239272475131345,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9486658706880888,
+          "gemma_auroc": 0.986918265112778,
+          "gemma_auroc_stored": 0.986918265112778,
+          "raw_ratio": 0.9612405649212319,
+          "cc_ratio": 0.9214398038327247
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9409894359799621,
+          "gemma_auroc": 0.9876450281620681,
+          "gemma_auroc_stored": 0.9876450281620681,
+          "raw_ratio": 0.9527607684423537,
+          "cc_ratio": 0.9043246839654026
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.949613258234485,
+          "gemma_auroc": 0.9866327510576998,
+          "gemma_auroc_stored": 0.9866327510576998,
+          "raw_ratio": 0.9624789540145218,
+          "cc_ratio": 0.9239272475131345
+        }
+      ]
+    },
+    "december": {
+      "family": "months",
+      "n_pos": 66,
+      "n_neg": 1299,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9819791447966968,
+      "gemma_auroc": 0.9902430774255254,
+      "raw_ratio": 0.9916546423628494,
+      "cc_ratio": 0.9831431936331951,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9529941446800569,
+          "gemma_auroc": 0.9880152564910071,
+          "gemma_auroc_stored": 0.9880152564910071,
+          "raw_ratio": 0.964554077904293,
+          "cc_ratio": 0.9282376701442417
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9819791447966968,
+          "gemma_auroc": 0.9902430774255254,
+          "gemma_auroc_stored": 0.9902430774255254,
+          "raw_ratio": 0.9916546423628494,
+          "cc_ratio": 0.9831431936331951
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9469288730258707,
+          "gemma_auroc": 0.9871521216786806,
+          "gemma_auroc_stored": 0.9871521216786806,
+          "raw_ratio": 0.9592532419578766,
+          "cc_ratio": 0.9174318516478911
+        }
+      ]
+    },
+    "february": {
+      "family": "months",
+      "n_pos": 76,
+      "n_neg": 1289,
+      "best_layer": 8,
+      "best_arm": "lda",
+      "enc_auroc": 0.9224306888244661,
+      "gemma_auroc": 0.9852752031358458,
+      "raw_ratio": 0.9362162834187202,
+      "cc_ratio": 0.8704971655149928,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.851180025315422,
+          "gemma_auroc": 0.9857141398881222,
+          "gemma_auroc_stored": 0.9857141398881222,
+          "raw_ratio": 0.8635160954595116,
+          "cc_ratio": 0.7230179162507225
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9224306888244661,
+          "gemma_auroc": 0.9852752031358458,
+          "gemma_auroc_stored": 0.9852752031358458,
+          "raw_ratio": 0.9362162834187202,
+          "cc_ratio": 0.8704971655149928
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.8474541668367972,
+          "gemma_auroc": 0.9813758115226001,
+          "gemma_auroc_stored": 0.9813758115226001,
+          "raw_ratio": 0.8635368396964828,
+          "cc_ratio": 0.7217939882309283
+        }
+      ]
+    },
+    "january": {
+      "family": "months",
+      "n_pos": 70,
+      "n_neg": 1295,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9824544953116382,
+      "gemma_auroc": 0.9904633204633204,
+      "raw_ratio": 0.991914061847403,
+      "cc_ratio": 0.9836708988877769,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9699724214009928,
+          "gemma_auroc": 0.9891836734693877,
+          "gemma_auroc_stored": 0.9891836734693877,
+          "raw_ratio": 0.980578680599312,
+          "cc_ratio": 0.9607279369482123
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9824544953116382,
+          "gemma_auroc": 0.9904633204633204,
+          "gemma_auroc_stored": 0.9904633204633204,
+          "raw_ratio": 0.991914061847403,
+          "cc_ratio": 0.9836708988877769
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9797021511307226,
+          "gemma_auroc": 0.9880915609487038,
+          "gemma_auroc_stored": 0.9880915609487038,
+          "raw_ratio": 0.9915094813582598,
+          "cc_ratio": 0.982811811370648
+        }
+      ]
+    },
+    "july": {
+      "family": "months",
+      "n_pos": 64,
+      "n_neg": 1301,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9490896425826287,
+      "gemma_auroc": 0.9853357993850884,
+      "raw_ratio": 0.9632144119547067,
+      "cc_ratio": 0.9253173640840364,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9442856456571868,
+          "gemma_auroc": 0.9922055149884704,
+          "gemma_auroc_stored": 0.9922055149884704,
+          "raw_ratio": 0.951703685771349,
+          "cc_ratio": 0.9026425591098748
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9490896425826287,
+          "gemma_auroc": 0.9853357993850884,
+          "gemma_auroc_stored": 0.9853357993850884,
+          "raw_ratio": 0.9632144119547067,
+          "cc_ratio": 0.9253173640840364
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9244091083781706,
+          "gemma_auroc": 0.9854438893159109,
+          "gemma_auroc_stored": 0.9854438893159109,
+          "raw_ratio": 0.9380636669429142,
+          "cc_ratio": 0.8742701632855021
+        }
+      ]
+    },
+    "june": {
+      "family": "months",
+      "n_pos": 86,
+      "n_neg": 1279,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9120906594905177,
+      "gemma_auroc": 0.9834172773060349,
+      "raw_ratio": 0.9274706480539892,
+      "cc_ratio": 0.8524533127715195,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.8843709656890376,
+          "gemma_auroc": 0.9726803280178918,
+          "gemma_auroc_stored": 0.9726803280178918,
+          "raw_ratio": 0.9092102926469077,
+          "cc_ratio": 0.8131731804893062
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9120906594905177,
+          "gemma_auroc": 0.9834172773060349,
+          "gemma_auroc_stored": 0.9834172773060349,
+          "raw_ratio": 0.9274706480539892,
+          "cc_ratio": 0.8524533127715195
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.8998718111897013,
+          "gemma_auroc": 0.9715711766096332,
+          "gemma_auroc_stored": 0.9715711766096332,
+          "raw_ratio": 0.9262026631233216,
+          "cc_ratio": 0.847956429535377
+        }
+      ]
+    },
+    "march": {
+      "family": "months",
+      "n_pos": 75,
+      "n_neg": 1290,
+      "best_layer": 8,
+      "best_arm": "lda",
+      "enc_auroc": 0.9054521963824289,
+      "gemma_auroc": 0.958609819121447,
+      "raw_ratio": 0.9445471747955426,
+      "cc_ratio": 0.8840896541621122,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.8027596899224806,
+          "gemma_auroc": 0.929421188630491,
+          "gemma_auroc_stored": 0.929421188630491,
+          "raw_ratio": 0.863720022464038,
+          "cc_ratio": 0.7050413392223172
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9054521963824289,
+          "gemma_auroc": 0.958609819121447,
+          "gemma_auroc_stored": 0.958609819121447,
+          "raw_ratio": 0.9445471747955426,
+          "cc_ratio": 0.8840896541621122
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.8686925064599483,
+          "gemma_auroc": 0.9206666666666666,
+          "gemma_auroc_stored": 0.9206666666666666,
+          "raw_ratio": 0.9435472553873443,
+          "cc_ratio": 0.8764481136131894
+        }
+      ]
+    },
+    "may": {
+      "family": "months",
+      "n_pos": 81,
+      "n_neg": 1284,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9075708626591285,
+      "gemma_auroc": 0.966020537671628,
+      "raw_ratio": 0.9394943764307754,
+      "cc_ratio": 0.8745770405215813,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.876874927887389,
+          "gemma_auroc": 0.9645782854505596,
+          "gemma_auroc_stored": 0.9645782854505596,
+          "raw_ratio": 0.9090759569377991,
+          "cc_ratio": 0.8112194213336645
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9075708626591285,
+          "gemma_auroc": 0.966020537671628,
+          "gemma_auroc_stored": 0.966020537671628,
+          "raw_ratio": 0.9394943764307754,
+          "cc_ratio": 0.8745770405215813
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.7941761855313257,
+          "gemma_auroc": 0.9461751471097265,
+          "gemma_auroc_stored": 0.9461751471097265,
+          "raw_ratio": 0.8393543076641669,
+          "cc_ratio": 0.6593289371605897
+        }
+      ]
+    },
+    "november": {
+      "family": "months",
+      "n_pos": 56,
+      "n_neg": 1309,
+      "best_layer": 8,
+      "best_arm": "lda",
+      "enc_auroc": 0.9461284513805522,
+      "gemma_auroc": 0.984550638437193,
+      "raw_ratio": 0.9609749000644299,
+      "cc_ratio": 0.9207055279494363,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9423360253192186,
+          "gemma_auroc": 0.9868697478991597,
+          "gemma_auroc_stored": 0.9868697478991597,
+          "raw_ratio": 0.9548737584927046,
+          "cc_ratio": 0.9085305201810054
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9461284513805522,
+          "gemma_auroc": 0.984550638437193,
+          "gemma_auroc_stored": 0.984550638437193,
+          "raw_ratio": 0.9609749000644299,
+          "cc_ratio": 0.9207055279494363
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9429499072356216,
+          "gemma_auroc": 0.9795986576448761,
+          "gemma_auroc_stored": 0.9795986576448761,
+          "raw_ratio": 0.9625879944574808,
+          "cc_ratio": 0.9235845433988027
+        }
+      ]
+    },
+    "october": {
+      "family": "months",
+      "n_pos": 65,
+      "n_neg": 1300,
+      "best_layer": 6,
+      "best_arm": "lda",
+      "enc_auroc": 0.8982130177514793,
+      "gemma_auroc": 0.9898461538461538,
+      "raw_ratio": 0.9074268907964899,
+      "cc_ratio": 0.8129348666408969,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.8982130177514793,
+          "gemma_auroc": 0.9898461538461538,
+          "gemma_auroc_stored": 0.9898461538461538,
+          "raw_ratio": 0.9074268907964899,
+          "cc_ratio": 0.8129348666408969
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.8929644970414201,
+          "gemma_auroc": 0.9897633136094675,
+          "gemma_auroc_stored": 0.9897633136094675,
+          "raw_ratio": 0.9022000358701501,
+          "cc_ratio": 0.8023559260601667
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.8629467455621301,
+          "gemma_auroc": 0.9808520710059172,
+          "gemma_auroc_stored": 0.9808520710059172,
+          "raw_ratio": 0.8797929586641248,
+          "cc_ratio": 0.7547991730655639
+        }
+      ]
+    },
+    "september": {
+      "family": "months",
+      "n_pos": 60,
+      "n_neg": 1305,
+      "best_layer": 6,
+      "best_arm": "lda",
+      "enc_auroc": 0.9156768837803321,
+      "gemma_auroc": 0.984169859514687,
+      "raw_ratio": 0.9304053308763894,
+      "cc_ratio": 0.8585352343018426,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9156768837803321,
+          "gemma_auroc": 0.984169859514687,
+          "gemma_auroc_stored": 0.984169859514687,
+          "raw_ratio": 0.9304053308763894,
+          "cc_ratio": 0.8585352343018426
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9078033205619412,
+          "gemma_auroc": 0.9805683269476373,
+          "gemma_auroc_stored": 0.9805683269476373,
+          "raw_ratio": 0.9257930279961187,
+          "cc_ratio": 0.8485855136399272
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.8998148148148148,
+          "gemma_auroc": 0.9774010217113666,
+          "gemma_auroc_stored": 0.9774010217113666,
+          "raw_ratio": 0.9206198835758292,
+          "cc_ratio": 0.8374821096561041
+        }
+      ]
+    },
+    "first_quarter": {
+      "family": "moon_phases",
+      "n_pos": 25,
+      "n_neg": 867,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9981545559400231,
+      "gemma_auroc": 0.9985697808535179,
+      "raw_ratio": 0.9995841803733136,
+      "cc_ratio": 0.9991671679082035,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9981545559400231,
+          "gemma_auroc": 0.9985697808535179,
+          "gemma_auroc_stored": 0.9985697808535179,
+          "raw_ratio": 0.9995841803733136,
+          "cc_ratio": 0.9991671679082035
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.994555940023068,
+          "gemma_auroc": 0.99520184544406,
+          "gemma_auroc_stored": 0.99520184544406,
+          "raw_ratio": 0.9993509804830559,
+          "cc_ratio": 0.9986956724274467
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9934025374855825,
+          "gemma_auroc": 0.9986620530565167,
+          "gemma_auroc_stored": 0.9986620530565167,
+          "raw_ratio": 0.9947334380486003,
+          "cc_ratio": 0.989452745524356
+        }
+      ]
+    },
+    "full_moon": {
+      "family": "moon_phases",
+      "n_pos": 90,
+      "n_neg": 802,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9770365752285952,
+      "gemma_auroc": 0.9877112773621501,
+      "raw_ratio": 0.9891924873409732,
+      "cc_ratio": 0.9781126608527684,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9770365752285952,
+          "gemma_auroc": 0.9877112773621501,
+          "gemma_auroc_stored": 0.9877112773621501,
+          "raw_ratio": 0.9891924873409732,
+          "cc_ratio": 0.9781126608527684
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9447215295095595,
+          "gemma_auroc": 0.9906760875588806,
+          "gemma_auroc_stored": 0.9906760875588806,
+          "raw_ratio": 0.9536129329995665,
+          "cc_ratio": 0.9063444108761329
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.957578276530895,
+          "gemma_auroc": 0.986339706289831,
+          "gemma_auroc_stored": 0.986339706289831,
+          "raw_ratio": 0.9708402393460123,
+          "cc_ratio": 0.9408614402917046
+        }
+      ]
+    },
+    "last_quarter": {
+      "family": "moon_phases",
+      "n_pos": 25,
+      "n_neg": 867,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.994232987312572,
+      "gemma_auroc": 0.9985697808535179,
+      "raw_ratio": 0.9956569950101645,
+      "cc_ratio": 0.9913015314856798,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.980876585928489,
+          "gemma_auroc": 0.9947404844290657,
+          "gemma_auroc_stored": 0.9947404844290657,
+          "raw_ratio": 0.9860627985714948,
+          "cc_ratio": 0.971977432741176
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9902883506343714,
+          "gemma_auroc": 0.9987081891580162,
+          "gemma_auroc_stored": 0.9987081891580162,
+          "raw_ratio": 0.99156927056867,
+          "cc_ratio": 0.9831167029002266
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.994232987312572,
+          "gemma_auroc": 0.9985697808535179,
+          "gemma_auroc_stored": 0.9985697808535179,
+          "raw_ratio": 0.9956569950101645,
+          "cc_ratio": 0.9913015314856798
+        }
+      ]
+    },
+    "new_moon": {
+      "family": "moon_phases",
+      "n_pos": 73,
+      "n_neg": 819,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.99519126231455,
+      "gemma_auroc": 0.992857979159349,
+      "raw_ratio": 1.0023500673854449,
+      "cc_ratio": 1.0047341896730186,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.99519126231455,
+          "gemma_auroc": 0.992857979159349,
+          "gemma_auroc_stored": 0.992857979159349,
+          "raw_ratio": 1.0023500673854449,
+          "cc_ratio": 1.0047341896730186
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9468446317761386,
+          "gemma_auroc": 0.9953668857778447,
+          "gemma_auroc_stored": 0.9953668857778447,
+          "raw_ratio": 0.9512518904385817,
+          "cc_ratio": 0.902047844951294
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9148477093682573,
+          "gemma_auroc": 0.9940288022479803,
+          "gemma_auroc_stored": 0.9940288022479803,
+          "raw_ratio": 0.9203432609793034,
+          "cc_ratio": 0.8397237316540552
+        }
+      ]
+    },
+    "waning_crescent": {
+      "family": "moon_phases",
+      "n_pos": 15,
+      "n_neg": 877,
+      "best_layer": 6,
+      "best_arm": "lda",
+      "enc_auroc": 0.905283162295705,
+      "gemma_auroc": 0.9904979095400989,
+      "raw_ratio": 0.9139677666922487,
+      "cc_ratio": 0.8262688880278961,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.905283162295705,
+          "gemma_auroc": 0.9904979095400989,
+          "gemma_auroc_stored": 0.9904979095400989,
+          "raw_ratio": 0.9139677666922487,
+          "cc_ratio": 0.8262688880278961
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.8508551881413912,
+          "gemma_auroc": 0.9936145952109464,
+          "gemma_auroc_stored": 0.9936145952109464,
+          "raw_ratio": 0.8563231581363324,
+          "cc_ratio": 0.7107877107877109
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.8663245914101102,
+          "gemma_auroc": 0.9870771569745344,
+          "gemma_auroc_stored": 0.9870771569745344,
+          "raw_ratio": 0.8776665383134385,
+          "cc_ratio": 0.7520873975809599
+        }
+      ]
+    },
+    "waning_gibbous": {
+      "family": "moon_phases",
+      "n_pos": 16,
+      "n_neg": 876,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9853381849315068,
+      "gemma_auroc": 0.9967180365296804,
+      "raw_ratio": 0.9885826771653543,
+      "cc_ratio": 0.9770899166906061,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9853381849315068,
+          "gemma_auroc": 0.9967180365296804,
+          "gemma_auroc_stored": 0.9967180365296804,
+          "raw_ratio": 0.9885826771653543,
+          "cc_ratio": 0.9770899166906061
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9367508561643836,
+          "gemma_auroc": 0.9930793378995434,
+          "gemma_auroc_stored": 0.9930793378995434,
+          "raw_ratio": 0.9432789711904591,
+          "cc_ratio": 0.8857618289683115
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9646832191780822,
+          "gemma_auroc": 0.9935074200913242,
+          "gemma_auroc_stored": 0.9935074200913242,
+          "raw_ratio": 0.9709874326750448,
+          "cc_ratio": 0.9415931762324707
+        }
+      ]
+    },
+    "waxing_crescent": {
+      "family": "moon_phases",
+      "n_pos": 23,
+      "n_neg": 869,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9929454145194376,
+      "gemma_auroc": 0.9940961625056287,
+      "raw_ratio": 0.9988424178368311,
+      "cc_ratio": 0.9976710039997974,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9929454145194376,
+          "gemma_auroc": 0.9940961625056287,
+          "gemma_auroc_stored": 0.9940961625056287,
+          "raw_ratio": 0.9988424178368311,
+          "cc_ratio": 0.9976710039997974
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9869665282433582,
+          "gemma_auroc": 0.9928453494771602,
+          "gemma_auroc_stored": 0.9928453494771602,
+          "raw_ratio": 0.9940788147550896,
+          "cc_ratio": 0.9880716714887569
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9838895281933256,
+          "gemma_auroc": 0.9937459348576575,
+          "gemma_auroc_stored": 0.9937459348576575,
+          "raw_ratio": 0.990081562783204,
+          "cc_ratio": 0.9800374930333889
+        }
+      ]
+    },
+    "waxing_gibbous": {
+      "family": "moon_phases",
+      "n_pos": 17,
+      "n_neg": 875,
+      "best_layer": 6,
+      "best_arm": "dom",
+      "enc_auroc": 0.9845378151260504,
+      "gemma_auroc": 0.9879663865546219,
+      "raw_ratio": 0.9965296679368535,
+      "cc_ratio": 0.9929737549080389,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "dom",
+          "enc_auroc": 0.9845378151260504,
+          "gemma_auroc": 0.9879663865546219,
+          "gemma_auroc_stored": 0.9879663865546219,
+          "raw_ratio": 0.9965296679368535,
+          "cc_ratio": 0.9929737549080389
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9534117647058824,
+          "gemma_auroc": 0.9739159663865546,
+          "gemma_auroc_stored": 0.9739159663865546,
+          "raw_ratio": 0.9789466418168014,
+          "cc_ratio": 0.9567345201787362
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9776470588235294,
+          "gemma_auroc": 0.9879663865546219,
+          "gemma_auroc_stored": 0.9879663865546219,
+          "raw_ratio": 0.9895549809471965,
+          "cc_ratio": 0.978852379968313
+        }
+      ]
+    },
+    "autumn": {
+      "family": "seasons",
+      "n_pos": 50,
+      "n_neg": 785,
+      "best_layer": 6,
+      "best_arm": "lda",
+      "enc_auroc": 0.9791337579617835,
+      "gemma_auroc": 0.984,
+      "raw_ratio": 0.9950546320749832,
+      "cc_ratio": 0.9899457809127759,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9791337579617835,
+          "gemma_auroc": 0.984,
+          "gemma_auroc_stored": 0.984,
+          "raw_ratio": 0.9950546320749832,
+          "cc_ratio": 0.9899457809127759
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9766624203821656,
+          "gemma_auroc": 0.9828025477707006,
+          "gemma_auroc_stored": 0.9828025477707006,
+          "raw_ratio": 0.9937524303305248,
+          "cc_ratio": 0.9872823218997361
+        },
+        {
+          "layer": 14,
+          "arm": "dom",
+          "enc_auroc": 0.9128535031847134,
+          "gemma_auroc": 0.9660127388535031,
+          "gemma_auroc_stored": 0.9660127388535031,
+          "raw_ratio": 0.9449704610190949,
+          "cc_ratio": 0.8859275053304905
+        }
+      ]
+    },
+    "spring": {
+      "family": "seasons",
+      "n_pos": 67,
+      "n_neg": 768,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9808477145522388,
+      "gemma_auroc": 0.9899331467661692,
+      "raw_ratio": 0.9908221759786408,
+      "cc_ratio": 0.9814557715192385,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9651644123134329,
+          "gemma_auroc": 0.9908271144278606,
+          "gemma_auroc_stored": 0.9908271144278606,
+          "raw_ratio": 0.9740997175584498,
+          "cc_ratio": 0.947715394361736
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9721120957711443,
+          "gemma_auroc": 0.994247512437811,
+          "gemma_auroc_stored": 0.994247512437811,
+          "raw_ratio": 0.9777365129007037,
+          "cc_ratio": 0.9552139037433156
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9808477145522388,
+          "gemma_auroc": 0.9899331467661692,
+          "gemma_auroc_stored": 0.9899331467661692,
+          "raw_ratio": 0.9908221759786408,
+          "cc_ratio": 0.9814557715192385
+        }
+      ]
+    },
+    "summer": {
+      "family": "seasons",
+      "n_pos": 97,
+      "n_neg": 738,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9766504623809125,
+      "gemma_auroc": 0.9873788170871399,
+      "raw_ratio": 0.9891345099564957,
+      "cc_ratio": 0.9779876467131945,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9574148576537311,
+          "gemma_auroc": 0.986973709943285,
+          "gemma_auroc_stored": 0.986973709943285,
+          "raw_ratio": 0.9700510236577097,
+          "cc_ratio": 0.9393009279843948
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9640432486799094,
+          "gemma_auroc": 0.9912901964071187,
+          "gemma_auroc_stored": 0.9912901964071187,
+          "raw_ratio": 0.9725136515765369,
+          "cc_ratio": 0.9445400133638522
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9766504623809125,
+          "gemma_auroc": 0.9873788170871399,
+          "gemma_auroc_stored": 0.9873788170871399,
+          "raw_ratio": 0.9891345099564957,
+          "cc_ratio": 0.9779876467131945
+        }
+      ]
+    },
+    "winter": {
+      "family": "seasons",
+      "n_pos": 89,
+      "n_neg": 746,
+      "best_layer": 14,
+      "best_arm": "lda",
+      "enc_auroc": 0.9748170015362834,
+      "gemma_auroc": 0.980766334307317,
+      "raw_ratio": 0.9939339957307615,
+      "cc_ratio": 0.9876253132832079,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9721812211946863,
+          "gemma_auroc": 0.9850137060577763,
+          "gemma_auroc_stored": 0.9850137060577763,
+          "raw_ratio": 0.986972277863576,
+          "cc_ratio": 0.9735420160238496
+        },
+        {
+          "layer": 8,
+          "arm": "lda",
+          "enc_auroc": 0.9734087417537729,
+          "gemma_auroc": 0.985299876494864,
+          "gemma_auroc_stored": 0.985299876494864,
+          "raw_ratio": 0.9879314561741417,
+          "cc_ratio": 0.9754973464510723
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9748170015362834,
+          "gemma_auroc": 0.980766334307317,
+          "gemma_auroc_stored": 0.980766334307317,
+          "raw_ratio": 0.9939339957307615,
+          "cc_ratio": 0.9876253132832079
+        }
+      ]
+    },
+    "friday": {
+      "family": "weekdays",
+      "n_pos": 61,
+      "n_neg": 913,
+      "best_layer": 6,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9295153789524716,
+      "gemma_auroc": 0.9710286750579067,
+      "raw_ratio": 0.9572481254449469,
+      "cc_ratio": 0.911866732741204,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9295153789524716,
+          "gemma_auroc": 0.9710286750579067,
+          "gemma_auroc_stored": 0.9710286750579067,
+          "raw_ratio": 0.9572481254449469,
+          "cc_ratio": 0.911866732741204
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9244159948287936,
+          "gemma_auroc": 0.9665756917386386,
+          "gemma_auroc_stored": 0.9665756917386386,
+          "raw_ratio": 0.9563824155002183,
+          "cc_ratio": 0.9096401770252069
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9169464744222793,
+          "gemma_auroc": 0.9723394322446268,
+          "gemma_auroc_stored": 0.9723394322446268,
+          "raw_ratio": 0.943031254328055,
+          "cc_ratio": 0.8827263742112065
+        }
+      ]
+    },
+    "monday": {
+      "family": "weekdays",
+      "n_pos": 50,
+      "n_neg": 924,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9573051948051948,
+      "gemma_auroc": 0.98745670995671,
+      "raw_ratio": 0.9694654815269451,
+      "cc_ratio": 0.9381452454430408,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "lda",
+          "enc_auroc": 0.9303463203463204,
+          "gemma_auroc": 0.9780627705627706,
+          "gemma_auroc_stored": 0.9780627705627706,
+          "raw_ratio": 0.9512133048587521,
+          "cc_ratio": 0.9001878975844974
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9573051948051948,
+          "gemma_auroc": 0.98745670995671,
+          "gemma_auroc_stored": 0.98745670995671,
+          "raw_ratio": 0.9694654815269451,
+          "cc_ratio": 0.9381452454430408
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9542532467532467,
+          "gemma_auroc": 0.9873051948051949,
+          "gemma_auroc_stored": 0.9873051948051949,
+          "raw_ratio": 0.9665230688283073,
+          "cc_ratio": 0.9321740289159837
+        }
+      ]
+    },
+    "saturday": {
+      "family": "weekdays",
+      "n_pos": 55,
+      "n_neg": 919,
+      "best_layer": 14,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9823226827579384,
+      "gemma_auroc": 0.9948659610248294,
+      "raw_ratio": 0.9873919917272375,
+      "cc_ratio": 0.9746531803462198,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.963102186170739,
+          "gemma_auroc": 0.994311999208626,
+          "gemma_auroc_stored": 0.994311999208626,
+          "raw_ratio": 0.9686116500024872,
+          "cc_ratio": 0.9368621172703622
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9729547927589277,
+          "gemma_auroc": 0.9935799782372143,
+          "gemma_auroc_stored": 0.9935799782372143,
+          "raw_ratio": 0.9792415447874873,
+          "cc_ratio": 0.9582130832130833
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9823226827579384,
+          "gemma_auroc": 0.9948659610248294,
+          "gemma_auroc_stored": 0.9948659610248294,
+          "raw_ratio": 0.9873919917272375,
+          "cc_ratio": 0.9746531803462198
+        }
+      ]
+    },
+    "sunday": {
+      "family": "weekdays",
+      "n_pos": 20,
+      "n_neg": 954,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9752882599580712,
+      "gemma_auroc": 0.9959119496855345,
+      "raw_ratio": 0.9792916535101568,
+      "cc_ratio": 0.9584125977594589,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9487945492662474,
+          "gemma_auroc": 0.9958071278825996,
+          "gemma_auroc_stored": 0.9958071278825996,
+          "raw_ratio": 0.9527894736842105,
+          "cc_ratio": 0.9051797040169133
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9752882599580712,
+          "gemma_auroc": 0.9959119496855345,
+          "gemma_auroc_stored": 0.9959119496855345,
+          "raw_ratio": 0.9792916535101568,
+          "cc_ratio": 0.9584125977594589
+        },
+        {
+          "layer": 14,
+          "arm": "lda",
+          "enc_auroc": 0.9486111111111111,
+          "gemma_auroc": 0.995754716981132,
+          "gemma_auroc_stored": 0.995754716981132,
+          "raw_ratio": 0.952655402915943,
+          "cc_ratio": 0.9049053811185115
+        }
+      ]
+    },
+    "thursday": {
+      "family": "weekdays",
+      "n_pos": 40,
+      "n_neg": 934,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9163543897216274,
+      "gemma_auroc": 0.9686964668094219,
+      "raw_ratio": 0.9459664829167875,
+      "cc_ratio": 0.8883241483681219,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9021547109207709,
+          "gemma_auroc": 0.9760974304068523,
+          "gemma_auroc_stored": 0.9760974304068523,
+          "raw_ratio": 0.9242465790989114,
+          "cc_ratio": 0.8446899420925396
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9163543897216274,
+          "gemma_auroc": 0.9686964668094219,
+          "gemma_auroc_stored": 0.9686964668094219,
+          "raw_ratio": 0.9459664829167875,
+          "cc_ratio": 0.8883241483681219
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.8739025695931477,
+          "gemma_auroc": 0.9735010706638115,
+          "gemma_auroc_stored": 0.9735010706638115,
+          "raw_ratio": 0.8976904041792686,
+          "cc_ratio": 0.7896551724137931
+        }
+      ]
+    },
+    "tuesday": {
+      "family": "weekdays",
+      "n_pos": 50,
+      "n_neg": 924,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.921948051948052,
+      "gemma_auroc": 0.9815151515151516,
+      "raw_ratio": 0.9393110748467339,
+      "cc_ratio": 0.8762923671671311,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9172186147186148,
+          "gemma_auroc": 0.9776190476190476,
+          "gemma_auroc_stored": 0.9776190476190476,
+          "raw_ratio": 0.9382168002479742,
+          "cc_ratio": 0.8735384754826431
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.921948051948052,
+          "gemma_auroc": 0.9815151515151516,
+          "gemma_auroc_stored": 0.9815151515151516,
+          "raw_ratio": 0.9393110748467339,
+          "cc_ratio": 0.8762923671671311
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9174242424242425,
+          "gemma_auroc": 0.9877272727272727,
+          "gemma_auroc_stored": 0.9877272727272727,
+          "raw_ratio": 0.9288234391777881,
+          "cc_ratio": 0.855855855855856
+        }
+      ]
+    },
+    "wednesday": {
+      "family": "weekdays",
+      "n_pos": 51,
+      "n_neg": 923,
+      "best_layer": 8,
+      "best_arm": "ridge",
+      "enc_auroc": 0.9581501072801818,
+      "gemma_auroc": 0.984014190725044,
+      "raw_ratio": 0.9737157414103906,
+      "cc_ratio": 0.9465633778089888,
+      "per_layer": [
+        {
+          "layer": 6,
+          "arm": "ridge",
+          "enc_auroc": 0.9209844284409322,
+          "gemma_auroc": 0.986733371571814,
+          "gemma_auroc_stored": 0.986733371571814,
+          "raw_ratio": 0.9333670624455043,
+          "cc_ratio": 0.8649179469273744
+        },
+        {
+          "layer": 8,
+          "arm": "ridge",
+          "enc_auroc": 0.9581501072801818,
+          "gemma_auroc": 0.984014190725044,
+          "gemma_auroc_stored": 0.984014190725044,
+          "raw_ratio": 0.9737157414103906,
+          "cc_ratio": 0.9465633778089888
+        },
+        {
+          "layer": 14,
+          "arm": "ridge",
+          "enc_auroc": 0.9225670766681537,
+          "gemma_auroc": 0.9895587704204108,
+          "gemma_auroc_stored": 0.9895587704204108,
+          "raw_ratio": 0.9323014501465174,
+          "cc_ratio": 0.8631590366673899
+        }
+      ]
+    }
+  },
+  "seconds": 17.7
+}

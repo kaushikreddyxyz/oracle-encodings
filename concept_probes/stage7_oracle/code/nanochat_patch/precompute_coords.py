@@ -959,6 +959,7 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
             # so add_doc/emit run in the SAME order as serial -> byte-identical.
             seg_iter = pool.imap_docs(texts)
 
+        last_hb_docs = -2000  # first iteration writes hb at docs=0 ("shard started")
         for hsh, n, segs in seg_iter:
             engine.add_doc(("d", doc_keys_seen), hsh, n, segs)
             doc_keys_seen += 1
@@ -968,9 +969,14 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
             for chsh, cn, ccoords in engine.drain(final=False):
                 emit(chsh, cn, ccoords)
                 pbar.update(1)
-            if hb_path and n_docs % 2000 == 0:
+            # >= threshold, not exact-multiple: fast-forward emits docs in bursts
+            # of thousands per bucketed flush, so n_docs rarely lands EXACTLY on
+            # a multiple of 2000 and `% 2000 == 0` would leave the heartbeat
+            # stale for a whole shard.
+            if hb_path and n_docs - last_hb_docs >= 2000:
                 extra = pool.stats() if pool is not None else {}
                 _heartbeat(hb_path, sid=sid, docs=n_docs, tokens=n_tokens, **extra)
+                last_hb_docs = n_docs
         for chsh, cn, ccoords in engine.drain():
             emit(chsh, cn, ccoords)
             pbar.update(1)

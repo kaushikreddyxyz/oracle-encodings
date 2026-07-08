@@ -138,3 +138,40 @@ precompute encoder wiring on the REAL Exp-A checkpoint + REAL tiktoken/qwen
 tokenizer pair (precompute logic is CPU-tested with a byte-BPE stand-in +
 tiny-Qwen2 model in test_precompute_coords.py, but the real forward, the real
 crossing rate, and coord-scale/clip fractions on real preds are GPU-only).
+
+## Fast-forward sweep rollout (2026-07-08): revised equivalence contract
+- **`--fast-forward` added to `--mode sweep`** (with `--max-batch-tokens`,
+  `--seg-buffer`; optionally `--feeder-workers N`): length-bucketed cross-doc
+  batching. Segments are buffered across docs, sorted by qwen length, and each
+  padded forward is packed to a token budget instead of a 32-seq FIFO chunk.
+  Root cause of the old slowness: the sweep loop's per-doc `drain()` force-
+  flushed after EVERY doc, so forwards ran at effective batch~1 (H100 at
+  ~55% util, latency-bound). Fix: in-loop `drain(final=False)` accumulates a
+  full buffer; measured ~2.2x alone, ~3.2x with `--feeder-workers 8`
+  (~32.5k -> ~100k tok/s per pod on H100).
+- **CONSUMERS OF THE STORE, READ THIS — mixed fp noise across shards**: shards
+  completed before the rollout were produced by the serial (batch~1) path;
+  later shards by the fast path. bf16 GEMM results vary with batch SHAPE
+  (verified: same-shape recompute is bit-identical; different batch shape
+  perturbs coords). Measured on 500 real docs (~4M coord values), fast vs
+  serial: 69.8% of int8 values exact, 29.7% differ by exactly 1 quant step,
+  0.42% by >=2, max 4 steps (scale=0.0869). In raw coord units: mean |diff|
+  0.027, p99.9 0.140, max 0.348 — i.e. p99.9 BELOW the sigma=0.15 Gaussian
+  noise the coord_dataloader deliberately adds at train time. fp32 head does
+  not remove it (noise lives in the model forward); NO batching config both
+  speeds up and stays within one int8 step.
+- **Revised equivalence contract (orchestrator-approved)**, replacing the
+  original "one int8 step for >=99.9% of values": (1) EXACT zero positions —
+  the zero-fallback invariant (unmapped token -> int8 0 -> injection no-op)
+  holds bit-exactly on both paths (verified; it is set structurally in
+  `_gather`, independent of batching); (2) >=99.9% of values perturbed below
+  1x training-noise sigma (measured p99.9 = 0.14 < 0.15); (3) identical store
+  format / hashes / index / meta fields. Serial values at this precision are
+  themselves arbitrary bf16 draws, so completed serial shards are KEPT as-is
+  (coord_fit.npz scale/PCA frozen; no re-fit).
+- Heartbeat cadence fixed for bursty emits (`>= 2000 docs since last`, not
+  `% 2000 == 0` — fast-forward completes docs in multi-thousand bursts and
+  never lands exactly on a multiple, which left hb.json stale for a shard).
+- Equivalence + bucketing covered in `test_precompute_coords.py` [9b]
+  (serial vs fast A/B through the REAL buffered path: per-doc
+  `drain(final=False)` + final drain, mirroring `_sweep_one_shard`).

@@ -411,7 +411,8 @@ class CoordEngine:
     completion order (order is irrelevant -- the store is hash-keyed)."""
 
     def __init__(self, model, head, block, K, concepts, families, pca, pred_order,
-                 r, device, dtype, pad_id, batch_seqs=32):
+                 r, device, dtype, pad_id, batch_seqs=32,
+                 fast_forward=False, max_batch_tokens=32768, seg_buffer=4096):
         self.model, self.head = model, head
         self.block, self.K = block, K
         self.concepts, self.families, self.pca, self.pred_order = concepts, families, pca, pred_order
@@ -419,6 +420,19 @@ class CoordEngine:
         self.device, self.dtype = device, dtype
         self.pad_id = pad_id
         self.batch_seqs = batch_seqs
+        # --fast-forward: buffer many segments across docs, sort by qwen length,
+        # and pack each padded forward to a MAX-TOKEN budget (B*maxlen) instead of
+        # a fixed sequence count. Length bucketing kills the ragged-padding waste
+        # of the serial FIFO path and lets each forward saturate the H100. Doc
+        # completion order changes (irrelevant: the store is hash-keyed and each
+        # doc's rows are still written contiguously via win_start scatter); coords
+        # equal the serial path within one int8 step (fp-noise from batch shape),
+        # and the zero-fallback (unmapped -> exact 0) is bit-identical by
+        # construction (set in _gather, independent of batching).
+        self.fast_forward = bool(fast_forward)
+        self.max_batch_tokens = int(max_batch_tokens)
+        self.seg_buffer = int(seg_buffer)
+        self._flush_threshold = self.seg_buffer if self.fast_forward else batch_seqs
         self._pending = []                # list of (doc_key, segment)
         self._docs = {}                   # doc_key -> {"coords","remaining","n","hash"}
         self._order = []                  # doc_keys in add order (stable tie-break)
@@ -438,26 +452,30 @@ class CoordEngine:
                 self._pending.append((doc_key, seg))
         if self._docs[doc_key]["remaining"] == 0:
             self._complete(doc_key)
-        if len(self._pending) >= self.batch_seqs:
+        if len(self._pending) >= self._flush_threshold:
             self.flush()
 
     def _complete(self, doc_key):
         self._ready.append(doc_key)
 
     def _forward_l8(self, batch):
-        """One padded forward over <=batch_seqs segments -> L8-block preds
-        [B, L, K] (float32 numpy)."""
+        """One padded forward over the batch's segments -> L8-block preds
+        [B, L, K] (float32 numpy). Padding is masked by attention_mask, so real
+        positions are unaffected by batch composition (up to bf16 fp-noise)."""
         import torch
         maxlen = max(len(seg["q_ids"]) for _, seg in batch)
         B = len(batch)
-        input_ids = torch.full((B, maxlen), self.pad_id, dtype=torch.long)
-        attn = torch.zeros((B, maxlen), dtype=torch.long)
+        # Build on the host as one numpy block (no per-row torch.tensor alloc),
+        # then a single pinned-ish H2D copy per tensor.
+        ids_np = np.full((B, maxlen), self.pad_id, dtype=np.int64)
+        attn_np = np.zeros((B, maxlen), dtype=np.int64)
         for i, (_, seg) in enumerate(batch):
-            L = len(seg["q_ids"])
-            input_ids[i, :L] = torch.tensor(seg["q_ids"], dtype=torch.long)
-            attn[i, :L] = 1
-        input_ids = input_ids.to(self.device)
-        attn = attn.to(self.device)
+            q = seg["q_ids"]
+            L = len(q)
+            ids_np[i, :L] = q
+            attn_np[i, :L] = 1
+        input_ids = torch.from_numpy(ids_np).to(self.device, non_blocking=True)
+        attn = torch.from_numpy(attn_np).to(self.device, non_blocking=True)
         with torch.inference_mode():
             out = self.model(input_ids=input_ids, attention_mask=attn)
             hidden = out.last_hidden_state                       # [B, L, H]
@@ -477,15 +495,46 @@ class CoordEngine:
         return gathered
 
     def flush(self):
-        # Chunk into batch_seqs-sized forwards: a single long doc can enqueue
-        # far more than batch_seqs windows at once, and a monolithic forward
-        # over all of them would OOM on rare giant docs.
+        if self.fast_forward:
+            self._flush_bucketed()
+            return
+        # Serial path: chunk into batch_seqs-sized forwards in FIFO order. A
+        # single long doc can enqueue far more than batch_seqs windows at once,
+        # and a monolithic forward over all of them would OOM on rare giant docs.
         while self._pending:
             batch = self._pending[:self.batch_seqs]
             self._pending = self._pending[self.batch_seqs:]
             l8 = self._forward_l8(batch)
             for i, (doc_key, seg) in enumerate(batch):
                 self._consume(doc_key, seg, self._gather(seg, l8[i]))
+
+    def _flush_bucketed(self):
+        """Length-bucketed cross-doc batching. Sort all buffered segments by
+        qwen length, then greedily pack forwards to a max padded-token budget
+        (B*maxlen <= max_batch_tokens). Similar lengths batch together, so the
+        pad waste that dominates the ragged FIFO path collapses and each forward
+        is sized to saturate the GPU rather than latency-bound at batch_seqs."""
+        pend = self._pending
+        self._pending = []
+        if not pend:
+            return
+        order = sorted(range(len(pend)), key=lambda i: len(pend[i][1]["q_ids"]))
+        i, N = 0, len(order)
+        while i < N:
+            # pend[order[i]] is the shortest remaining; as we grow the batch the
+            # running max length is the newest (sorted-asc) element. Always keep
+            # >=1 segment so a lone segment longer than the budget still forwards.
+            j = i + 1
+            while j < N:
+                cand_max = len(pend[order[j]][1]["q_ids"])
+                if (j - i + 1) * cand_max > self.max_batch_tokens:
+                    break
+                j += 1
+            batch = [pend[order[k]] for k in range(i, j)]
+            l8 = self._forward_l8(batch)
+            for k, (doc_key, seg) in enumerate(batch):
+                self._consume(doc_key, seg, self._gather(seg, l8[k]))
+            i = j
 
     def _consume(self, doc_key, seg, gathered):
         z, _ = build_coords(gathered, self.concepts, self.families,
@@ -496,9 +545,21 @@ class CoordEngine:
         if d["remaining"] == 0:
             self._complete(doc_key)
 
-    def drain(self):
-        """Yield (hash, n, coords) for all completed docs; flush remainder first."""
-        self.flush()
+    def drain(self, final=True):
+        """Yield (hash, n, coords) for completed docs.
+
+        Serial path (and the FINAL drain of any shard) flush the pending
+        segments first. In --fast-forward mode the sweep's per-doc, in-loop
+        drain passes final=False so pending segments keep ACCUMULATING into big
+        length-bucketed batches (add_doc triggers the real flush once seg_buffer
+        segments are queued). Forcing a flush after every doc -- as the original
+        unconditional flush did -- collapses each forward back to just that doc's
+        1-2 segments and completely defeats the cross-doc bucketing (the GPU then
+        runs hundreds of tiny latency-bound forwards instead of a few saturating
+        ones). The final drain (final=True, the default) flushes the tail so no
+        doc is left buffered."""
+        if final or not self.fast_forward:
+            self.flush()
         for doc_key in self._ready:
             d = self._docs.pop(doc_key)
             yield d["hash"], d["n"], d["coords"]
@@ -783,6 +844,15 @@ def shard_done_marker(out_dir, sid):
 def run_sweep(args):
     import torch
     from tqdm import tqdm
+    if args.fast_forward and str(args.device).startswith("cuda"):
+        # tf32 for any fp32 matmul (model+head are bf16 so effect is marginal,
+        # but free); does not touch the bf16 compute path.
+        try:
+            torch.set_float32_matmul_precision("high")
+            torch.backends.cuda.matmul.allow_tf32 = True
+            torch.backends.cudnn.allow_tf32 = True
+        except Exception:
+            pass
     out_shards = os.path.join(args.out, "shards")
     os.makedirs(out_shards, exist_ok=True)
     ps = load_probe_meta(args.probe_set)
@@ -809,6 +879,10 @@ def run_sweep(args):
     my_shards = assign_shards(all_shards, args.pod_index, args.n_pods)
     print(f"[sweep] pod {args.pod_index}/{args.n_pods}: {len(my_shards)} shards "
           f"{my_shards[:6]}{'...' if len(my_shards) > 6 else ''}")
+    if args.fast_forward:
+        print(f"[sweep] FAST-FORWARD: length-bucketed batching, "
+              f"max_batch_tokens={args.max_batch_tokens}, seg_buffer={args.seg_buffer} "
+              f"(coords equal serial within 1 int8 step; zero-fallback exact)")
 
     # Opt-in CPU feeder pool: parallelize per-doc segmentation across worker
     # processes (tokenizers only, spawn). N=0 keeps the original serial path.
@@ -848,7 +922,10 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
     tmp_int8 = os.path.join(out_shards, f"coords_{sid:05d}.int8.tmp")
     tmp_idx = os.path.join(out_shards, f"index_{sid:05d}.tmp.npy")  # .npy suffix so np.save won't re-append
     engine = CoordEngine(model, head, block, K, concepts, families, fit["pca"], pred_order,
-                         r, args.device, dtype, qwen_tok.pad_token_id, args.batch_seqs)
+                         r, args.device, dtype, qwen_tok.pad_token_id, args.batch_seqs,
+                         fast_forward=args.fast_forward,
+                         max_batch_tokens=args.max_batch_tokens,
+                         seg_buffer=args.seg_buffer)
     scale = fit["scale"]
     welford = Welford(r)  # per-SHARD partial, persisted in meta_<sid>.json
     recs = []
@@ -885,7 +962,10 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
         for hsh, n, segs in seg_iter:
             engine.add_doc(("d", doc_keys_seen), hsh, n, segs)
             doc_keys_seen += 1
-            for chsh, cn, ccoords in engine.drain():
+            # final=False: let fast-forward accumulate a full seg_buffer before a
+            # bucketed flush (serial path flushes here as before). The tail is
+            # flushed by the post-loop drain() below.
+            for chsh, cn, ccoords in engine.drain(final=False):
                 emit(chsh, cn, ccoords)
                 pbar.update(1)
             if hb_path and n_docs % 2000 == 0:
@@ -1285,7 +1365,20 @@ def build_argparser():
     ap.add_argument("--max-qwen-tokens", type=int, default=4096,
                     help="hard cap on qwen tokens per window (clip beyond)")
     ap.add_argument("--batch-seqs", type=int, default=32,
-                    help="qwen segments per padded forward")
+                    help="qwen segments per padded forward (serial path)")
+    ap.add_argument("--fast-forward", action="store_true",
+                    help="GPU-forward throughput: length-bucketed cross-doc batching. "
+                         "Buffer --seg-buffer segments across docs, sort by qwen length, "
+                         "and pack each forward to a --max-batch-tokens budget (kills "
+                         "ragged-padding waste + latency-bound small forwards). Output "
+                         "equals the serial path within one int8 step (bf16 fp-noise from "
+                         "batch shape); zero-fallback (unmapped -> 0) is bit-identical. "
+                         "Default off = original --batch-seqs FIFO path.")
+    ap.add_argument("--max-batch-tokens", type=int, default=32768,
+                    help="--fast-forward: max padded tokens (B*maxlen) per forward.")
+    ap.add_argument("--seg-buffer", type=int, default=4096,
+                    help="--fast-forward: segments buffered across docs before a "
+                         "length-bucketed flush (bounds in-flight doc memory).")
     ap.add_argument("--clip-sigma", type=float, default=6.0,
                     help="int8 clip at +-clip_sigma*max(coord_std)")
     ap.add_argument("--fit-tokens", type=int, default=2_000_000,

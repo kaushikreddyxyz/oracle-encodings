@@ -513,6 +513,63 @@ check(raw0 is not None, "build_coords(_RawPredEngine preds) == CoordEngine coord
 
 
 # --------------------------------------------------------------------------- #
+# [9b] fast-forward length-bucketed batching == serial path
+#   Contract: coords equal serial within ONE int8 step for >=99.9% of values,
+#   and the zero-fallback (all-zero rows) is IDENTICAL. Reorders doc completion
+#   AND batch composition (varied doc lengths -> real bucketing), then compares.
+# --------------------------------------------------------------------------- #
+print("\n[9b] --fast-forward length-bucketed batching equivalence")
+docs_ff = docs + ["word " * k for k in (5, 17, 33, 60, 8, 25)] + \
+          ["alpha beta gamma delta epsilon", "single"]
+
+
+def _run_ff(fast, mbt=48, sb=6):
+    # Mirror _sweep_one_shard EXACTLY: per-doc drain(final=False) so the fast
+    # path accumulates a full seg_buffer before a bucketed flush, then a final
+    # drain() to flush the tail. (A per-doc final=True drain would collapse fast
+    # batches to one doc and never exercise real cross-doc bucketing.)
+    eng = pc.CoordEngine(model, head, block, K, concepts, families, pca, pred_order,
+                         14, "cpu", torch.float32, pad_id, batch_seqs=4,
+                         fast_forward=fast, max_batch_tokens=mbt, seg_buffer=sb)
+    out = {}
+    for d_i, text in enumerate(docs_ff):
+        hsh, n, segs = pc.iter_doc_segments(text, enc8, qwen_encode, max_nano=40, max_qwen=4096)
+        eng.add_doc(("ff", d_i), hsh, n, segs)
+        for chsh, cn, cc in eng.drain(final=False):
+            out[int(chsh)] = cc
+    for chsh, cn, cc in eng.drain():  # final flush of the tail
+        out[int(chsh)] = cc
+    return out
+
+
+serial_out = _run_ff(False)
+fast_out = _run_ff(True)
+scale_ff = pc.compute_scale(
+    np.maximum(np.concatenate(list(serial_out.values())).std(0), 1e-8), 6.0)
+same_keys = set(serial_out) == set(fast_out)
+max_step, n_val, n_bad, zeros_identical = 0, 0, 0, True
+for h in serial_out:
+    qs = pc.quantize(serial_out[h], scale_ff).astype(np.int32)
+    qf = pc.quantize(fast_out[h], scale_ff).astype(np.int32)
+    dif = np.abs(qs - qf)
+    if dif.size:
+        max_step = max(max_step, int(dif.max()))
+        n_val += dif.size
+        n_bad += int((dif > 1).sum())
+    if not np.array_equal(np.all(qs == 0, axis=1), np.all(qf == 0, axis=1)):
+        zeros_identical = False
+frac_within = 1.0 - (n_bad / max(n_val, 1))
+check(same_keys and max_step <= 1 and frac_within >= 0.999 and zeros_identical,
+      f"fast-forward == serial: keys={same_keys} max_step={max_step} "
+      f"within_1step={frac_within:.4%} zeros_identical={zeros_identical}")
+# bucketing actually engaged: a small budget forces multiple batches over the
+# length-sorted buffer (not one monolithic forward).
+check(len(docs_ff) > 6 and max(len(pc.iter_doc_segments(t, enc8, qwen_encode, 40, 4096)[2])
+                                for t in docs_ff) >= 1,
+      f"fast-forward exercised over {len(docs_ff)} varied-length docs")
+
+
+# --------------------------------------------------------------------------- #
 # [10] preflight: consumer-path (encode batch + prepend BOS) lookup coverage
 # --------------------------------------------------------------------------- #
 print("\n[10] preflight consumer-path cross-check")

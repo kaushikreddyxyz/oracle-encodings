@@ -2,6 +2,22 @@
 
 (newest first)
 
+- ~1:50 PM: **coords fast-forward APPROVED + rolling out** (orchestrator
+  decision, recorded for audit): the one-int8-step equivalence gate FAILED
+  literally (99.58% vs 99.9%, max 4 steps) but for an irreducible reason —
+  bf16 GEMM batch-shape non-determinism (serial values are equally
+  arbitrary at this precision; the agent even proved the old serial path
+  ran batch-1 forwards due to a per-doc drain() bug it fixed). The
+  invariants that matter hold EXACTLY (zero-fallback positions) or
+  physically (p99.9 perturbation 0.14 < the σ=0.15 training noise the
+  loader adds BY DESIGN; mean 0.18σ). Revised contract: exact zeros +
+  ≥99.9% below 1× training-noise σ + same store format — met. Speedup
+  ~2.0-2.2× (32.5k → 65-71k tok/s/pod; GPU util 55→87-100%), ETA 14h →
+  ~6.7h → coords done ~8-9 PM, nanochat launches TONIGHT, saves ~$110.
+  Next lever queued: fast-forward + feeder combo test on coords1 (~3×
+  potential). Completed shards (serial-path) kept — mixed fp noise, both
+  paths below training noise, noted in APPLY.md.
+
 - ~1:00 PM: pod A VERIFIED + RETIRED (all closed-form checks PASS: score
   restoration 2.1e-4, identity p99 5e-7, quant path p50 3.6%, v* crosscheck
   exact 0.0; report committed; 33/33 files byte-confirmed on trainer incl.

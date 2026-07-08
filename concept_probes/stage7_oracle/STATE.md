@@ -2,6 +2,22 @@
 
 (newest first)
 
+- ~9:25 AM: post-scoring wave dispatched. Fleet: pod D DONE (10/10),
+  A/B/C on last 1-3 shards. Exp-A step 4206/6800, R² 0.634 rising.
+  Fable audit of precompute_coords: GO — added the **preflight gate**
+  (consumer-path token/lookup cross-validation; kills the
+  silent-all-zeros $200 failure mode), assemble hard-fails on missing
+  shards, fit/sweep probe-set consistency guards, chunked forwards (OOM),
+  resume-safe Welford, vectorized byte→char (77db86f). Hand-verified 3
+  concept→θ chains (march 60°, southwest 225°, waning_gibbous 225°).
+  Agents running: pod-A verification (verify_closed_form --attn eager,
+  then teardown), B/C/D consolidation-confirmed teardowns, HF archival
+  driver (kaushikreddyxyz/concept-probes-corpus-scores, sequential
+  background uploads), g2_retention.py implementation (natural-eval
+  AUROC-retention — the last G2 input). NEXT DECISIONS: G2 final call
+  when training ends (~10-10:30) → coords fleet (6×H100, ~$90) + ExpB/
+  frozen-baseline queue on trainer → preflight → nanochat launch.
+
 - ~8:55 AM: **Exp-A crossed the G2 bar**: heldout median R² 0.5999 @2000
   → 0.6129 @2400 → 0.6203 @2800 (of 6800 steps), still climbing, plateau
   stop not near firing. Audited metric (conservative biases) → this is a

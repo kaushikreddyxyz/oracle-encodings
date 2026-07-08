@@ -2,6 +2,21 @@
 
 (newest first)
 
+- ~2:45 PM: NEW PRE-LAUNCH GATE added (user fidelity discussion):
+  **coord-level fidelity check** on pod B (spared from teardown; pod D
+  already deleted, pod C proceeding) — gemma-score ~12k docs of the real
+  nanochat corpus (shard 0), build TRUE r=14 ring coords from float
+  scores, compare against the encoder's stored coords (per-dim R²,
+  ring-angle fidelity at high-magnitude tokens, firing coincidence,
+  doc-level pooled R²). Rationale: per-probe R² 0.6371 understates
+  injected-signal fidelity (family aggregation cancels independent
+  errors) but nobody measured coord-level; a noisy oracle risks a false
+  NEGATIVE (unattributable null), and this converts the debate into one
+  number for ~30 min of an idle pod. Gate: median per-dim R² ≥0.8 GO /
+  0.6-0.8 GO+caveat(β option) / <0.6 HOLD. Nanochat launch now requires:
+  coords assemble + preflight PASS + coord-fidelity verdict. Also:
+  wandb/HF/REPORT.md conventions agent running (user directive).
+
 - ~1:50 PM: **coords fast-forward APPROVED + rolling out** (orchestrator
   decision, recorded for audit): the one-int8-step equivalence gate FAILED
   literally (99.58% vs 99.9%, max 4 steps) but for an irreducible reason —

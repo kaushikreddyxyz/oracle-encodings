@@ -1,0 +1,114 @@
+{
+  "meta": {
+    "n_tokens": 5040768,
+    "val_shards": [
+      353,
+      354
+    ],
+    "K": 54,
+    "ablation_layer": 8,
+    "expB_learn_step": 1282,
+    "E_h2_layer8": 12311.984523264284,
+    "top_decile_vstar_norm_threshold": 25.565540313720703,
+    "residual_formula": "cos(h_abl+vhat,h_clean) ~ 1/sqrt(1+E||vhat-v*||^2/E||h||^2), assuming h_clean=h_abl+v* (repair by construction) and error e=vhat-v* uncorrelated with h_clean; E||h||^2=sum_d(nat_mean^2+nat_std^2) at layer 8."
+  },
+  "subspace_recovery": {
+    "learned_vs_Draw": {
+      "median": 0.9982813000679016,
+      "min": 0.07895465940237045,
+      "max": 0.9999973773956299,
+      "count_ge_0.7": 51,
+      "n": 54
+    },
+    "random_control_vs_Draw_avg5": {
+      "median": 0.1251353293657303,
+      "min": 0.0005548657558392733,
+      "max": 0.28927804827690123,
+      "count_ge_0.7": 0.0
+    },
+    "random_control_rep": {
+      "median": 0.12618078291416168,
+      "min": 0.000454623979749158,
+      "max": 0.2901664078235626,
+      "count_ge_0.7": 0,
+      "n": 54
+    },
+    "note": "principal-angle cosines between span(down cols) and span(D_raw=(nat_std(+)W_dom).T); random control = 54 gaussian 2304-d vectors."
+  },
+  "expB_learn": {
+    "v_star_r2_aggregate": 0.6110781686886568,
+    "v_star_per_dim_r2_median": 0.4688871058739384,
+    "cos_vhat_vstar": {
+      "overall": {
+        "mean": 0.7871322631835938,
+        "median": 0.8062701225280762,
+        "p10": 0.6729949116706848,
+        "p90": 0.8831434845924377,
+        "n": 5040768
+      },
+      "top_decile_vstar_norm": {
+        "mean": 0.7824288606643677,
+        "median": 0.8007575869560242,
+        "p10": 0.6616392135620117,
+        "p90": 0.8816078901290894,
+        "n": 504077
+      }
+    },
+    "mag_ratio_vhat_over_vstar": {
+      "overall": {
+        "mean": 0.7976898550987244,
+        "median": 0.798616886138916,
+        "p10": 0.6528056859970093,
+        "p90": 0.9358134865760803,
+        "n": 5040768
+      },
+      "top_decile_vstar_norm": {
+        "mean": 0.6855219006538391,
+        "median": 0.6805069446563721,
+        "p10": 0.5476858019828796,
+        "p90": 0.8310039639472961,
+        "n": 504077
+      }
+    },
+    "E_err2": 155.23007202148438,
+    "residual_cos_estimate": 0.9937549683838602
+  },
+  "expB_fixed": {
+    "v_star_r2_aggregate": 0.27162251585084773,
+    "v_star_per_dim_r2_median": 0.05903942572096038,
+    "cos_vhat_vstar": {
+      "overall": {
+        "mean": 0.6473985910415649,
+        "median": 0.675304114818573,
+        "p10": 0.45473355054855347,
+        "p90": 0.8043201565742493,
+        "n": 5040768
+      },
+      "top_decile_vstar_norm": {
+        "mean": 0.6568986773490906,
+        "median": 0.679282546043396,
+        "p10": 0.4804815948009491,
+        "p90": 0.8037245273590088,
+        "n": 504077
+      }
+    },
+    "mag_ratio_vhat_over_vstar": {
+      "overall": {
+        "mean": 1.0002317428588867,
+        "median": 0.9623609781265259,
+        "p10": 0.7283821105957031,
+        "p90": 1.3151836395263672,
+        "n": 5040768
+      },
+      "top_decile_vstar_norm": {
+        "mean": 0.8480420112609863,
+        "median": 0.8227130770683289,
+        "p10": 0.6318579316139221,
+        "p90": 1.0911474227905273,
+        "n": 504077
+      }
+    },
+    "E_err2": 290.71673583984375,
+    "residual_cos_estimate": 0.9883988003811514
+  }
+}

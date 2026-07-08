@@ -120,6 +120,34 @@ at layer 8. With E‖e‖² = 155.2 (learn) / 290.7 (fixed):
 (top-decile ‖v\*‖ threshold 25.6 vs ‖h‖ ~ 111); the discriminating metrics are
 v\* R2 and cos(v̂, v\*) above.
 
+### Does the oracle predict signal or noise? (user hunch, tested)
+
+Hunch: the plateau at R² ≈ 0.6 is the encoder predicting the *signal* component
+of the probe scores while the probes' own noise is unpredictable — i.e. we're
+at a noise ceiling, not an encoder-capacity ceiling. Verdict: **partially
+supported**.
+
+For it:
+- corr(per-concept encoder R², judge-eval retention) = **−0.42** — concepts the
+  encoder fits *worse* retain judge-eval AUROC *better*, which is what you'd
+  expect if low R² reflects unpredictable probe noise rather than missed signal.
+- On the LLM-judge natural eval the oracle is only slightly worse than the
+  gemma probes it imitates: median AUROC delta **−0.016** (mean −0.026), and it
+  actually beats the probes on 5/54 concepts — consistent with the oracle
+  smoothing away some probe noise.
+
+Against a *pure* noise ceiling:
+- Same-layer probe-arm agreement (ridge vs alternative arm on identical
+  activations) is r² ≈ 0.90, well above the encoder's 0.64. If 0.6 were the
+  true signal content, two independent readouts of the same layer couldn't
+  agree at 0.90. So some real, predictable signal is being left on the table.
+
+Net: a meaningful fraction of the missing 0.36 is probe noise the encoder
+correctly refuses to fit (hence retention holding at 0.966), but not all of
+it — the same-layer agreement gap says the encoder is also short of the
+achievable ceiling. Numbers derive from `out/g2_retention.json` per-concept
+`enc_auroc` vs `gemma_auroc` and the Exp A/B analyses above.
+
 ---
 
 ## Links

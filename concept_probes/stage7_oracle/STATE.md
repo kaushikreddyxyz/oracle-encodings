@@ -2,6 +2,18 @@
 
 (newest first)
 
+- ~11:10 AM: **Phase 1 scoring COMPLETE** — all 43 shards / 2.0B tokens,
+  zero failures/stalls, ~$45 (monitor exited on all-done). Coords fleet
+  READY: 6× H100 provisioned (coords1-6, $17.94/hr fleet), nanochat
+  @f7c3119 + baseline tokenizer staged, imports pass everywhere;
+  **qwen↔nanochat crossing rate 3.86% mean / 7.1% p90** (better than the
+  gemma↔qwen 7.08% — prefix bridge validated). Balance $690.80. Coords
+  fit→sweep launch agent dispatched (best.pt distributed via new HF repo
+  kaushikreddyxyz/stage7-oracle-encoder; fit clip-frac gate; per-pod
+  round-robin sweep of shards 0-190; first-minute byte-partition +
+  zero_frac watch). Frozen-encoder baseline running on trainer.
+  Waiting: pod-A verifier (gates ExpB), B/C/D teardowns, HF archival.
+
 - ~10:40 AM: **GATE G2 = GO (clean, both inputs).** Exp-A early-stopped at
   step 5600/6800 (plateau rule): final heldout median R² **0.6371** ≥ 0.6.
   Natural-eval AUROC retention (audited gate, 7488 judged examples, 54

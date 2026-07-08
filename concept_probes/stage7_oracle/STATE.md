@@ -2,6 +2,37 @@
 
 (newest first)
 
+## TONIGHT'S LAUNCH RUNBOOK (attended, ~15 min of gates; written ~4:45 PM)
+
+Expected state on return: ZERO pods running (all self-terminated after
+uploading to HF); coords at hf.co/datasets/kaushikreddyxyz/stage7-oracle-coords
+(6 done_pod{i}.json markers = complete), scores archived, encoder + all
+run artifacts on HF, wandb project stage7-oracle current. If any pod is
+still alive, read its /workspace/HOLD_REASON.txt (also uploaded to the
+coords repo) before touching anything.
+
+Launch sequence (fresh session: read SPEC.md Phase 4 + nanochat_prep.md §5
++ code/nanochat_patch/APPLY.md first):
+1. Provision 1× 8×H100 node (create-pod.sh, runpod-torch-v240, 500GB).
+2. Download: coords repo (~190GB) + coord_fit.npz; nanochat @f7c3119;
+   baseline tokenizer from oracle_baseline_noVE_d24_fp8; nanochat_patch/.
+3. merge-stats + assemble (precompute_coords.py --mode merge-stats /
+   --mode assemble; assemble HARD-FAILS if any shard missing).
+4. **GATE: --mode preflight** (consumer-path token/lookup cross-check,
+   ≥99.9% coverage). Do NOT launch without PASS.
+5. Apply patch per APPLY.md (git apply --check first). Launch flags:
+   --inject-coords <store> --inject-after-block=7 **beta=0.064**
+   (coord-fidelity gate decision, NOT the 0.05 in older docs), noise
+   σ=0.15 (loader default), run name nanochat-d24-injected-noVE, wandb
+   per nanochat_prep.md §5b (patch project name + --run flag), VEs
+   disabled (NO_VALUE_EMBEDS=1 path), seed/token budget IDENTICAL to
+   oracle_baseline_noVE_d24_fp8 (8352 steps).
+6. G4 watch: loss vs baseline within first 2k steps (>5% bpb divergence
+   = kill + inspect β); 3-step SMOKE first per audit checklist.
+7. After run: CORE + val bpb vs baseline; post-hoc subspace-usage probe
+   (decisive for interpretation); push checkpoints to HF; REPORT.md.
+Remaining cost ≈ $80-110 (node ~3h + margin). Balance was ~$650.
+
 - ~4:10 PM: **COORD-FIDELITY GATE: GO WITH CAVEAT (0.6-0.8 band) → β
   raised 0.05 → 0.064 for the launch.** Measured on 12k real nanochat-
   corpus docs, exact char-coincident positions (83.9%, 6.46M pairs):

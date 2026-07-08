@@ -2,6 +2,92 @@
 
 (newest first)
 
+- ~7:20 AM: **G1 = FAIL, root-caused, fix in flight (no rescoring
+  needed).** select_probes.py assembly bug: W/b main-block rows filled in
+  (family,concept)-sorted order while probe_set.json "concepts" is
+  name-sorted → 53/54 concepts MISLABELED in the 3 main store blocks
+  (162/216 columns). Evidence: "january" column fires on east/eastern
+  tokens (it IS the east probe), "north"→april, "red"→may. CRUCIAL
+  SCOPING: the stored scores are internally-valid probe scores with wrong
+  name tags — (W,b) pairs consistent, normalization correct; the DoM
+  block (Exp B's input) is CORRECTLY ordered. Therefore: store is
+  immutable-but-fine, fleet keeps scoring, the LIVE Exp-A run stays valid
+  (median R² is permutation-invariant; G2 unaffected) — only per-concept
+  labels are scrambled (earlier "europe@L8 0.73" texture was mislabeled).
+  Opus fix agent dispatched: verify permutation 2 independent ways, add
+  main_block_concepts/dom_block_concepts keys to probe_set.json, audit
+  every json field's pairing, fix label consumers (train_encoder eval
+  labels, verify_closed_form, coords drafts — coord phase angles MUST get
+  true concepts), fix select_probes for posterity, re-issue G1 verdict
+  under true labels. G1 full evidence: out/G1_REPORT.md.
+
+- ~6:50 AM: Exp-A PRODUCTION RUN LIVE on trainer (PID 8276): full-FT
+  Qwen3-0.6B, train shards {320,321,331,332} (~187M tok, 1 epoch = 6800
+  steps, bsz 6 × accum 8), val {353,354}, eval every 400 steps × 5M tok,
+  corpus_stats.json merged from 8 partials (374M tokens, real stats — no
+  fallback warning). Health: token-id assertion passed, loss 8.08→0.51 by
+  step 500, **first eval median R² = 0.400 @ step 400** (bar for GO is
+  0.6 — trajectory promising), 21.6k tok/s, GPU stable. Projected finish
+  ~2h50m from 6:40 AM (~9:30) or earlier on plateau; if R² still climbing
+  at epoch end, resume from checkpoint onto the wider consolidated shard
+  set. Fleet monitor patched (ssh -n bug: it was only really checking pod
+  A each round) and restarted — all 4 scorers verified progressing
+  (~5/11 shards each). G1 gate agent launching now on the ~1B tokens
+  already scored (don't wait for fleet completion).
+
+- ~6:10 AM: Exp-A PILOT done; PRODUCTION full-FT launching. Pilot caught a
+  real dtype bug (train loop cast features to float32 against a bf16 head
+  — instant crash on GPU, invisible to CPU smoke tests; fixed + synced).
+  Pilot numbers: frozen-encoder R² still ≈ −0.45 @500 steps (slow), FULL-FT
+  R² +0.057 @100 steps → MLP-only very unlikely to hit the 0.8 stop bar;
+  full-FT is the production arm. Throughput: frozen ~65-69k tok/s (bsz 64),
+  full-FT ~25.5k tok/s (bsz 6, memory-bound; 1.5B-token epoch would be
+  ~16h). PLAN: production full-FT starts NOW on already-consolidated
+  shards (~460M+ tokens ≈ 5h, plateau early-stop active, eval cadence
+  fixed — script defaults would have added ~17h of eval), bsz 6 × accum 8;
+  corpus_stats.json merged from partial stats first. Frozen-encoder
+  baseline + verify_closed_form (--attn eager!) + Exp-B variants will run
+  on pod A after its scoring ends (it holds shards 320-330 locally).
+  G2 call expected ~9-10 AM on plateau, else ~11 AM.
+
+- ~5:45 AM: trainer pod LIVE: stage7-train 0te256xap9vakv
+  (root@31.24.80.36 -p 10617, H100, 750GB, $2.99/hr) — Qwen3-0.6B-Base +
+  gemma tokenizer + all 43 raw ClimbMix parquets (3.7GB, much smaller than
+  feared) + code + probe_set staged; imports pass. Progressive
+  consolidation pull loop running (~42 MB/s aggregate; RunPod same-subnet
+  isolation discovered: C/D unreachable directly from trainer → relayed
+  through A/B at ~7 MB/s each; consolidation ETA ~1-1.5h after scoring
+  ends). ⚠ trainer 750GB is container overlay (no volume): a pod STOP
+  loses the store — never stop it; HF archival after consolidation is the
+  durable copy. Exp-A PILOT launched on trainer (head-only 500 steps + FT
+  100 steps on already-consolidated shards) to de-risk real-data path +
+  pin production batch size before the main run.
+
+- ~5:05 AM: prep wave done + committed (29015df). (1) verify_closed_form.py
+  smoke-green (incl. a test that the old raw-Gram bug is caught; runtime
+  gram-consistency check ships in the script; NOTE: run it with --attn
+  eager — its CLI default sdpa does NOT match how shards were scored).
+  (2) Nanochat Phase-4 prep complete (out/nanochat_prep.md + code/
+  nanochat_patch/): no-VE baseline = HF oracle_baseline_noVE_d24_fp8
+  (CORE 0.2711, 8352 steps = 8.758B tokens, seed 1337, NO_VALUE_EMBEDS=1
+  → runs/oracle_runs/no_value_embeds.sh); injected run ≈ 3h/$75 on
+  8×H100. KEY: nanochat corpus = karpathy/climbmix-400b-shuffle shards
+  ~0-185 — SAME repack as our scoring (shards 320-362): disjoint shards,
+  same distribution, no leakage. Coords design: per-doc content-hash
+  keyed int8 store riding through nanochat's best-fit packing (~35% crop
+  means flat position-keyed memmaps can't work); injection after 8
+  completed blocks (h[7], depth 0.33 ≈ gemma 8/26); r=14 (6 cyclic
+  families → 2-D rings, continents PCA-2D), layer-8 prediction block.
+  (3) Fixture-builder raw-Gram stale copies fixed; both smoke suites
+  re-run green. LONG POLE: coords precompute needs the trained encoder →
+  ~21-38 GPU-h ($63-113); nanochat launch realistically afternoon, not
+  11 AM (SPEC anticipated this; leave-running-with-monitor plan applies).
+  Budget projection: ~$55 spent/accruing + ExpA/B ~$20 + verify ~$2 +
+  coords ~$63-113 + injected run ~$75 ≈ $230-280 total, within $400.
+  Plan at scoring completion: verify_closed_form on pod A (eager) + G1
+  checks on trainer + tear down B/C/D once shards confirmed on trainer +
+  HF archival from trainer (background) + Exp A MLP-only starts.
+
 - ~4:05 AM: PHASE 1 FLEET LIVE. 4× H100 ($2.99/hr each) scoring in
   parallel, eager attn, bs16 (sweep: bs16 41.5k > bs32 40.9k > bs64 39.0k
   tok/s): pod A zoti3owrvnp6x4 (103.207.149.109:16306) shards 320-330;

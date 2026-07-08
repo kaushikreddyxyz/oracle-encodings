@@ -758,7 +758,13 @@ def run_training(args, encoder_and_tok=None):
             if args.freeze_encoder:
                 hidden = hidden.detach()
             feats, scores_raw_i8 = gather_targets(buf, None, hidden)
-            feats = feats.float()
+            # NOTE: do not cast feats to float32 here -- head is cast to
+            # bf16 above (matching run_eval's dtype, which calls head()
+            # directly on bf16 hidden states with no cast). A stray
+            # `.float()` here caused a real-data dtype mismatch
+            # (Float vs BFloat16) in nn.Linear the first time this ran on
+            # GPU with bf16 autocast; keep train/eval dtype handling
+            # consistent instead.
             y_pred, v_pred = head(feats)
             loss = compute_loss(args.mode, ps, scores_raw_i8, y_pred, v_pred,
                                  corpus_mean, corpus_std, zero, scale, args.device)

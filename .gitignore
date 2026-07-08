@@ -234,8 +234,8 @@ concept_probes/stage6/reports/part_*/
 concept_probes/stage6_1/out/
 concept_probes/stage6_1/figures/
 
-# bulky run datasets — archived on HuggingFace, not tracked in git
-# overnight_run/data  -> hf.co/datasets/kaushikreddyxyz/concept-probes-overnight
-# overnight_run2/data -> hf.co/datasets/kaushikreddyxyz/concept-probes-v2-datasets
+# bulky run datasets — LOCAL-ONLY copies (gemma-9b probe artifacts; the HF
+# repos concept-probes-overnight / concept-probes-v2-* were deleted 2026-07-08
+# as superseded)
 overnight_run/data/
 overnight_run2/data/

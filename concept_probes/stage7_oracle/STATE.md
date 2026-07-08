@@ -2,6 +2,25 @@
 
 (newest first)
 
+- ~4:10 PM: **COORD-FIDELITY GATE: GO WITH CAVEAT (0.6-0.8 band) → β
+  raised 0.05 → 0.064 for the launch.** Measured on 12k real nanochat-
+  corpus docs, exact char-coincident positions (83.9%, 6.46M pairs):
+  token-level median per-dim R² 0.615 (range 0.572-0.822, continents
+  best), doc-level pooled R² 0.763, ring-angle median error 8-10° with
+  correct-class pointing 64-86% (5-8× chance) at top-1% signal, firing
+  coincidence 0.39-0.50. Aggregation hypothesis REFUTED (rings inherit
+  per-concept noise; token fidelity ≈ per-probe 0.637), but direction is
+  faithful and slope/bias are clean (R²≈r²). β math: slope≈1, R² 0.61 →
+  true-component fraction ≈ √0.61 ≈ 0.78 of injected RMS; β' = 0.05/0.78
+  ≈ 0.064 restores design-level true-signal strength (total injection
+  6.4% of residual RMS, still small; design σ=0.15 noise unchanged).
+  Caveat for G4 interpretation: ~38% of injected RMS is oracle noise —
+  a null result is attenuation-ambiguous ONLY if marginal; the
+  post-hoc subspace-usage probe remains the decisive read. Consolidation
+  COMPLETE (43/43 shards, 411GB, byte-verified); pods C/D deleted, B
+  held (fidelity bench, now idle — tear down at launch time). Cost of
+  the gate: ~$0.20, 3.5 min GPU.
+
 - ~2:45 PM: NEW PRE-LAUNCH GATE added (user fidelity discussion):
   **coord-level fidelity check** on pod B (spared from teardown; pod D
   already deleted, pod C proceeding) — gemma-score ~12k docs of the real

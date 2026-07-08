@@ -385,3 +385,101 @@ side-by-side comparison.
 3. Decision 2 (layer-8 prediction block for coords) stands, pending Exp-A
    per-layer R² confirmation. Decision 5: report CORE/bpb coords-on AND
    coords-off for the injected model.
+
+---
+
+## Coord-fidelity pre-launch gate (2026-07-08)
+
+**Question.** How faithful are the ENCODER-derived injection coords (int8 store,
+per nanochat token) to the TRUE coords computed directly from gemma-2-2b probe
+scores, on the real nanochat pretraining corpus (ClimbMix shard 0)? Per-probe
+Exp-A R² was 0.6371; the injected signal is r=14 family-aggregated ring coords,
+so coord-level fidelity was hypothesized higher — measured here for the first time.
+
+**Method.** 12,000 docs (first qualifying, parquet order, gemma-tokens ≥ 64) from
+shard 0. TRUE side mirrors `score_corpus`/`precompute_coords` EXACTLY: gemma-2-2b
+eager attn, BOS prepended-then-dropped, `add_special_tokens=False` → raw **float**
+L8 main-block scores (cols [54:108], main_block_concepts order, NO int8
+round-trip) → standardize with the corpus raw-score mean/std the encoder head was
+trained against (`corpus_stats.json`, cols 54:108) → `build_coords` with the
+store's `coord_fit.npz` PCA → true r=14 coords per gemma token. ENCODER side:
+dequantized int8 store rows (shard-0, scale 0.08690) by doc-hash, per nano token.
+Provenance verified: pod-B `W/b/nat_mean/nat_std` are byte-identical (md5) to the
+fixed probe set; pod-B `probe_set.json` is pre-fix (no `main_block_concepts` key)
+but W rows are the immutable family-sorted store convention == `coord_fit`
+pred_order (out/PERMUTATION_FIX.md), so column order is consistent end-to-end.
+
+**Alignment chosen (and why).** Two complementary comparisons:
+- **Token-level on EXACT char-span coincidence** (primary): map each nano token to
+  a gemma token via `align.prefix`, keep only positions where the gemma token ends
+  at exactly the nano token's end char (83.9% of nano tokens; 6.46M pairs). This
+  isolates coord representational fidelity from the already-measured ~7–16%
+  tokenizer-crossing noise (a separate, orthogonal effect) — the injection is
+  per-token, so this is the gate-relevant metric.
+- **Doc-level pooled** (alignment-free): mean-pool encoder coords over all nano
+  tokens and true coords over all gemma tokens, per doc; compare 12k doc vectors.
+  This is what the model integrates over context and is robust to any per-token
+  alignment error.
+
+**Per-dim fidelity (encoder = prediction, true = reference):**
+
+| dim | token r | token R² | doc r | doc R² |
+|---|---|---|---|---|
+| color_wheel.cos | 0.775 | 0.600 | 0.883 | 0.778 |
+| color_wheel.sin | 0.810 | 0.655 | 0.920 | 0.844 |
+| continents.pc1  | 0.913 | 0.822 | 0.980 | 0.955 |
+| continents.pc2  | 0.801 | 0.641 | 0.914 | 0.833 |
+| directions.cos  | 0.778 | 0.604 | 0.871 | 0.755 |
+| directions.sin  | 0.757 | 0.572 | 0.853 | 0.721 |
+| months.cos      | 0.797 | 0.635 | 0.853 | 0.719 |
+| months.sin      | 0.806 | 0.649 | 0.885 | 0.779 |
+| moon_phases.cos | 0.795 | 0.632 | 0.883 | 0.778 |
+| moon_phases.sin | 0.760 | 0.576 | 0.851 | 0.721 |
+| seasons.cos     | 0.771 | 0.595 | 0.878 | 0.767 |
+| seasons.sin     | 0.772 | 0.595 | 0.874 | 0.758 |
+| weekdays.cos    | 0.789 | 0.622 | 0.854 | 0.718 |
+| weekdays.sin    | 0.781 | 0.609 | 0.866 | 0.747 |
+| **median**      |       | **0.615** |    | **0.763** |
+| **mean / min**  |       | 0.629 / 0.572 | | 0.766 / 0.718 |
+
+Token-level **R² ≈ r²** throughout (e.g. 0.775² = 0.60), confirming NO
+scale/bias offset between encoder and true coords — the standardization convention
+is reproduced correctly and the ~0.61 is genuine representational fidelity, not a
+calibration artifact.
+
+**Ring-angle fidelity** (top-1% of tokens by true ring magnitude — where the
+concept is strongly present): median angular error **8–10°**, p90 24–31°.
+Fraction where the encoder ring points at the SAME class as the true ring
+(vs chance): color_wheel 0.72 (0.11), directions 0.71 (0.13), months 0.64 (0.08),
+moon_phases 0.71 (0.13), seasons 0.86 (0.25), weekdays 0.77 (0.14). When a
+concept fires, the encoder ring points at the right month/day/direction ~64–86%
+of the time — 5–8× chance.
+
+**Firing coincidence** P(encoder ring high | true ring high) at matched top-1%
+thresholds: 0.39–0.50 (color_wheel 0.47, directions 0.43, months 0.50,
+moon_phases 0.39, seasons 0.44, weekdays 0.44).
+
+**Finding vs hypothesis.** The "family aggregation raises fidelity above per-probe
+0.637" hypothesis is only partly borne out: at the **per-token** level, coord
+R² median 0.615 ≈ per-probe R² (independent per-concept errors do NOT cancel
+much in the cos/sin weighted sum). But the **integrated** signal the model
+actually consumes is stronger — doc-level pooled R² median **0.763** — and
+ring DIRECTION on high-signal tokens is very faithful (8–10° median error,
+right class 64–86%).
+
+**GATE VERDICT: GO WITH CAVEAT.** Token-level median per-dim R² = **0.615**
+falls in the 0.6–0.8 band (clean-GO needs ≥ 0.8; HOLD is < 0.6). The injected
+per-token signal is a faithful-but-noisy version of the true coords (~61% of
+variance, correct scale, correct ring direction when concepts fire); the
+integrated/doc-level signal is stronger (0.76). Caveat to carry: two dims
+(directions.sin 0.572, moon_phases.sin 0.576) dip just below 0.6 per-token.
+**β-raise option:** because fidelity is a fixed ~0.61 fraction with correct
+direction, raising the injection amplitude β strengthens the true-signal
+component the model sees per token without changing the noise structure — the
+standard lever if downstream steering reads weak. Recommend launching with the
+planned β and the coords-on/coords-off eval split already specified.
+
+Artifacts: `out/coord_fidelity.json` (full table + angle/firing per family).
+Runtime 207 s on pod B (H100, gemma-2-2b); ClimbMix shard 0 pulled from HF;
+shard-0 int8 store relayed from coords1 (755 MB). Est. cost ≈ $0.1–0.2 (a few
+minutes H100 on an already-reserved idle pod). Pod B left running.

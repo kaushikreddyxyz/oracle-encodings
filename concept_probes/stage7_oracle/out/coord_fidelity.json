@@ -1,0 +1,262 @@
+{
+  "meta": {
+    "shard": 0,
+    "n_docs_selected": 12000,
+    "docs_used": 12000,
+    "exact_pairs": 6461269,
+    "nano_tokens_total": 7702226,
+    "exact_coincidence_frac": 0.8388833306111766,
+    "crossing_excluded": 1240957,
+    "store_scale": 0.08689682185649872,
+    "gemma": "google/gemma-2-2b",
+    "attn": "eager",
+    "alignment": "token-level on exact char-end coincidence (nano->gemma prefix); doc-level pooled = mean over each own tokenization (alignment-free)",
+    "L8_block_cols": [
+      54,
+      108
+    ]
+  },
+  "token_level_per_dim": [
+    {
+      "dim": "color_wheel.cos",
+      "r": 0.7749492067511734,
+      "r2": 0.6000958798320005
+    },
+    {
+      "dim": "color_wheel.sin",
+      "r": 0.810363202564341,
+      "r2": 0.6553027470947738
+    },
+    {
+      "dim": "continents.pc1",
+      "r": 0.9125500872591527,
+      "r2": 0.8225180399167281
+    },
+    {
+      "dim": "continents.pc2",
+      "r": 0.8010596357121823,
+      "r2": 0.6412794685514387
+    },
+    {
+      "dim": "directions.cos",
+      "r": 0.7777434740376443,
+      "r2": 0.6041027778709518
+    },
+    {
+      "dim": "directions.sin",
+      "r": 0.7568546936899905,
+      "r2": 0.5724029447813681
+    },
+    {
+      "dim": "months.cos",
+      "r": 0.797124763557247,
+      "r2": 0.6345399546500259
+    },
+    {
+      "dim": "months.sin",
+      "r": 0.8060454803991758,
+      "r2": 0.648882383741684
+    },
+    {
+      "dim": "moon_phases.cos",
+      "r": 0.795072788206982,
+      "r2": 0.631710300747963
+    },
+    {
+      "dim": "moon_phases.sin",
+      "r": 0.7594509932929897,
+      "r2": 0.5764444002831383
+    },
+    {
+      "dim": "seasons.cos",
+      "r": 0.7712658564450425,
+      "r2": 0.5944756247054784
+    },
+    {
+      "dim": "seasons.sin",
+      "r": 0.7722026566802924,
+      "r2": 0.5952686889815786
+    },
+    {
+      "dim": "weekdays.cos",
+      "r": 0.7887394478099197,
+      "r2": 0.6215479005859105
+    },
+    {
+      "dim": "weekdays.sin",
+      "r": 0.7804765697655465,
+      "r2": 0.6085699156221785
+    }
+  ],
+  "token_level_median_r2": 0.6150589081040445,
+  "token_level_mean_r2": 0.6290815019546584,
+  "token_level_min_r2": 0.5724029447813681,
+  "doc_level_per_dim": [
+    {
+      "dim": "color_wheel.cos",
+      "r": 0.8832018751512973,
+      "r2": 0.7776189641328579
+    },
+    {
+      "dim": "color_wheel.sin",
+      "r": 0.9197912378408111,
+      "r2": 0.8434616932114145
+    },
+    {
+      "dim": "continents.pc1",
+      "r": 0.9800302370042124,
+      "r2": 0.9547928011968063
+    },
+    {
+      "dim": "continents.pc2",
+      "r": 0.9139367185531179,
+      "r2": 0.8329134307657416
+    },
+    {
+      "dim": "directions.cos",
+      "r": 0.8707515823522262,
+      "r2": 0.7550414244560182
+    },
+    {
+      "dim": "directions.sin",
+      "r": 0.8527957858440646,
+      "r2": 0.7212520230847278
+    },
+    {
+      "dim": "months.cos",
+      "r": 0.8531128446808853,
+      "r2": 0.7189872917538842
+    },
+    {
+      "dim": "months.sin",
+      "r": 0.8846050540144669,
+      "r2": 0.7785270091067773
+    },
+    {
+      "dim": "moon_phases.cos",
+      "r": 0.8827888967199757,
+      "r2": 0.7778849189613389
+    },
+    {
+      "dim": "moon_phases.sin",
+      "r": 0.8512184346794658,
+      "r2": 0.7206759985557649
+    },
+    {
+      "dim": "seasons.cos",
+      "r": 0.8784293297723292,
+      "r2": 0.7672418225223696
+    },
+    {
+      "dim": "seasons.sin",
+      "r": 0.8740373265665402,
+      "r2": 0.7581841776393181
+    },
+    {
+      "dim": "weekdays.cos",
+      "r": 0.8539259461662079,
+      "r2": 0.7178628327636633
+    },
+    {
+      "dim": "weekdays.sin",
+      "r": 0.8656847837469863,
+      "r2": 0.746721242348631
+    }
+  ],
+  "doc_level_median_r2": 0.7627130000808439,
+  "angle_fidelity_top1pct": {
+    "color_wheel": {
+      "n_top1pct": 64613,
+      "n_classes": 9,
+      "median_deg": 7.999305248260498,
+      "p90_deg": 24.663436889648438,
+      "frac_within_30deg": 0.9347654496773096,
+      "frac_same_class": 0.7208456502561404,
+      "chance_same_class": 0.1111111111111111
+    },
+    "directions": {
+      "n_top1pct": 64613,
+      "n_classes": 8,
+      "median_deg": 9.564175605773926,
+      "p90_deg": 31.29015350341797,
+      "frac_within_30deg": 0.8914459938402489,
+      "frac_same_class": 0.711358395369353,
+      "chance_same_class": 0.125
+    },
+    "months": {
+      "n_top1pct": 64613,
+      "n_classes": 12,
+      "median_deg": 8.481989860534668,
+      "p90_deg": 25.49971580505371,
+      "frac_within_30deg": 0.9315462832556916,
+      "frac_same_class": 0.6392521628774396,
+      "chance_same_class": 0.08333333333333333
+    },
+    "moon_phases": {
+      "n_top1pct": 64614,
+      "n_classes": 8,
+      "median_deg": 9.90299129486084,
+      "p90_deg": 29.67173957824707,
+      "frac_within_30deg": 0.9022038567493113,
+      "frac_same_class": 0.7111926207942552,
+      "chance_same_class": 0.125
+    },
+    "seasons": {
+      "n_top1pct": 64613,
+      "n_classes": 4,
+      "median_deg": 9.638790130615234,
+      "p90_deg": 29.624286651611328,
+      "frac_within_30deg": 0.9027904601241237,
+      "frac_same_class": 0.859393620478851,
+      "chance_same_class": 0.25
+    },
+    "weekdays": {
+      "n_top1pct": 64613,
+      "n_classes": 7,
+      "median_deg": 8.905911445617676,
+      "p90_deg": 27.707860946655273,
+      "frac_within_30deg": 0.914908764490118,
+      "frac_same_class": 0.7699224614241716,
+      "chance_same_class": 0.14285714285714285
+    }
+  },
+  "firing_coincidence_top1pct": {
+    "color_wheel": {
+      "true_thr_p99": 6.853482246398926,
+      "enc_thr_p99": 5.471740245819092,
+      "P(enc_high|true_high)": 0.46459690774302387,
+      "jaccard": 0.30247672403369474
+    },
+    "directions": {
+      "true_thr_p99": 5.842137336730957,
+      "enc_thr_p99": 4.4308857917785645,
+      "P(enc_high|true_high)": 0.4284122390231068,
+      "jaccard": 0.27222571889382796
+    },
+    "months": {
+      "true_thr_p99": 8.421250343322754,
+      "enc_thr_p99": 6.6298346519470215,
+      "P(enc_high|true_high)": 0.5013387398820671,
+      "jaccard": 0.334320686950419
+    },
+    "moon_phases": {
+      "true_thr_p99": 6.182944297790527,
+      "enc_thr_p99": 4.722105026245117,
+      "P(enc_high|true_high)": 0.38764044943820225,
+      "jaccard": 0.24022212418237968
+    },
+    "seasons": {
+      "true_thr_p99": 4.507852554321289,
+      "enc_thr_p99": 3.3934295177459717,
+      "P(enc_high|true_high)": 0.44294491820531473,
+      "jaccard": 0.28299368158761234
+    },
+    "weekdays": {
+      "true_thr_p99": 5.84628438949585,
+      "enc_thr_p99": 4.56187629699707,
+      "P(enc_high|true_high)": 0.4365839691702908,
+      "jaccard": 0.2784094273701664
+    }
+  },
+  "runtime_s": 206.7754943370819
+}

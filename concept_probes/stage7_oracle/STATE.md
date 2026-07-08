@@ -2,6 +2,19 @@
 
 (newest first)
 
+- ~12:20 PM: **frozen-encoder baseline COMPLETE** (spec's MLP-only arm,
+  converged: early-stop fired at final step): heldout median R² **0.1823**
+  vs full-FT **0.6371** on identical data/splits — 3.5× gap; the oracle
+  signal comes from fine-tuning the encoder, not readout of pre-existing
+  features (continents outlier 0.45 = base model partially encodes
+  geography). lr 3e-3 head-only, 66 min, 57-72k tok/s. Trainer GPU free
+  for Exp B (waiting on pod-A verifier verdict). Meanwhile: coords sweep
+  CPU-bound problem (~28k tok/s/pod → 19h/$305 instead of 5h/$90) —
+  feeder-parallelization fix in progress (opus agent; determinism A/B
+  required before rollout; sweep is per-shard resumable so hot-swap is
+  cheap). Consolidation 98/129 files on trainer (C/D relay tail);
+  watcher armed for 129; B/C/D torn down per-pod as their sets confirm.
+
 - ~11:10 AM: **Phase 1 scoring COMPLETE** — all 43 shards / 2.0B tokens,
   zero failures/stalls, ~$45 (monitor exited on all-done). Coords fleet
   READY: 6× H100 provisioned (coords1-6, $17.94/hr fleet), nanochat

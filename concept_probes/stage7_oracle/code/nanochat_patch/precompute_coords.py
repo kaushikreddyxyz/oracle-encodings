@@ -76,6 +76,7 @@ import json
 import math
 import os
 import sys
+import threading
 
 import numpy as np
 
@@ -288,6 +289,114 @@ def iter_doc_segments(text, enc, qwen_encode, max_nano, max_qwen):
         segments.append({"win_start": start, "win_len": win_len,
                          "q_ids": list(q_ids), "amap": np.asarray(amap, np.int64)})
     return doc_hash(text), n, segments
+
+
+# --------------------------------------------------------------------------- #
+# CPU feeder pool: parallelize the per-doc segmentation (tiktoken encode +
+# byte->char offsets + qwen tokenize + prefix align) across worker PROCESSES,
+# while the GPU forward + int8 store writes stay in the main process.
+#
+# WHY: the sweep is CPU-bound in iter_doc_segments (single-core tokenization/
+# alignment), leaving the GPU 40-65% idle. Workers load ONLY the two tokenizers
+# (never the qwen MODEL / encoder head), so they are cheap and there is exactly
+# one model on the GPU. `spawn` is used (never fork) so the CUDA context the main
+# process created when loading the encoder is NOT inherited by the children.
+#
+# BYTE-IDENTICAL guarantee: iter_doc_segments is a pure function of
+# (text, tokenizers, window sizes) producing only integer ids / int64 index
+# arrays -- no floats, no RNG. imap() preserves INPUT ORDER, so the main process
+# calls engine.add_doc / emit in the exact same doc order as the serial path.
+# Same order => same coords bytes, same index, same Welford accumulation order,
+# same hashes. The change is a pure throughput refactor (opt-in via
+# --feeder-workers N; N=0 keeps the original serial path untouched).
+# --------------------------------------------------------------------------- #
+_FEEDER = {}  # per-worker-process globals (tokenizers + window sizes)
+
+
+def _feeder_init(nano_tokenizer_dir, qwen_model_name, qwen_add_special,
+                 max_doc_tokens, max_qwen_tokens):
+    """Worker-process initializer (runs once per spawned worker). Loads ONLY the
+    nanochat tiktoken Encoding and the qwen fast tokenizer -- no torch, no CUDA,
+    no encoder weights."""
+    os.environ.setdefault("TOKENIZERS_PARALLELISM", "false")  # 1 rust thread/worker
+    enc = load_nanochat_enc(nano_tokenizer_dir)
+    from transformers import AutoTokenizer
+    qtok = AutoTokenizer.from_pretrained(qwen_model_name)
+    if qtok.pad_token_id is None:
+        qtok.pad_token = qtok.eos_token
+    _FEEDER["enc"] = enc
+    _FEEDER["qwen_encode"] = make_qwen_encode(qtok, add_special=qwen_add_special)
+    _FEEDER["max_doc_tokens"] = max_doc_tokens
+    _FEEDER["max_qwen_tokens"] = max_qwen_tokens
+
+
+def _feeder_worker(text):
+    """Map one doc text -> (hash, n_body, segments), identical to the serial call
+    in iter_doc_segments. Returned segments carry int lists + int64 arrays only."""
+    return iter_doc_segments(text, _FEEDER["enc"], _FEEDER["qwen_encode"],
+                             _FEEDER["max_doc_tokens"], _FEEDER["max_qwen_tokens"])
+
+
+class _FeederPool:
+    """Bounded, ORDER-PRESERVING spawn pool over _feeder_worker.
+
+    imap_docs(texts) yields (hash, n, segments) in input order. A semaphore caps
+    the number of in-flight docs (backpressure: the pool's feeder thread blocks
+    on next() once `prefetch` docs are outstanding), so a huge shard never pulls
+    all its text into memory and the in-order reorder buffer stays bounded.
+    stats() exposes queue depth + worker liveness for the heartbeat."""
+
+    def __init__(self, n_workers, nano_tokenizer_dir, qwen_model_name,
+                 qwen_add_special, max_doc_tokens, max_qwen_tokens, prefetch,
+                 worker=None, initializer=None, initargs=None):
+        # worker/initializer/initargs are injection points for tests ONLY; in
+        # production they default to the real tokenizer-loading feeder functions.
+        import multiprocessing as mp
+        self.n_workers = int(n_workers)
+        self.prefetch = int(prefetch)
+        self._worker = worker or _feeder_worker
+        self._outstanding = 0
+        self._lock = threading.Lock()
+        ctx = mp.get_context("spawn")
+        self._pool = ctx.Pool(
+            processes=self.n_workers,
+            initializer=initializer or _feeder_init,
+            initargs=(initargs if initargs is not None else
+                      (nano_tokenizer_dir, qwen_model_name, qwen_add_special,
+                       max_doc_tokens, max_qwen_tokens)))
+
+    def imap_docs(self, texts_iter):
+        sem = threading.Semaphore(self.prefetch)
+
+        def bounded():
+            for text in texts_iter:
+                sem.acquire()
+                with self._lock:
+                    self._outstanding += 1
+                yield text
+
+        for res in self._pool.imap(self._worker, bounded(), chunksize=1):
+            sem.release()
+            with self._lock:
+                self._outstanding -= 1
+            yield res
+
+    def stats(self):
+        with self._lock:
+            depth = self._outstanding
+        try:
+            alive = sum(int(p.is_alive()) for p in self._pool._pool)
+        except Exception:
+            alive = -1
+        return {"queue_depth": depth, "workers_alive": alive,
+                "feeder_workers": self.n_workers}
+
+    def close(self):
+        try:
+            self._pool.terminate()
+            self._pool.join()
+        except Exception:
+            pass
 
 
 # --------------------------------------------------------------------------- #
@@ -701,22 +810,39 @@ def run_sweep(args):
     print(f"[sweep] pod {args.pod_index}/{args.n_pods}: {len(my_shards)} shards "
           f"{my_shards[:6]}{'...' if len(my_shards) > 6 else ''}")
 
+    # Opt-in CPU feeder pool: parallelize per-doc segmentation across worker
+    # processes (tokenizers only, spawn). N=0 keeps the original serial path.
+    pool = None
+    if args.feeder_workers and args.feeder_workers > 0:
+        prefetch = args.feeder_prefetch or max(4 * args.feeder_workers, 64)
+        pool = _FeederPool(
+            args.feeder_workers, args.nano_tokenizer_dir,
+            args.qwen_model or model_name, not args.qwen_no_special,
+            args.max_doc_tokens, args.max_qwen_tokens, prefetch)
+        print(f"[sweep] feeder pool: {args.feeder_workers} spawn workers, "
+              f"prefetch={prefetch} (per-doc segmentation parallelized; GPU forward "
+              f"+ writes stay in main; output byte-identical to serial path)")
+
     hb_path = args.heartbeat_path
-    for sid in my_shards:
-        if os.path.exists(shard_done_marker(args.out, sid)):
-            print(f"[sweep] shard {sid}: DONE (skip)")
-            # its Welford partial already lives in meta_<sid>.json (written at
-            # shard publish) -- merge-stats reads per-SHARD partials, so a
-            # crash+resume never loses or double-counts stats.
-            continue
-        _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
-                         concepts, families, pred_order, fit, r, dtype, hb_path)
+    try:
+        for sid in my_shards:
+            if os.path.exists(shard_done_marker(args.out, sid)):
+                print(f"[sweep] shard {sid}: DONE (skip)")
+                # its Welford partial already lives in meta_<sid>.json (written at
+                # shard publish) -- merge-stats reads per-SHARD partials, so a
+                # crash+resume never loses or double-counts stats.
+                continue
+            _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
+                             concepts, families, pred_order, fit, r, dtype, hb_path, pool)
+    finally:
+        if pool is not None:
+            pool.close()
     print(f"[sweep] pod {args.pod_index} done ({len(my_shards)} shards; per-shard "
           f"Welford partials live in meta_<sid>.json)")
 
 
 def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
-                     concepts, families, pred_order, fit, r, dtype, hb_path):
+                     concepts, families, pred_order, fit, r, dtype, hb_path, pool=None):
     from tqdm import tqdm
     out_shards = os.path.join(args.out, "shards")
     tmp_int8 = os.path.join(out_shards, f"coords_{sid:05d}.int8.tmp")
@@ -745,16 +871,26 @@ def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, 
             n_tokens += n
             n_zero_tokens += int(np.all(q == 0, axis=1).sum())
 
-        for text in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
-            hsh, n, segs = iter_doc_segments(text, enc, qwen_encode,
-                                             args.max_doc_tokens, args.max_qwen_tokens)
+        texts = iter_shard_texts(args.climbmix_dir, sid, args.text_column)
+        if pool is None:
+            # serial: tokenize+align inline (original path)
+            seg_iter = (iter_doc_segments(text, enc, qwen_encode,
+                                          args.max_doc_tokens, args.max_qwen_tokens)
+                        for text in texts)
+        else:
+            # parallel: worker processes segment docs; imap preserves doc order,
+            # so add_doc/emit run in the SAME order as serial -> byte-identical.
+            seg_iter = pool.imap_docs(texts)
+
+        for hsh, n, segs in seg_iter:
             engine.add_doc(("d", doc_keys_seen), hsh, n, segs)
             doc_keys_seen += 1
             for chsh, cn, ccoords in engine.drain():
                 emit(chsh, cn, ccoords)
                 pbar.update(1)
             if hb_path and n_docs % 2000 == 0:
-                _heartbeat(hb_path, sid=sid, docs=n_docs, tokens=n_tokens)
+                extra = pool.stats() if pool is not None else {}
+                _heartbeat(hb_path, sid=sid, docs=n_docs, tokens=n_tokens, **extra)
         for chsh, cn, ccoords in engine.drain():
             emit(chsh, cn, ccoords)
             pbar.update(1)
@@ -1166,6 +1302,15 @@ def build_argparser():
                     help="let assemble publish a partial store (missing shards' "
                          "docs fall back to zero coords at train time)")
     ap.add_argument("--heartbeat-path", default=None)
+    ap.add_argument("--feeder-workers", type=int, default=0,
+                    help="CPU feeder pool size for --mode sweep: N worker PROCESSES "
+                         "run per-doc tokenize+offsets+align in parallel, feeding a "
+                         "bounded queue the main process drains for GPU forwards + "
+                         "writes. 0 (default) = original inline serial path. Output "
+                         "is byte-identical regardless of N (imap preserves doc order).")
+    ap.add_argument("--feeder-prefetch", type=int, default=0,
+                    help="max in-flight docs across the feeder pool (backpressure/"
+                         "reorder-buffer bound); 0 = auto (max(4*workers, 64)).")
     return ap
 
 

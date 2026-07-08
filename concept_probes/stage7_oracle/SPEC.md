@@ -180,7 +180,7 @@ Data: `stage6/data/natscores/<fam>.natscores.npz` (preds_{ridge,dom,lda,logistic
   a free interpretability result). A live-teacher KL-repair variant (ablate,
   add v, continue forward, minimize KL vs clean) is STRETCH ONLY if ahead of
   schedule — it's the behaviorally meaningful version but needs online gemma.
-- **Coactivation note (user concern) + mandatory verification:** the G⁻¹
+- **Coactivation note (user concern, weakly held) + mandatory verification:** the G⁻¹
   factor exists precisely to handle coactivating, non-orthogonal probes —
   when several directions fire together, their removed components overlap and
   the Gram inverse disentangles the joint projection exactly. The closed form
@@ -202,17 +202,21 @@ Data: `stage6/data/natscores/<fam>.natscores.npz` (preds_{ridge,dom,lda,logistic
 
 ## Phase 4 — nanochat d24 with oracle-encoding injection (conditional on G2)
 
-- **Baseline discipline**: baselines exist on HF
-  (`kaushikreddyxyz/modular-addition-checkpoints`? NO — nanochat baselines:
-  A/B d24 pair, CORE 0.2777/0.2711; see memory `oracle-encodings-baseline`,
-  `runs/oracle_runs/baseline.sh` for exact flags incl. seed/save-optimizer).
-  **Value embeddings**: memory `nanochat-tricks-vs-oracle` says VEs are the
-  serious confound — the injected model must train with VEs DISABLED
-  (freeze/zero wte+value_embeds path per that memory). CHECK whether the HF
-  d24 baselines already have VEs disabled; if not, train a matching **no-VE
-  baseline concurrently** on a second node (same recipe, same seed policy,
-  same token budget) — the comparison is injected-no-VE vs plain-no-VE, both
-  else-identical to baseline.sh.
+- **Baseline discipline (USER-CONFIRMED 2 AM)**: the existing d24 baseline
+  pair (CORE 0.2777/0.2711; memory `oracle-encodings-baseline`,
+  `runs/oracle_runs/baseline.sh`) is one WITH value embeddings and one
+  WITHOUT. **Do NOT train any baseline tonight** (user: "Do not spend this
+  [on] training baselines"). Tonight trains ONE run: the injected model, VEs
+  DISABLED (freeze/zero wte+value_embeds per `nanochat-tricks-vs-oracle`),
+  recipe/flags/seed policy/token budget matched EXACTLY to the existing
+  no-VE baseline (verify which of A/B it is from the HF cards / baseline.sh
+  before launch). Comparison = injected-no-VE vs existing plain-no-VE.
+  This also relaxes the matched-pair early-stop rule: the injected run must
+  simply complete the SAME token budget the baseline used — no shortening,
+  since the baseline can't be shortened retroactively; if money/time makes
+  the full budget impossible, hold the launch for the user instead.
+- **Marginal-G2 rule (user-confirmed)**: if G2 is marginal (median R²
+  0.4–0.6), LAUNCH anyway with a prominent caveat in STATE.md.
 - **Injection signal**: encoder (frozen, best A checkpoint) run over the
   nanochat pretraining corpus (fineweb-edu shards per baseline.sh). Per
   nanochat token (char-offset alignment module, qwen-side prefix states):
@@ -244,12 +248,9 @@ Data: `stage6/data/natscores/<fam>.natscores.npz` (preds_{ridge,dom,lda,logistic
   handles cross-tokenizer alignment. (This answers the user's "keep tokenizers
   constant… reuse?" — reuse nanochat's existing tokenizer artifacts from the
   baseline runs; do NOT switch nanochat to a different vocab overnight.)
-- Compute: 8×H100 node(s) (~$26/hr). Injected run ≈ baseline recipe duration
-  (baseline pair took ~? — read baseline.sh / HF card; assume 5–8h). If a new
-  no-VE baseline is needed, run both nodes concurrently. Budget both ≈ $300
-  worst case — check remaining balance before launch; if tight, d20 fallback
-  with a freshly trained d20 no-VE baseline pair is NOT cheaper — prefer
-  shortening token budget.
+- Compute: ONE 8×H100 node (~$26/hr), injected run only (baselines exist —
+  see above). Injected run ≈ baseline recipe duration (read baseline.sh / HF
+  card; assume 5–8h → ~$130–210). Check remaining balance before launch.
 - Gate **G4** (during): loss curve sane vs baseline within first 2k steps
   (divergence > 5% bpb = kill, inspect β). Final: CORE + val bpb both runs;
   post-hoc probe: linear-decode the injected concepts from the injected

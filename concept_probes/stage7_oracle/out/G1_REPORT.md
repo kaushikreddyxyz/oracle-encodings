@@ -305,3 +305,150 @@ is internally valid — the numbers were always right, only the names were
 swapped. No rescore is required to trust the store; only the label contract
 (`main_block_concepts` / `dom_block_concepts`, now in `probe_set.json`) is
 needed downstream.
+
+---
+
+## Residual checks (2026-07-08, pod-side, CPU-only)
+
+Two items flagged as still-open in the post-fix re-evaluation: (c)'s
+"cannot be recomputed from local artifacts" note, and §3's int8-clipping
+concern for the (then-unidentified) worst columns. Both closed now, using
+the already-fixed, already-synced `code/g1_corpus_check.py`
+(`main_block_concepts`-indexed). Raw results:
+`concept_probes/stage7_oracle/out/g1_residual_checks.json`. No pod rescoring,
+no code changes — CPU-only reads against the already-landed shards, run
+alongside the live `expA_prod` training job and the rsync pull loop without
+touching either.
+
+**Housekeeping note:** the `g1_corpus_stats.json` sitting in `/workspace/scores`
+at the start of this check (and mirrored to `out/g1_corpus_stats.json`,
+timestamped after the fix) turned out to still carry the **pre-fix**
+name-sorted main-block labels (e.g. col 15 shown as "january" when
+`main_block_concepts[15]` is actually "east") despite the script on disk
+already being the fixed version — an intermediate artifact left over from
+mid-fix, not a fresh run. `code/g1_corpus_check.py` was re-run fresh on the
+pod to eliminate the ambiguity (14 fully-transferred shards now available,
+up from 8; 64,000,000 tokens, 50s). All numbers below use this fresh,
+verified-correct run. The dom block was never affected by the label bug
+(§1), so dom-block concept names throughout this report were trustworthy
+all along.
+
+### 1. True january-vs-march correlation (and other pairs)
+
+Computed two independent ways, in agreement:
+
+| pair | family relation | col a / col b (true) | n | Pearson r |
+|---|---|---|---:|---:|
+| january – march | months, within-family | 81 / 84 | 24.0M | **0.308** |
+| monday – friday | weekdays, within-family | 102 / 101 | 24.0M | **0.314** |
+| red – blue | color_wheel, within-family | 58 / 54 | 24.0M | **0.407** |
+| january – north | months × directions, cross-family | 81 / 70 | 24.0M | **0.133** |
+| january – march (full-script rerun, cross-check) | months, within-family | 81 / 84 | 64.0M | **0.308** |
+
+The two independent january-march computations (a 24M-token standalone
+script and a fresh full 64M-token run of the official
+`g1_corpus_check.py`) agree to 3 decimal places (0.3081 vs 0.3077),
+confirming the true-concept indexing is stable and correct. All three
+within-family pairs land in a consistent mid-range positive band
+(0.31–0.41) — correlated but nowhere near collinear — while the
+cross-family january–north pair is markedly lower (0.13), exactly the
+ordering the G1 criterion expects. This is the real signal the original
+(mislabeled) `r=0.277` was accidentally imitating.
+
+**Verdict: PASS.** True january-vs-march r=0.31, consistent (0.3081 vs
+0.3077) across two independent computations, clearly within-family
+correlated and well under the 0.9 collinearity ceiling; other same-family
+pairs (0.31, 0.41) and the cross-family control (0.13) all behave as
+expected.
+
+### 2. int8 clipping audit (all 216 columns)
+
+Exact clip fractions (share of stored codes at exactly ±127) from the fresh
+64M-token histogram, full 216-column audit:
+
+- **0/216 columns exceed the 1% concern threshold.** Worst overall: col 13
+  (main, L6, **oceania**) at **0.908%**.
+- **195/216 (90%) exceed the 0.1% "fine" threshold** — clipping in the
+  0.1–0.9% band is essentially universal across the store, not isolated to
+  a few columns.
+- **Dom block (54 cols): 0/54 over 1%, 54/54 (100%) over 0.1%.** Median
+  clip fraction **0.695%**, max **0.899%** (col 201, **spring**). All
+  clipping in the dom block is one-sided (positive only, neg ≈ 0 to
+  machine precision) — consistent with DoM-ablation scores being
+  fundamentally one-sided (magnitude-of-presence), not symmetric.
+
+Worst 10 columns overall (all near-tied in the 0.84–0.91% band, well under
+1%):
+
+| col | block | layer | concept | clip frac (total) |
+|---:|---|---:|---|---:|
+| 13 | main | 6 | oceania | 0.908% |
+| 201 | dom | 8 | spring | 0.899% |
+| 10 | main | 6 | asia | 0.895% |
+| 67 | main | 8 | oceania | 0.883% |
+| 190 | dom | 8 | oceania | 0.883% |
+| 171 | dom | 8 | europe | 0.869% |
+| 164 | dom | 8 | asia | 0.856% |
+| 68 | main | 8 | south_america | 0.855% |
+| 198 | dom | 8 | south_america | 0.855% |
+| 9 | main | 6 | africa | 0.841% |
+
+**Reading:** no column is individually alarming (all safely under 1%), but
+the near-universal 0.1–0.9% clipping (195/216 columns) confirms the §3
+prediction in the original report — `quant.json`'s `scale = 4·std/127`,
+calibrated on the first 10M tokens, is systematically a bit tight for the
+true full-corpus tails, most visibly for continents/seasons-family dom
+columns. Worth a recalibration pass before a from-scratch rescore is ever
+undertaken, but **not** blocking for the current store.
+
+**Verdict: CONCERN (non-blocking).** No column crosses the 1% hard
+threshold; the pervasive 0.1–0.9% band (90% of columns, including 100% of
+the dom block) is a real, systematic under-calibration of `quant.json`,
+not sampling noise — recommend recalibrating scale on a larger/later
+sample if the store is ever regenerated, but it does not change the G1
+PASS verdict.
+
+### Exp-B impact estimate: worst dom column (spring, col 201)
+
+The `v* = D_dom · G_dom_inv · (s_dom − t_nat_dom)` formula (`train_encoder.py`
+`ProbeSet.v_star`) is linear in the dequantized dom scores, so a
+per-column dequantization error δ_c propagates to `v*` via a fixed
+sensitivity vector `∂v*/∂s_c = G_dom_inv[c,:] @ D_dom.T` (2304-dim). Using
+the real `probe_set_arrays.npz` matrices (no pod needed for this part) for
+`c = spring`:
+
+- Quant-rounding floor (always present, no clipping): `scale/√12 = 0.345`
+  raw score units.
+- Clip-fraction for this column: 0.899% (one-sided, positive only).
+- Modeling the excess-beyond-clip magnitude with a Mills-ratio Gaussian-tail
+  approximation, **tail-probability-matched** to the observed clip rate
+  (z_eff=2.37; note the *geometric* z from the calibration std would be
+  4.43, at which a true Gaussian would clip only 4.7e-6 of tokens —
+  **1900× less** than actually observed, confirming the true score
+  distribution is far heavier-tailed than Gaussian near this boundary, so
+  this estimate should be read as a conservative lower bound, not an
+  upper bound): RMS excess ≈ 15.6 raw units when a token does saturate.
+- Combined (floor + clip) per-token RMS dequantization error for this
+  column: **1.52 raw units, ≈4.4× the pure-rounding floor.**
+- Propagated through the real sensitivity vector (‖∂v*/∂s_spring‖₂ =
+  0.172): v*-space L2-norm RMS error rises from **0.059 (floor only) to
+  0.262 (floor+clip)** — also a 4.4× increase (the ratio is
+  sensitivity-independent, since the same linear map multiplies both).
+  Per-dimension (2304-way) RMS error: 0.0012 → 0.0055.
+- Context: this sensitivity vector's norm is only ~0.46% of
+  `D_dom[:, spring]`'s own L2 norm (37.05) — `G_dom_inv`'s whitening
+  substantially damps any single dom column's contribution to `v*`,
+  because the 54 dom-column probes are correlated and information about
+  "spring" is spread across several correlated dimensions, not
+  concentrated on one raw column.
+
+**Bottom line:** clipping roughly quadruples the per-token quantization
+noise floor for the worst dom column, but the resulting absolute v*-space
+error (L2 norm ≈0.26 across 2304 dims) is modest and does not by itself
+threaten Gate G3's ≥0.5 heldout-R² threshold on `v*`. It is a real,
+non-negligible degradation worth fixing on a future rescore/recalibration,
+not an urgent blocker for the current store.
+
+Full numeric detail (all 216 columns' clip fractions, both correlation
+runs, and the Exp-B propagation calculation with all intermediate values):
+`concept_probes/stage7_oracle/out/g1_residual_checks.json`.

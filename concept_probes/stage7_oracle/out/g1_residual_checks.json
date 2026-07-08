@@ -1,0 +1,332 @@
+{
+  "generated": "2026-07-08, pod root@31.24.80.36:10617, CPU-only, no GPU/training interference",
+  "correlations": {
+    "method": "24M-token sample (>=20M required), same 8 shards used by the original g1_corpus_stats.json evidence run, true-concept indexing via probe_set.json main_block_concepts (PERMUTATION_FIX.md)",
+    "pairs": [
+      {
+        "a": "january",
+        "b": "march",
+        "col_a": 81,
+        "col_b": 84,
+        "note": "months (within-family)",
+        "layer": 8,
+        "n": 24000000,
+        "pearson_r": 0.3081020253197863
+      },
+      {
+        "a": "monday",
+        "b": "friday",
+        "col_a": 102,
+        "col_b": 101,
+        "note": "weekdays (within-family)",
+        "layer": 8,
+        "n": 24000000,
+        "pearson_r": 0.313763451937226
+      },
+      {
+        "a": "red",
+        "b": "blue",
+        "col_a": 58,
+        "col_b": 54,
+        "note": "color_wheel (within-family)",
+        "layer": 8,
+        "n": 24000000,
+        "pearson_r": 0.40675429198148555
+      },
+      {
+        "a": "january",
+        "b": "north",
+        "col_a": 81,
+        "col_b": 70,
+        "note": "months x directions (cross-family)",
+        "layer": 8,
+        "n": 24000000,
+        "pearson_r": 0.1327544541802485
+      }
+    ],
+    "cross_check_full_rerun": {
+      "note": "code/g1_corpus_check.py (fixed) re-run fresh end-to-end on the pod, 14 fully-transferred shards (more have landed since the original G1 evidence run), 64M tokens -- independent full-pipeline confirmation of the january-march correlation, cols 81/84.",
+      "shards_used": [
+        "00320",
+        "00321",
+        "00322",
+        "00323",
+        "00324",
+        "00331",
+        "00332",
+        "00333",
+        "00334",
+        "00335",
+        "00342",
+        "00343",
+        "00353",
+        "00354"
+      ],
+      "n_sampled_total": 63999992,
+      "january_march_corr_L8": 0.3076864347489926
+    }
+  },
+  "clip_fraction_audit": {
+    "n_columns": 216,
+    "n_sampled_total": 63999992,
+    "shards_used": [
+      "00320",
+      "00321",
+      "00322",
+      "00323",
+      "00324",
+      "00331",
+      "00332",
+      "00333",
+      "00334",
+      "00335",
+      "00342",
+      "00343",
+      "00353",
+      "00354"
+    ],
+    "concern_threshold": 0.01,
+    "fine_threshold": 0.001,
+    "n_cols_over_concern_1pct": 0,
+    "n_cols_over_fine_0p1pct": 195,
+    "worst10_all_columns": [
+      {
+        "col": 13,
+        "block": "main",
+        "layer": 6,
+        "concept": "oceania",
+        "clip_frac_pos127": 0.009082079260259907,
+        "clip_frac_neg127": 4.6875005859375735e-07,
+        "clip_frac_total": 0.0090825480103185,
+        "mean": -0.7619442883237457,
+        "std": 29.503277118619593
+      },
+      {
+        "col": 201,
+        "block": "dom",
+        "layer": 8,
+        "concept": "spring",
+        "clip_frac_pos127": 0.008986047998256,
+        "clip_frac_neg127": 0.0,
+        "clip_frac_total": 0.008986047998256,
+        "mean": -2.318363385314607,
+        "std": 34.34375541031346
+      },
+      {
+        "col": 10,
+        "block": "main",
+        "layer": 6,
+        "concept": "asia",
+        "clip_frac_pos127": 0.0089495479936935,
+        "clip_frac_neg127": 3.281250410156301e-07,
+        "clip_frac_total": 0.008949876118734514,
+        "mean": -0.9286342086292727,
+        "std": 25.868387620424784
+      },
+      {
+        "col": 67,
+        "block": "main",
+        "layer": 8,
+        "concept": "oceania",
+        "clip_frac_pos127": 0.00883051672881459,
+        "clip_frac_neg127": 1.5625001953125243e-08,
+        "clip_frac_total": 0.008830532353816544,
+        "mean": -1.9465401918845655,
+        "std": 31.869441475434048
+      },
+      {
+        "col": 190,
+        "block": "dom",
+        "layer": 8,
+        "concept": "oceania",
+        "clip_frac_pos127": 0.00883051672881459,
+        "clip_frac_neg127": 1.5625001953125243e-08,
+        "clip_frac_total": 0.008830532353816544,
+        "mean": -1.9465401918845655,
+        "std": 31.869441475434048
+      },
+      {
+        "col": 171,
+        "block": "dom",
+        "layer": 8,
+        "concept": "europe",
+        "clip_frac_pos127": 0.008686891710861464,
+        "clip_frac_neg127": 1.2500001562500194e-07,
+        "clip_frac_total": 0.008687016710877089,
+        "mean": -1.8606517448139825,
+        "std": 27.38507334922818
+      },
+      {
+        "col": 164,
+        "block": "dom",
+        "layer": 8,
+        "concept": "asia",
+        "clip_frac_pos127": 0.008557266694658337,
+        "clip_frac_neg127": 0.0,
+        "clip_frac_total": 0.008557266694658337,
+        "mean": -1.922601519957197,
+        "std": 29.739212404338147
+      },
+      {
+        "col": 68,
+        "block": "main",
+        "layer": 8,
+        "concept": "south_america",
+        "clip_frac_pos127": 0.008552094819011853,
+        "clip_frac_neg127": 3.1250003906250486e-08,
+        "clip_frac_total": 0.008552126069015759,
+        "mean": -2.1132911950889097,
+        "std": 34.78954813517907
+      },
+      {
+        "col": 198,
+        "block": "dom",
+        "layer": 8,
+        "concept": "south_america",
+        "clip_frac_pos127": 0.008552094819011853,
+        "clip_frac_neg127": 3.1250003906250486e-08,
+        "clip_frac_total": 0.008552126069015759,
+        "mean": -2.1132911950889097,
+        "std": 34.78954813517907
+      },
+      {
+        "col": 9,
+        "block": "main",
+        "layer": 6,
+        "concept": "africa",
+        "clip_frac_pos127": 0.00841325105165638,
+        "clip_frac_neg127": 4.6875005859375735e-07,
+        "clip_frac_total": 0.008413719801714974,
+        "mean": -1.066497849774458,
+        "std": 25.203942842123702
+      }
+    ],
+    "dom_block": {
+      "n_dom_cols": 54,
+      "n_over_concern_1pct": 0,
+      "n_over_fine_0p1pct": 54,
+      "median_clip_frac_total": 0.006952953994119249,
+      "max_clip_frac_total": 0.008986047998256,
+      "worst10": [
+        {
+          "col": 201,
+          "concept": "spring",
+          "clip_frac_pos127": 0.008986047998256,
+          "clip_frac_neg127": 0.0,
+          "clip_frac_total": 0.008986047998256,
+          "mean": -2.318363385314607,
+          "std": 34.34375541031346
+        },
+        {
+          "col": 190,
+          "concept": "oceania",
+          "clip_frac_pos127": 0.00883051672881459,
+          "clip_frac_neg127": 1.5625001953125243e-08,
+          "clip_frac_total": 0.008830532353816544,
+          "mean": -1.9465401918845655,
+          "std": 31.869441475434048
+        },
+        {
+          "col": 171,
+          "concept": "europe",
+          "clip_frac_pos127": 0.008686891710861464,
+          "clip_frac_neg127": 1.2500001562500194e-07,
+          "clip_frac_total": 0.008687016710877089,
+          "mean": -1.8606517448139825,
+          "std": 27.38507334922818
+        },
+        {
+          "col": 164,
+          "concept": "asia",
+          "clip_frac_pos127": 0.008557266694658337,
+          "clip_frac_neg127": 0.0,
+          "clip_frac_total": 0.008557266694658337,
+          "mean": -1.922601519957197,
+          "std": 29.739212404338147
+        },
+        {
+          "col": 198,
+          "concept": "south_america",
+          "clip_frac_pos127": 0.008552094819011853,
+          "clip_frac_neg127": 3.1250003906250486e-08,
+          "clip_frac_total": 0.008552126069015759,
+          "mean": -2.1132911950889097,
+          "std": 34.78954813517907
+        },
+        {
+          "col": 162,
+          "concept": "africa",
+          "clip_frac_pos127": 0.008259797907474739,
+          "clip_frac_neg127": 0.0,
+          "clip_frac_total": 0.008259797907474739,
+          "mean": -2.028022937311921,
+          "std": 30.12322297167232
+        },
+        {
+          "col": 186,
+          "concept": "north_america",
+          "clip_frac_pos127": 0.008204454150556768,
+          "clip_frac_neg127": 4.687500585937573e-08,
+          "clip_frac_total": 0.008204501025562628,
+          "mean": -1.3003256846704287,
+          "std": 30.449588487477943
+        },
+        {
+          "col": 165,
+          "concept": "august",
+          "clip_frac_pos127": 0.00813740726717591,
+          "clip_frac_neg127": 0.0,
+          "clip_frac_total": 0.00813740726717591,
+          "mean": -1.4933619635348387,
+          "std": 27.219063856393472
+        },
+        {
+          "col": 177,
+          "concept": "january",
+          "clip_frac_pos127": 0.00807951663493958,
+          "clip_frac_neg127": 1.5625001953125243e-08,
+          "clip_frac_total": 0.008079532259941534,
+          "mean": -1.0950127531398917,
+          "std": 25.53469493112885
+        },
+        {
+          "col": 196,
+          "concept": "september",
+          "clip_frac_pos127": 0.007940563492570437,
+          "clip_frac_neg127": 1.5625001953125243e-08,
+          "clip_frac_total": 0.00794057911757239,
+          "mean": -1.1261737103688345,
+          "std": 25.554485925863176
+        }
+      ]
+    }
+  },
+  "expb_impact_worst_dom_column": {
+    "worst_dom_col": 201,
+    "worst_dom_concept": "spring",
+    "clip_frac_pos127": 0.008986047998256,
+    "clip_frac_neg127": 0.0,
+    "clip_frac_total": 0.008986047998256,
+    "zero": -1.9606730216966273,
+    "scale": 1.195048741495887,
+    "boundary_pos": 149.810517148281,
+    "boundary_neg": -153.73186319167428,
+    "empirical_mean": -2.318363385314607,
+    "empirical_std": 34.34375541031346,
+    "z_geom_threshold_std_units": 4.429593639835647,
+    "gaussian_tail_mass_at_z_geom": 4.7205406767679e-06,
+    "z_eff_tail_probability_matched": 2.3661925208015946,
+    "excess_rms_raw_conditional_on_saturating": 15.633714720645969,
+    "floor_rms_raw": 0.34498085629868697,
+    "combined_rms_raw": 1.521265794704923,
+    "combined_over_floor_ratio": 4.409710762001819,
+    "sensitivity_l2_dv_dsc": 0.17209886342774697,
+    "v_star_l2_rms_error_floor_only": 0.05937081327333493,
+    "v_star_l2_rms_error_floor_plus_clip": 0.2618081142402255,
+    "v_star_per_dim_rms_error_floor_only": 0.0012368919431944778,
+    "v_star_per_dim_rms_error_floor_plus_clip": 0.005454335713338031,
+    "D_dom_col_spring_l2_norm": 37.05341728869649,
+    "D_dom_col_median_l2_norm": 39.28382053332135,
+    "model_caveat": "Gaussian-tail (Mills-ratio) excess model using the column's own empirical mean/std; likely an UNDERESTIMATE if the true tail beyond the clip boundary is heavier than Gaussian. First-order linear propagation (single-column perturbation, other 53 dom columns' errors ignored / assumed uncorrelated)."
+  }
+}

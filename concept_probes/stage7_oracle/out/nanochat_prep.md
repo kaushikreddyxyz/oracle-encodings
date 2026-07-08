@@ -199,6 +199,11 @@ precompute path — inline would compute z inside the training step instead.
 
 ## 5. Launch checklist (copy-ready — do NOT run yet)
 
+> AUDIT EDIT 2026-07-08: `--inject-after-block` corrected 8 -> **7** in steps
+> 4-5 below (orchestrator addendum #2: after 8 COMPLETED blocks = after
+> `transformer.h[7]`); the patch default is now also 7. Diffs regenerated and
+> `git apply --check`-verified; see `code/nanochat_patch/APPLY.md`.
+
 ```bash
 # 0. Preconditions: G2 GO (or marginal+caveat); Exp-A checkpoint chosen;
 #    corpus_stats + continents PCA saved into/next to probe_set.json.
@@ -224,7 +229,7 @@ python -m nanochat.dataset -n 274
 NO_VALUE_EMBEDS=1 torchrun --standalone --nproc_per_node=8 -m scripts.base_train -- \
   --depth=24 --target-param-data-ratio=12 --max-seq-len=2048 --device-batch-size=16 \
   --no-value-embeds --fp8 --fp8-recipe=tensorwise --seed=1337 \
-  --inject-coords=/workspace/coords --inject-after-block=8 --inject-beta=0.05 --inject-noise-sigma=0.15 \
+  --inject-coords=/workspace/coords --inject-after-block=7 --inject-beta=0.05 --inject-noise-sigma=0.15 \
   --num-iterations=3 --total-batch-size=393216 --save-every=0 \
   --eval-every=-1 --core-metric-every=-1 --sample-every=-1 --run=dummy
 
@@ -234,7 +239,7 @@ screen -L -Logfile runs/oracle_runs/inject_noVE.log -S inject torchrun --standal
   --depth=24 --target-param-data-ratio=12 --max-seq-len=2048 --device-batch-size=16 \
   --model-tag=oracle_inject_noVE_d24_fp8 \
   --no-value-embeds --fp8 --fp8-recipe=tensorwise --seed=1337 \
-  --inject-coords=/workspace/coords --inject-after-block=8 --inject-beta=0.05 --inject-noise-sigma=0.15 \
+  --inject-coords=/workspace/coords --inject-after-block=7 --inject-beta=0.05 --inject-noise-sigma=0.15 \
   --save-every=2000 --save-optimizer=every --compress-checkpoints=1 \
   --eval-every=250 --core-metric-every=2000 --sample-every=2000 --run=inject_noVE_d24_fp8_r12
 

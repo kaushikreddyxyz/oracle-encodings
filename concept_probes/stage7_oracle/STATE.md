@@ -2,6 +2,28 @@
 
 (newest first)
 
+- ~8:30 AM: AUDIT WAVE (user-directed tiering: Fable audits Opus/Sonnet
+  gate-critical code, Opus audits the rest). Results so far:
+  (1) Opus audit of score_corpus/align: NO defects on hot paths; two
+  documented latents — int8 tail behavior (firing tokens lose ordering
+  >4σ; std slightly <1 after standardization; consistent train/heldout)
+  and align's silent offset-clamp (dormant for gemma→qwen; RELEVANT for
+  qwen→nanochat tiktoken path). (2) Fable audit of train_encoder/
+  verify_closed_form: **live run's G2 number TRUSTWORTHY** — R² median
+  over all 162 targets, disjoint splits (now enforced), correct
+  dequant/standardization pairing, every known imperfection biases R²
+  DOWN (conservative vs 0.6 bar). Fixed: stale canary test that was
+  masking the verify suite, added v*-crosscheck (verifier vs trainer
+  formulas — currently bit-identical), shard-overlap + stats-shape
+  guards. Documented: verify check-2 partial circularity — t_nat_dom
+  correctness rests on PERMUTATION_FIX's offline dom-block audit (done);
+  ⚠ --resume does NOT restore the LR scheduler (matters if we continue
+  Exp-A onto wider shards: fast-forward scheduler or relaunch fresh).
+  Pod re-sync needed for verify_closed_form.py before pod-A run.
+  Committed 862022c. Still pending: Fable nanochat-patch audit, fleet
+  completion, next Exp-A evals. G1 residuals closed earlier (jan-mar
+  r=0.308 PASS; int8 clipping non-blocking, quantified).
+
 - ~7:20 AM: **G1 = FAIL, root-caused, fix in flight (no rescoring
   needed).** select_probes.py assembly bug: W/b main-block rows filled in
   (family,concept)-sorted order while probe_set.json "concepts" is

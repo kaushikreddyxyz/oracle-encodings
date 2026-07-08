@@ -10,7 +10,7 @@ self-terminates via RunPod GraphQL podTerminate:
       failed.
   (b) archival driver state = 43/43 shards (320..362) uploaded AND
       final_corpus_stats_uploaded == true.
-  (c) coords HF repo (kaushikreddyxyz/stage7-oracle-coords) has all 6
+  (c) coords HF repo (kaushikreddyxyz/oracle-coords) has all 6
       done_podN.json markers (trainer's role as rsync source is then over).
 
 Sad-path rule: anything unexpected (a training/driver process died before its
@@ -33,8 +33,8 @@ os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
 POD_ID = os.environ.get("POD_ID", "0te256xap9vakv")
 RP_KEY_FILE = os.environ.get("RP_KEY_FILE", "/workspace/.rp_key")
 DRY_RUN = os.environ.get("DRY_RUN", "0") == "1"
-ENCODER_REPO = os.environ.get("ENCODER_REPO", "kaushikreddyxyz/stage7-oracle-encoder")
-COORDS_REPO = os.environ.get("COORDS_REPO", "kaushikreddyxyz/stage7-oracle-coords")
+ENCODER_REPO = os.environ.get("ENCODER_REPO", "kaushikreddyxyz/oracle-encoder")
+COORDS_REPO = os.environ.get("COORDS_REPO", "kaushikreddyxyz/oracle-coords")
 POLL_SECS = int(os.environ.get("POLL_SECS", "120"))
 
 WS = "/workspace"

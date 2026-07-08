@@ -2,7 +2,7 @@
 
 (newest first)
 
-## ⚠️ COORDS REPO MOVED (12:50 PM 2026-07-08): use `stage7-oracle-coords-b`
+## ⚠️ COORDS REPO MOVED (12:50 PM 2026-07-08): use `oracle-coords-b`
 
 The self-cleanup daemons hit HF's **128 commits/hour per-repo rate limit**
 (they committed per-file; 6 pods × ~128 files blew the window at ~130 files
@@ -11,7 +11,7 @@ in) and would have idled the fleet ~1h at ~$18/hr. Manual takeover instead:
 - Killed the `coords_selfcleanup` daemons on all 6 pods; launched
   `manual_upload.py` on each — the ENTIRE `shards/` dir in ONE
   `upload_folder` commit per pod, to a fresh repo with a fresh rate-limit
-  counter: **https://huggingface.co/datasets/kaushikreddyxyz/stage7-oracle-coords-b**
+  counter: **https://huggingface.co/datasets/kaushikreddyxyz/oracle-coords-b**
   (layout identical: `shards/` at root; per-pod `meta/podN_state.json`,
   pod1 also `meta/pod1_coord_fit.{json,npz}`).
 - All 6 sweeps had COMPLETED before takeover (pod1 32/32 finished last,
@@ -25,7 +25,7 @@ in) and would have idled the fleet ~1h at ~$18/hr. Manual takeover instead:
   for hours; `expB-learn/best.pt` (1,084,290 B) and expA `best.pt`
   (3,577,614,718 B) byte-verified on the encoder repo. Condition (c) is
   obsolete (see above).
-- The ORIGINAL repo `stage7-oracle-coords` holds a partial 128-file subset
+- The ORIGINAL repo `oracle-coords` holds a partial 128-file subset
   from the daemons' per-file commits — ignore it; coords-b is authoritative.
 - **Runbook step 2 below: download coords-b, not coords.** Assemble
   hard-fails if any shard is missing, so a partial coords-b is self-catching.
@@ -33,7 +33,7 @@ in) and would have idled the fleet ~1h at ~$18/hr. Manual takeover instead:
 ## TONIGHT'S LAUNCH RUNBOOK (attended, ~15 min of gates; written ~4:45 PM)
 
 Expected state on return: ZERO pods running; coords at
-hf.co/datasets/kaushikreddyxyz/stage7-oracle-coords-b (764 `shards/` files
+hf.co/datasets/kaushikreddyxyz/oracle-coords-b (764 `shards/` files
 + 6 `meta/podN_state.json` = complete; done_podN.json markers DEPRECATED,
 see entry above), scores archived, encoder + all
 run artifacts on HF, wandb project stage7-oracle current. If any pod is
@@ -93,7 +93,7 @@ is watching — the pods drive themselves.
   `HOLD_REASON_trainer.txt` to the coords repo (visible from anywhere);
   does NOT terminate.
 - **Coords HF repo (NEW, public):**
-  https://huggingface.co/datasets/kaushikreddyxyz/stage7-oracle-coords
+  https://huggingface.co/datasets/kaushikreddyxyz/oracle-coords
   (int8 per-shard coord store + `coord_fit.*` + per-pod `done_podN.json`).
 - **Terminate path validated** dry-run from coords1 (self-describe +
   mutation string printed, not executed). Gotcha baked into the scripts:
@@ -193,7 +193,7 @@ stage7-*); coords repo shows 6 `done_podN.json` all `status:"COMPLETE"` +
   **qwen↔nanochat crossing rate 3.86% mean / 7.1% p90** (better than the
   gemma↔qwen 7.08% — prefix bridge validated). Balance $690.80. Coords
   fit→sweep launch agent dispatched (best.pt distributed via new HF repo
-  kaushikreddyxyz/stage7-oracle-encoder; fit clip-frac gate; per-pod
+  kaushikreddyxyz/oracle-encoder; fit clip-frac gate; per-pod
   round-robin sweep of shards 0-190; first-minute byte-partition +
   zero_frac watch). Frozen-encoder baseline running on trainer.
   Waiting: pod-A verifier (gates ExpB), B/C/D teardowns, HF archival.

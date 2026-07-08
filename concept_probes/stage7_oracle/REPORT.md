@@ -173,7 +173,7 @@ above. (An earlier revision of this section claimed corr(R², retention)
 - expB-learn: https://wandb.ai/kaushikreddyxyz-/stage7-oracle/runs/jt2phjcv (retro-logged by the auto-watcher on completion)
 
 **HuggingFace**
-- Encoder + checkpoints: https://huggingface.co/kaushikreddyxyz/stage7-oracle-encoder
+- Encoder + checkpoints: https://huggingface.co/kaushikreddyxyz/oracle-encoder
   (`best.pt` deployed; `frozen-baseline/`, `expB-fixed/`, `expB-learn/` subdirs + per-run `metrics.jsonl`)
 - Probe-score dataset: https://huggingface.co/datasets/kaushikreddyxyz/concept-probes-corpus-scores
 - no-VE nanochat baseline (tonight's match target): https://huggingface.co/kaushikreddyxyz/oracle_baseline_noVE_d24_fp8 (CORE 0.2711, val bpb 0.7091)

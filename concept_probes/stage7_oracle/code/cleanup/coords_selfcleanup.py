@@ -20,7 +20,7 @@ Config via env:
   RP_KEY_FILE    path to chmod-600 file holding the RunPod API key
   DRY_RUN        "1" -> verify terminate path (self-describe query + print the
                  mutation string) but DO NOT actually terminate. Default "0".
-  REPO           HF dataset repo id (default kaushikreddyxyz/stage7-oracle-coords)
+  REPO           HF dataset repo id (default kaushikreddyxyz/oracle-coords)
   COORDS_DIR     default /workspace/coords
   POLL_SECS      default 120
 """
@@ -34,7 +34,7 @@ import urllib.request
 
 os.environ.setdefault("HF_HUB_ENABLE_HF_TRANSFER", "1")
 
-REPO = os.environ.get("REPO", "kaushikreddyxyz/stage7-oracle-coords")
+REPO = os.environ.get("REPO", "kaushikreddyxyz/oracle-coords")
 COORDS_DIR = os.environ.get("COORDS_DIR", "/workspace/coords")
 SHARDS_DIR = os.path.join(COORDS_DIR, "shards")
 POD_NUM = int(os.environ["POD_NUM"])

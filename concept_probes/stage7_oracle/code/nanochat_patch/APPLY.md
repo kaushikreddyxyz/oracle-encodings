@@ -16,7 +16,7 @@ deterministic per (seed, doc-content-hash) — DDP-rank- and resume-independent.
 - `base_train_inject.diff`  -> patches `nanochat/scripts/base_train.py` (CLI flags, load P as non-persistent buffer, swap loader, pass coords)
 - `coords_store.py`         -> imported by base_train (P, structured coords, CoordSource); lives in this dir, NOT the submodule
 - `coord_dataloader.py`     -> imported by base_train (ride-along best-fit loader); same
-- `precompute_coords.py`    -> offline: encoder over corpus -> coords memmap (run BEFORE training; still a SKELETON below main())
+- `precompute_coords.py`    -> offline: encoder over corpus -> coords memmap (run BEFORE training; IMPLEMENTED, CPU-tested via test_precompute_coords.py)
 
 ## Apply
 ```bash
@@ -57,13 +57,34 @@ base_train's relative import of this dir will not resolve — set
 
 ## Launch (injected no-VE run, matched to the existing baseline)
 ```bash
-# 1) precompute coords first (long pole; separate pod(s))
-python precompute_coords.py --encoder-ckpt <expA.pt> --probe-set out/probe_set.json \
-    --shards 0-190 --out /workspace/coords     # NOTE: still a skeleton — wire the encoder first
+# 1) precompute coords first (long pole; fleet of 4-6 H100 pods).
+#    Prereqs on every pod: the baseline tokenizer at $NANOCHAT_BASE_DIR/tokenizer
+#    (pull tokenizer/ from HF oracle_baseline_noVE_d24_fp8) and the karpathy
+#    climbmix shards at $NANOCHAT_BASE_DIR/base_data_climbmix (python -m nanochat.dataset -n 191).
+CO=concept_probes/stage7_oracle/code/nanochat_patch/precompute_coords.py
+#  1a) pod 0 fits continents PCA + coord scale ONCE (shared by all pods):
+python $CO --mode fit   --encoder-ckpt <expA.pt> --probe-set out/probe_set.json \
+    --shards 0-3 --out /workspace/coords
+#  1b) every pod sweeps its round-robin shard slice (resumable, atomic per shard):
+python $CO --mode sweep --encoder-ckpt <expA.pt> --probe-set out/probe_set.json \
+    --shards 0-190 --out /workspace/coords --pod-index $P --n-pods $NP
+#  1c) after the fleet finishes, on ONE node with all shards/coords present:
+python $CO --mode merge-stats --out /workspace/coords
+python $CO --mode assemble   --probe-set out/probe_set.json --encoder-ckpt <expA.pt> \
+    --shards 0-190 --out /workspace/coords    # -> coords.int8 / index.npy / meta.json / P.npy
+#  optional QA:
+python $CO --mode verify          --encoder-ckpt <expA.pt> --probe-set out/probe_set.json \
+    --shards 0-0 --out /workspace/coords --verify-docs 64
+python $CO --mode measure-crossing --shards 0-0 --out /workspace/coords   # audit open-item
 # 2) train — call scripts.base_train directly (no_value_embeds.sh does not
 #    forward --inject-*); the full copy-ready command incl.
 #    --inject-after-block=7 is in out/nanochat_prep.md §5 (steps 4-5).
 ```
+Coord-standardization design note (important): quantization is **zero-preserving**
+(no mean-centering) so a concept-free token (raw coord 0) stays int8 0 -> the
+self-normalizing injection is an exact no-op there. Per-column mean/std ARE
+recorded in `meta.json` (required artifact) but only the single global `scale`
+is applied by the loader (`CoordSource` = `int8 * scale`).
 SMOKE first (3 steps, nothing saved) to validate build + torch.compile + one
 step with coords; watch step time (should be within ~3% of baseline) and that
 the `--inject-coords` banner prints the expected r=14 / after_block=7 / docs
@@ -85,5 +106,8 @@ count.
   splits (200 randomized trials) and asserts on non-partitioning ids.
 
 NOT validated here (needs GPU/real run): torch.compile + fp8 on the coord graph,
-real-throughput of the CoordSource index (27M-entry dict, ~2-3 GB/rank), and
-the precompute skeleton's encoder wiring (still unimplemented).
+real-throughput of the CoordSource index (27M-entry dict, ~2-3 GB/rank), and the
+precompute encoder wiring on the REAL Exp-A checkpoint + REAL tiktoken/qwen
+tokenizer pair (precompute logic is CPU-tested with a byte-BPE stand-in +
+tiny-Qwen2 model in test_precompute_coords.py, but the real forward, the real
+crossing rate, and coord-scale/clip fractions on real preds are GPU-only).

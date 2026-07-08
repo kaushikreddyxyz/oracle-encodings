@@ -2,6 +2,20 @@
 
 (newest first)
 
+- ~8:55 AM: **Exp-A crossed the G2 bar**: heldout median R² 0.5999 @2000
+  → 0.6129 @2400 → 0.6203 @2800 (of 6800 steps), still climbing, plateau
+  stop not near firing. Audited metric (conservative biases) → this is a
+  PRELIMINARY GO for Phase 4; final G2 call after the run ends + the
+  SPEC's natural-eval AUROC-retention check (≥90% of gemma probes' AUROC
+  on Stage-6 judged texts). The SPEC's 50M-fineweb distribution check is
+  MOOT (nanochat corpus = same ClimbMix repack, disjoint shards).
+  Nanochat-patch Fable audit: GO-with-conditions, 3 critical fixes
+  (unappliable diffs regenerated; inject-after-block 8→7 in three places;
+  missing-doc fallback injected FULL-AMPLITUDE NOISE → now exact zeros)
+  + per-(seed,doc-hash) noise RNG, double-standardization removed.
+  precompute_coords.py full implementation dispatched (Opus, then Fable
+  audit). Fleet: 7-8 shards/pod done, ~45 min to completion.
+
 - ~8:30 AM: AUDIT WAVE (user-directed tiering: Fable audits Opus/Sonnet
   gate-critical code, Opus audits the rest). Results so far:
   (1) Opus audit of score_corpus/align: NO defects on hot paths; two

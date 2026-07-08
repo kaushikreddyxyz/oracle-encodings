@@ -4,150 +4,1092 @@ Long pole of Phase 4 -- START EARLY (SPEC: by ~4 AM to be worth it vs inline).
 
 For every document in the nanochat ClimbMix shards (karpathy/climbmix-400b-shuffle,
 the SAME parquet 'text' the dataloader reads), produce an (n_nanochat_tokens, r)
-standardized coord array and append it to an int8 memmap keyed by doc-content
-hash. The nanochat model later rides these through best-fit packing (see
-coord_dataloader.py).
+coord array and append it to an int8 memmap keyed by doc-content hash. The
+nanochat model later rides these coords through best-fit packing in lockstep
+with the tokens (see coord_dataloader.py + coords_store.py = the CONSUMER
+contract this producer must match exactly).
 
-Bridge per token (align.py, prefix mode -- the tokenizer-agnostic module already
-validated at 7.08% crossing gemma->qwen):
-    nanochat-tokenize doc  -> char offsets (reconstructed from tiktoken token
-                              bytes; nanochat's RustBPE/tiktoken has no
-                              return_offsets_mapping, so accumulate byte lengths
-                              -> byte spans -> char spans)
-    qwen-tokenize doc      -> char offsets (HF fast tokenizer)
-    nanochat_tok t         -> last qwen token whose char span ends <= end(t)
-    gather Qwen hidden[that idx] -> encoder head -> preds[3K] -> take the
-    gemma-layer-8 block (K cols) -> build_coords -> (n, r)
+Pipeline per doc (align.py prefix mode -- the tokenizer-agnostic module already
+validated at 7.08% crossing gemma->qwen; it serves qwen->nanochat directly):
 
-Run (per pod, shard range split across the fleet):
-    python precompute_coords.py --encoder-ckpt <expA.pt> --probe-set <probe_set.json> \
-        --shards 0-190 --out /workspace/coords --r-check 14
+    nanochat-tokenize doc  -> BOS-less ids via tiktoken encode_ordinary
+                              (token count == what coord_dataloader sees:
+                               loader does len(encode(...,prepend=BOS))-1)
+    char offsets           -> reconstructed from tiktoken token bytes
+                              (RustBPE/tiktoken has no return_offsets_mapping;
+                               accumulate decode_single_token_bytes lengths ->
+                               byte spans -> char spans; audit-fixed partition
+                               assert kept)
+    qwen-tokenize doc      -> char offsets (HF fast tokenizer, add_special so
+                              the encoder sees the SAME context it trained on)
+    nano_tok t             -> last qwen token whose char span ends <= end(t)
+    gather Qwen hidden     -> frozen Exp-A encoder head -> preds[3K]
+    slice the LAYER-8 block -> preds[:, block*K:(block+1)*K]  (block=layers.index(8)=1
+                              for layers=[6,8,14] => columns [54:108]; VERIFIED)
+    build_coords            -> per-family structured coords, r=14
+                              (6 cyclic families -> 2-D ring; continents -> PCA-2D)
+
+Coord standardization + int8 (see `quantize` / the extended note there): the
+per-column mean/std ARE computed and recorded in meta (required artifact), but
+quantization is ZERO-PRESERVING (raw coord 0 -> int8 0 -> consumer 0 -> exact
+injection no-op). Mean-centering is deliberately NOT applied: the self-
+normalizing injection renormalizes ANY nonzero coord to full beta amplitude, so
+a centered "no-concept" token (raw 0) would inject a full-strength constant
+direction on ~every token -- exactly what the design's "no-concept -> zc=0 ->
+term=0" invariant forbids. Noise (sigma=0.15) is added by the LOADER at train
+time, never here.
+
+Modes (--mode):
+  fit              pod-0 one-time: fit continents PCA-2D + coord mean/std/scale
+                   on a prefix sample; write coord_fit.npz (shared by all pods).
+  sweep (default)  per pod: single pass over its round-robin shard slice, write
+                   per-shard int8 store files (resumable, atomic), + a partial
+                   Welford stats file.
+  merge-stats      merge the per-pod/per-shard Welford partials -> corpus stats.
+  assemble         concatenate per-shard store files -> final coords.int8 /
+                   index.npy / meta.json / P.npy (the consolidated store the
+                   training node loads).
+  verify           sample K docs from a finished store shard, recompute coords
+                   live, assert int8 round-trip within scale, report zero frac.
+  measure-crossing align.crossing_rate for the qwen->nanochat pair over ~2k docs
+                   (open audit item: prefix-mode assumption for tiktoken).
+
+Run (per pod; shard range split across the fleet by --pod-index/--n-pods):
+    python precompute_coords.py --mode fit   --encoder-ckpt <expA.pt> \
+        --probe-set out/probe_set.json --shards 0-3 --out /workspace/coords
+    python precompute_coords.py --mode sweep --encoder-ckpt <expA.pt> \
+        --probe-set out/probe_set.json --shards 0-190 --out /workspace/coords \
+        --pod-index 0 --n-pods 4
+    python precompute_coords.py --mode merge-stats --out /workspace/coords
+    python precompute_coords.py --mode assemble   --out /workspace/coords \
+        --encoder-ckpt <expA.pt> --probe-set out/probe_set.json --shards 0-190
 """
 import argparse
+import glob
 import json
+import math
 import os
 import sys
 
 import numpy as np
-import torch
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))  # stage7 code/
-from align import get_offsets, gemma_to_qwen_map            # noqa: E402
-from coords_store import build_coords, make_orthonormal_P, doc_hash, CYCLIC_ORDER  # noqa: E402
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))  # stage7 code/
+from align import get_offsets, gemma_to_qwen_map, crossing_rate            # noqa: E402
+from coords_store import (build_coords, make_orthonormal_P, doc_hash,      # noqa: E402
+                          CYCLIC_ORDER, NONCYCLIC_PCA)
+
+INDEX_DTYPE = np.dtype([("hash", "<u8"), ("off", "<i8"), ("n", "<i4")])
 
 
-def nanochat_char_offsets(tok, ids, text):
+# --------------------------------------------------------------------------- #
+# char-offset reconstruction for tiktoken/RustBPE (audit-fixed; partition assert)
+# --------------------------------------------------------------------------- #
+def nanochat_char_offsets(enc, ids, text):
     """Reconstruct (start,end) CHAR spans for tiktoken/RustBPE ids by accumulating
     per-token decoded byte lengths and converting byte spans -> char spans.
 
-    ``text`` must be the exact string the ids were produced from (via
-    encode_ordinary, i.e. NO BOS/special ids in ``ids``): byte-level BPE
-    partitions text.encode('utf-8'), so the per-token byte lengths must sum to
+    ``enc`` is a tiktoken.Encoding (or any object with decode_single_token_bytes).
+    ``ids`` must come from encode_ordinary(text) (NO BOS/special ids): byte-level
+    BPE partitions text.encode('utf-8'), so the per-token byte lengths must sum to
     the doc's byte length (asserted). We use text's own bytes rather than
-    enc.decode(ids) so tiktoken's errors='replace' decoding can never desync
-    byte offsets. A char is attributed to the token holding its UTF-8 LEAD byte;
-    a token that ends mid-character (byte-level BPE can split a multibyte char)
-    gets span end just past that char, and the next token starts there (empty
-    spans possible for pure-continuation-byte tokens -- align.py treats empty
-    source spans as unmapped (-1), which we then zero-fill)."""
-    enc = tok.enc if hasattr(tok, "enc") else tok  # tiktoken.Encoding
-    byte_lens = [len(enc.decode_single_token_bytes(i)) for i in ids]
-    b = np.concatenate([[0], np.cumsum(byte_lens)]).astype(np.int64)  # byte offset per token boundary
+    enc.decode(ids) so tiktoken's errors='replace' decoding can never desync byte
+    offsets. A char is attributed to the token holding its UTF-8 LEAD byte; a
+    token that ends mid-character gets its span end just past that char and the
+    next token starts there (empty spans possible for pure-continuation-byte
+    tokens -- align.py treats empty source spans as -1, which build_coords then
+    zero-fills)."""
+    byte_lens = [len(enc.decode_single_token_bytes(int(i))) for i in ids]
+    b = np.concatenate([[0], np.cumsum(byte_lens)]).astype(np.int64)  # byte boundary per token
     fb = text.encode("utf-8")
     assert int(b[-1]) == len(fb), (
         f"token byte lengths do not partition the document bytes "
         f"({int(b[-1])} != {len(fb)}); ids must come from encode_ordinary(text)")
     # byte offset -> char offset: a utf-8 continuation byte (0b10xxxxxx) does not
     # start a new char, so the char index increments only on lead bytes.
-    char_at = [0]
+    char_at = np.empty(len(fb) + 1, dtype=np.int64)
+    char_at[0] = 0
     ci = 0
-    for byte in fb:
+    for k, byte in enumerate(fb):
         if (byte & 0xC0) != 0x80:
             ci += 1
-        char_at.append(ci)
-    char_at = np.asarray(char_at)
+        char_at[k + 1] = ci
     return [(int(char_at[b[i]]), int(char_at[b[i + 1]])) for i in range(len(ids))]
 
 
-def main():
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--encoder-ckpt", required=True)
-    ap.add_argument("--probe-set", required=True)
-    ap.add_argument("--shards", required=True, help="e.g. 0-190")
-    ap.add_argument("--out", required=True)
-    ap.add_argument("--layer8-block", type=int, default=8, help="gemma layer whose K predicted cols build the coords")
-    ap.add_argument("--n-embd", type=int, default=1536)
-    ap.add_argument("--r-check", type=int, default=14, help="expected coord dim r (7 families x 2); build_coords' legend length is asserted against this")
-    ap.add_argument("--noise-none", action="store_true", help="do NOT bake noise (added fresh at train time -- default)")
-    args = ap.parse_args()
-    os.makedirs(args.out, exist_ok=True)
+# --------------------------------------------------------------------------- #
+# shard range parsing + pod round-robin
+# --------------------------------------------------------------------------- #
+def parse_shard_range(spec):
+    """'0-190' or '0-3,10,20-22' -> sorted unique list of shard ids."""
+    out = set()
+    for part in str(spec).split(","):
+        part = part.strip()
+        if not part:
+            continue
+        if "-" in part:
+            a, c = part.split("-")
+            out.update(range(int(a), int(c) + 1))
+        else:
+            out.add(int(part))
+    return sorted(out)
 
-    ps = json.load(open(args.probe_set))
-    concepts, families = ps["concepts"], ps["families"]
-    # The encoder head's per-layer K output columns are in the score store's
-    # MAIN-block order == main_block_concepts (see out/PERMUTATION_FIX.md), NOT
-    # `concepts` (name-sorted). build_coords MUST index the encoder preds by
-    # this order so each family's phase angles attach to the TRUE concept.
-    # Fall back to `concepts` (with a warning) only if the key is absent.
+
+def assign_shards(all_shards, pod_index, n_pods):
+    """Shard-level round-robin: pod p handles all_shards[p], all_shards[p+n_pods], ...
+    Disjoint across pods; union == all_shards (coverage)."""
+    assert 0 <= pod_index < n_pods, f"pod_index {pod_index} out of range [0,{n_pods})"
+    return [s for i, s in enumerate(all_shards) if i % n_pods == pod_index]
+
+
+# --------------------------------------------------------------------------- #
+# probe-set + block layout resolution
+# --------------------------------------------------------------------------- #
+def load_probe_meta(probe_set_arg):
+    """Accept either a probe_set.json file or a dir containing it."""
+    path = probe_set_arg
+    if os.path.isdir(path):
+        path = os.path.join(path, "probe_set.json")
+    with open(path) as f:
+        ps = json.load(f)
+    return ps
+
+
+def resolve_layout(ps, layer8, r_check):
+    """Return (concepts, families, pred_order, block, K, legend_len sanity)."""
+    concepts = list(ps["concepts"])
+    families = ps["families"]
     pred_order = ps.get("main_block_concepts")
     if pred_order is None:
-        print("WARNING: probe_set.json has no 'main_block_concepts'; using "
-              "name-sorted 'concepts' as the encoder pred column order. If the "
-              "encoder was trained on the pre-fix (family-sorted) score store, "
-              "this attaches coord phase angles to the WRONG concepts.",
-              file=sys.stderr)
+        print("WARNING: probe_set.json has no 'main_block_concepts'; using name-sorted "
+              "'concepts' as encoder pred column order. If the encoder was trained on the "
+              "pre-fix (family-sorted) score store this attaches phase angles to the WRONG "
+              "concepts (see out/PERMUTATION_FIX.md).", file=sys.stderr)
         pred_order = concepts
-    assert set(concepts) == set(pred_order), (
-        "main_block_concepts and concepts must be the same 54 names (order differs)")
-    layers = ps["layers"]
-    block = layers.index(args.layer8_block)  # which of the 3 layer-blocks in preds[3K]
+    assert set(concepts) == set(pred_order), \
+        "main_block_concepts and concepts must be the same names (order differs)"
+    layers = list(ps["layers"])
+    if layer8 not in layers:
+        raise ValueError(f"--layer8-block {layer8} not in probe layers {layers}")
+    block = layers.index(layer8)  # which of the 3 K-wide blocks in preds[3K]
     K = len(concepts)
+    # legend-length sanity: build_coords on a zero row must yield r_check cols.
+    z0, legend = build_coords(np.zeros((1, K), np.float32), concepts, families,
+                              pca=_zero_pca(concepts, families), pred_order=pred_order)
+    if len(legend) != r_check:
+        raise ValueError(f"build_coords legend has {len(legend)} cols (legend={legend}), "
+                         f"expected r_check={r_check}")
+    return concepts, families, pred_order, block, K, legend
 
-    # fixed P + save once (seed pinned; r asserted against build_coords' legend below)
-    P = make_orthonormal_P(args.n_embd, r=args.r_check, seed=1337)
-    # --- load encoder (frozen Exp-A) + qwen + nanochat tokenizers ---
-    #   encoder = load_expA(args.encoder_ckpt)  # Qwen3-0.6B-Base + up head, eval, bf16
-    #   qwen_tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B-Base")   # fast
-    #   nano_tok = RustBPETokenizer.from_directory($NANOCHAT_BASE_DIR/tokenizer)
-    #     (MUST be the baseline run's tokenizer.pkl -- coord/token alignment is
-    #      keyed to its exact merges; pull from HF oracle_baseline_noVE_d24_fp8)
-    #   pca = {"continents": np.load(.../continents_pca.npy)}  # saved family-PCA-2D
-    #     (fit ONCE on corpus-standardized continents preds with a fixed seed,
-    #      save components; NEVER refit per shard/pod -- axes must be identical
-    #      everywhere. NOTE probe_set.json["corpus_stats"] is currently null;
-    #      the encoder does NOT need it: expA was trained with MSE against
-    #      corpus-standardized targets (train_encoder.py), so encoder.head
-    #      outputs are ALREADY in standardized score space -- do NOT
-    #      standardize preds again here.)
-    #
-    # for each doc text in the shard range (nanochat.dataset.parquets_iter_batched):
-    #     n_ids = nano_tok.encode(text)                       # encode_ordinary; no BOS (BOS row added by loader)
-    #     nano_off = nanochat_char_offsets(nano_tok, n_ids, text)
-    #     q_ids, q_off = get_offsets(qwen_tok, text)
-    #     amap = gemma_to_qwen_map(text, nano_off, q_off, mode="prefix")  # (len(n_ids),)
-    #     H = encoder.qwen(torch.tensor([q_ids])).hidden      # (Tq, 1024)
-    #     preds = encoder.head(H)                             # (Tq, 3K)  already standardized (see above)
-    #     pt = preds[amap.clip(min=0)]                        # (n, 3K)
-    #     pt[amap < 0] = 0.0                                  # unmapped nanochat tokens -> zero preds
-    #     kcols = pt[:, block*K:(block+1)*K]                  # gemma-layer-8 K cols, main_block order
-    #     # pred_order = main_block_concepts: encoder-output column order (store MAIN block)
-    #     z, legend = build_coords(kcols.numpy(), concepts, families, pca=pca, pred_order=pred_order)  # (n, r)
-    #     assert len(legend) == args.r_check == P.shape[1]
-    #     buffer z; record (doc_hash(text), off, n)
-    #
-    # coord standardization (SEPARATE from score standardization): compute
-    # per-column mean/std of z over the corpus (streaming or on a large prefix
-    # sample), standardize all z, then quantize int8 with a single global
-    # scale = 4*std/127 (clip +-4 sigma). Save the coord mean/std AND scale in
-    # meta.json so train-time dequant + any later reuse are exact.
-    # Noise is NOT baked (default; --noise-none is a no-op kept for symmetry):
-    # the loader adds sigma-noise fresh at train time, keyed by doc hash.
-    #
-    # write index.npy (structured dtype [("hash","<u8"),("off","<i8"),("n","<i4")]),
-    # meta.json {r, scale, coord_mean, coord_std, layer8_block, legend, families,
-    #   class_order=CYCLIC_ORDER, pred_order, encoder_ckpt, P_path}, P.npy
-    raise SystemExit("SKELETON: wire encoder/tokenizers/pca per the commented block "
-                     "once the Exp-A checkpoint exists; structure + bridge are final.")
+
+def _zero_pca(concepts, families):
+    """A placeholder PCA (identity-shaped zeros) so build_coords' legend can be
+    probed before the real PCA is fit. continents -> (m,2) zeros."""
+    pca = {}
+    for fam in NONCYCLIC_PCA:
+        m = sum(1 for c in concepts if families[c] == fam)
+        if m:
+            pca[fam] = np.zeros((m, 2), np.float32)
+    return pca
+
+
+# --------------------------------------------------------------------------- #
+# tokenizers + encoder
+# --------------------------------------------------------------------------- #
+def load_nanochat_enc(tokenizer_dir):
+    """Return the tiktoken Encoding backing the baseline RustBPE tokenizer.
+
+    MUST be the baseline run's tokenizer.pkl -- coord/token alignment is keyed to
+    its exact merges (pull tokenizer/ from HF oracle_baseline_noVE_d24_fp8)."""
+    from nanochat.tokenizer import RustBPETokenizer
+    tok = RustBPETokenizer.from_directory(tokenizer_dir)
+    return tok.enc  # tiktoken.Encoding: encode_ordinary + decode_single_token_bytes
+
+
+def make_qwen_encode(qwen_tok, add_special=True):
+    """(substr) -> (ids, offsets) using align.get_offsets (fast HF tokenizer).
+
+    add_special=True mirrors train_encoder.process_doc, which qwen-tokenized with
+    add_special_tokens=True so the encoder sees its trained-on BOS/context. The
+    qwen BOS (empty span) is never an alignment anchor, so it only affects the
+    hidden states (as intended), not the map indices."""
+    def _enc(substr):
+        ids, offs = get_offsets(qwen_tok, substr, add_special_tokens=add_special)
+        return ids, offs
+    return _enc
+
+
+def load_encoder(ckpt_path, device, dtype):
+    """Load the frozen Exp-A encoder (Qwen full-FT weights) + linear head from
+    best.pt (train_encoder.save_checkpoint structure)."""
+    import torch
+    from transformers import AutoModel
+    sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
+    from train_encoder import EncoderHead
+    state = torch.load(ckpt_path, map_location="cpu", weights_only=False)
+    if state.get("mode") != "expA":
+        print(f"WARNING: checkpoint mode={state.get('mode')!r} (expected 'expA'); "
+              f"the coord head slice assumes a 3K expA up-projection.", file=sys.stderr)
+    model_name = state["model_name"]
+    hidden = state["hidden_size"]
+    K = state["K"]
+    model = AutoModel.from_pretrained(model_name, dtype=dtype)
+    if "encoder_state" in state:
+        model.load_state_dict(state["encoder_state"])  # full-FT weights
+    head = EncoderHead(hidden, K, "expA")
+    head.load_state_dict(state["head_state"])
+    model.to(device).eval()
+    head.to(device).eval()
+    if dtype == torch.bfloat16:
+        head.to(dtype)
+    return model, head, hidden, model_name, K
+
+
+# --------------------------------------------------------------------------- #
+# per-doc segmentation (windowed to keep qwen forwards in-distribution)
+# --------------------------------------------------------------------------- #
+def iter_doc_segments(text, enc, qwen_encode, max_nano, max_qwen):
+    """Split a doc into <=max_nano-token windows; per window build the qwen
+    tokenization + prefix-align map. Returns (hash, n_body, [segment,...]).
+
+    A segment: {win_start, win_len, q_ids (list[int]), amap (int64 [win_len],
+    indices into q_ids or -1)}. Concatenating segment coords in win_start order
+    reconstructs the full (n_body, r) coord array the loader expects."""
+    nano_ids = enc.encode_ordinary(text)
+    n = len(nano_ids)
+    if n == 0:
+        return doc_hash(text), 0, []
+    nano_off = nanochat_char_offsets(enc, nano_ids, text)  # full-doc char spans
+    segments = []
+    for start in range(0, n, max_nano):
+        end = min(start + max_nano, n)
+        win_off = nano_off[start:end]
+        char_lo = win_off[0][0]
+        char_hi = max((e for (s, e) in win_off), default=char_lo)
+        win_len = end - start
+        if char_hi <= char_lo:
+            # window is all empty spans -> no real chars -> zero coords
+            segments.append({"win_start": start, "win_len": win_len,
+                             "q_ids": [], "amap": np.full(win_len, -1, np.int64)})
+            continue
+        substring = text[char_lo:char_hi]
+        rebased = [(max(0, s - char_lo), max(0, e - char_lo)) for (s, e) in win_off]
+        q_ids, q_off = qwen_encode(substring)
+        if len(q_ids) > max_qwen:
+            # rare for same-language text; clip qwen -- tail nano tokens then map
+            # to the last surviving qwen anchor (prefix mode), a graceful degrade.
+            q_ids = list(q_ids[:max_qwen])
+            q_off = list(q_off[:max_qwen])
+        amap = gemma_to_qwen_map(substring, rebased, q_off, mode="prefix")
+        segments.append({"win_start": start, "win_len": win_len,
+                         "q_ids": list(q_ids), "amap": np.asarray(amap, np.int64)})
+    return doc_hash(text), n, segments
+
+
+# --------------------------------------------------------------------------- #
+# batched encoder forward -> per-segment L8 preds -> per-doc float coords
+# --------------------------------------------------------------------------- #
+class CoordEngine:
+    """Batches qwen segments across docs into padded forwards, gathers L8-block
+    preds at the alignment indices, and builds per-family float coords.
+
+    Pure w.r.t. numpy/torch: the caller supplies model+head (real Qwen or a tiny
+    test stand-in). Emits completed docs (hash, n, float32 coords [n,r]) in
+    completion order (order is irrelevant -- the store is hash-keyed)."""
+
+    def __init__(self, model, head, block, K, concepts, families, pca, pred_order,
+                 r, device, dtype, pad_id, batch_seqs=32):
+        self.model, self.head = model, head
+        self.block, self.K = block, K
+        self.concepts, self.families, self.pca, self.pred_order = concepts, families, pca, pred_order
+        self.r = r
+        self.device, self.dtype = device, dtype
+        self.pad_id = pad_id
+        self.batch_seqs = batch_seqs
+        self._pending = []                # list of (doc_key, segment)
+        self._docs = {}                   # doc_key -> {"coords","remaining","n","hash"}
+        self._order = []                  # doc_keys in add order (stable tie-break)
+        self._ready = []                  # completed doc_keys
+
+    def add_doc(self, doc_key, hsh, n, segments):
+        if n == 0:
+            return  # empty doc: nothing to store
+        self._docs[doc_key] = {"coords": np.zeros((n, self.r), np.float32),
+                               "remaining": len(segments), "n": n, "hash": hsh}
+        self._order.append(doc_key)
+        for seg in segments:
+            if len(seg["q_ids"]) == 0:
+                # all-unmapped window -> zero coords already in the buffer
+                self._docs[doc_key]["remaining"] -= 1
+            else:
+                self._pending.append((doc_key, seg))
+        if self._docs[doc_key]["remaining"] == 0:
+            self._complete(doc_key)
+        if len(self._pending) >= self.batch_seqs:
+            self.flush()
+
+    def _complete(self, doc_key):
+        self._ready.append(doc_key)
+
+    def flush(self):
+        if not self._pending:
+            return
+        import torch
+        batch, self._pending = self._pending, []
+        maxlen = max(len(seg["q_ids"]) for _, seg in batch)
+        B = len(batch)
+        input_ids = torch.full((B, maxlen), self.pad_id, dtype=torch.long)
+        attn = torch.zeros((B, maxlen), dtype=torch.long)
+        for i, (_, seg) in enumerate(batch):
+            L = len(seg["q_ids"])
+            input_ids[i, :L] = torch.tensor(seg["q_ids"], dtype=torch.long)
+            attn[i, :L] = 1
+        input_ids = input_ids.to(self.device)
+        attn = attn.to(self.device)
+        with torch.inference_mode():
+            out = self.model(input_ids=input_ids, attention_mask=attn)
+            hidden = out.last_hidden_state                       # [B, L, H]
+            preds, _ = self.head(hidden)                         # [B, L, 3K]
+            l8 = preds[..., self.block * self.K:(self.block + 1) * self.K]  # [B, L, K]
+            l8 = l8.float().cpu().numpy()
+        for i, (doc_key, seg) in enumerate(batch):
+            amap = seg["amap"]
+            win_len = seg["win_len"]
+            gathered = np.zeros((win_len, self.K), np.float32)
+            valid = amap >= 0
+            if valid.any():
+                gathered[valid] = l8[i, amap[valid], :]
+            z, _ = build_coords(gathered, self.concepts, self.families,
+                                pca=self.pca, pred_order=self.pred_order)  # [win_len, r]
+            d = self._docs[doc_key]
+            d["coords"][seg["win_start"]:seg["win_start"] + win_len] = z
+            d["remaining"] -= 1
+            if d["remaining"] == 0:
+                self._complete(doc_key)
+
+    def drain(self):
+        """Yield (hash, n, coords) for all completed docs; flush remainder first."""
+        self.flush()
+        for doc_key in self._ready:
+            d = self._docs.pop(doc_key)
+            yield d["hash"], d["n"], d["coords"]
+        self._ready = []
+        # `_order` entries for popped docs are stale but harmless.
+
+
+# --------------------------------------------------------------------------- #
+# quantization (zero-preserving; see module docstring / note here)
+# --------------------------------------------------------------------------- #
+def compute_scale(coord_std, clip_sigma):
+    """Single global int8 scale from the per-column stats. Coords are already in
+    (standardized-score) units ~O(1), comparable across columns, so a single
+    scale covering +-clip_sigma*max(std) resolves active concepts while keeping
+    resolution fine. NOTE: NO mean-centering -- raw coord 0 must stay 0 so the
+    self-normalizing injection is an exact no-op on concept-free tokens."""
+    s = clip_sigma * float(np.max(coord_std)) / 127.0
+    return max(s, 1e-8)
+
+
+def quantize(coords_f, scale):
+    """coords_f [n,r] float -> int8 [n,r]. Zero-preserving: 0 -> 0."""
+    q = np.round(coords_f / scale)
+    q = np.clip(q, -127, 127)
+    return q.astype(np.int8)
+
+
+# --------------------------------------------------------------------------- #
+# Welford running stats (per column), mergeable like score_corpus --merge-stats
+# --------------------------------------------------------------------------- #
+class Welford:
+    def __init__(self, r):
+        self.n = 0
+        self.mean = np.zeros(r, np.float64)
+        self.M2 = np.zeros(r, np.float64)
+
+    def update(self, x):  # x: [m, r]
+        x = np.asarray(x, np.float64)
+        m = x.shape[0]
+        if m == 0:
+            return
+        nb = self.n + m
+        delta = x.mean(0) - self.mean
+        self.mean += delta * (m / nb)
+        self.M2 += x.var(0) * m + (delta ** 2) * (self.n * m / nb)
+        self.n = nb
+
+    def to_dict(self):
+        return {"n": int(self.n), "mean": self.mean.tolist(), "M2": self.M2.tolist()}
+
+    @staticmethod
+    def merge_dicts(parts):
+        n = 0
+        mean = None
+        M2 = None
+        for p in parts:
+            pn = int(p["n"])
+            if pn == 0:
+                continue
+            pm = np.asarray(p["mean"], np.float64)
+            pM2 = np.asarray(p["M2"], np.float64)
+            if mean is None:
+                n, mean, M2 = pn, pm.copy(), pM2.copy()
+                continue
+            nb = n + pn
+            delta = pm - mean
+            mean = mean + delta * (pn / nb)
+            M2 = M2 + pM2 + (delta ** 2) * (n * pn / nb)
+            n = nb
+        if mean is None:
+            return 0, None, None
+        std = np.sqrt(M2 / max(n, 1))
+        return n, mean, std
+
+
+# --------------------------------------------------------------------------- #
+# corpus iteration over the karpathy climbmix shards
+# --------------------------------------------------------------------------- #
+def default_climbmix_dir():
+    base = os.environ.get("NANOCHAT_BASE_DIR", os.path.expanduser("~/.cache/nanochat"))
+    return os.path.join(base, "base_data_climbmix")
+
+
+def shard_path(climbmix_dir, sid):
+    return os.path.join(climbmix_dir, f"shard_{sid:05d}.parquet")
+
+
+def iter_shard_texts(climbmix_dir, sid, text_column="text"):
+    """Yield each doc's raw text from shard_<sid>.parquet, in stored row order
+    (matches how the dataloader reads the 'text' column)."""
+    import pyarrow.parquet as pq
+    path = shard_path(climbmix_dir, sid)
+    if not os.path.exists(path):
+        raise FileNotFoundError(f"shard {sid} not found at {path}")
+    pf = pq.ParquetFile(path)
+    for rg_idx in range(pf.num_row_groups):
+        rg = pf.read_row_group(rg_idx, columns=[text_column])
+        for v in rg.column(0):
+            yield v.as_py()
+
+
+# --------------------------------------------------------------------------- #
+# FIT: continents PCA-2D + coord mean/std/scale on a prefix sample (pod 0)
+# --------------------------------------------------------------------------- #
+def fit_pca_2d(x):
+    """Deterministic PCA-2D of x [m, d]: top-2 right singular vectors of the
+    centered data, with a fixed sign convention so two runs agree bit-for-bit."""
+    x = np.asarray(x, np.float64)
+    xc = x - x.mean(0, keepdims=True)
+    # economy SVD; components = V[:, :2]
+    _, _, Vt = np.linalg.svd(xc, full_matrices=False)
+    comp = Vt[:2].T.copy()                      # [d, 2]
+    for j in range(comp.shape[1]):
+        k = int(np.argmax(np.abs(comp[:, j])))  # fix sign: largest-|loading| positive
+        if comp[k, j] < 0:
+            comp[:, j] = -comp[:, j]
+    return comp.astype(np.float32)
+
+
+def continents_pred_columns(concepts, families, pred_order):
+    """Column indices (into the K-wide L8 preds) of continents concepts, in the
+    order build_coords consumes them (concepts filtered to the family, then
+    indexed by pred_order)."""
+    idx = {c: i for i, c in enumerate(pred_order)}
+    cs = [c for c in concepts if families[c] == "continents"]
+    return [idx[c] for c in cs]
+
+
+def run_fit(args):
+    import torch
+    concepts, families, pred_order, block, K, legend = resolve_layout(
+        load_probe_meta(args.probe_set), args.layer8_block, args.r_check)
+    dtype = torch.bfloat16 if str(args.device).startswith("cuda") else torch.float32
+    model, head, hidden, model_name, K2 = load_encoder(args.encoder_ckpt, args.device, dtype)
+    assert K2 == K, f"encoder K={K2} != probe_set K={K}"
+    enc = load_nanochat_enc(args.nano_tokenizer_dir)
+    qwen_tok = _load_qwen_tok(args, model_name)
+    qwen_encode = make_qwen_encode(qwen_tok, add_special=not args.qwen_no_special)
+
+    # 1) collect raw L8 preds for a prefix sample (cap rows)
+    cont_cols = continents_pred_columns(concepts, families, pred_order)
+    pred_buf = []
+    n_rows = 0
+    shards = parse_shard_range(args.shards)
+    engine = _RawPredEngine(model, head, block, K, args.device, dtype,
+                            qwen_tok.pad_token_id, args.batch_seqs)
+    print(f"[fit] collecting up to {args.fit_tokens} pred rows from shards {shards[:4]}...")
+    done = False
+    for sid in shards:
+        for text in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
+            hsh, n, segs = iter_doc_segments(text, enc, qwen_encode,
+                                             args.max_doc_tokens, args.max_qwen_tokens)
+            engine.add_doc(hsh, n, segs)
+            for preds in engine.drain():
+                pred_buf.append(preds)
+                n_rows += preds.shape[0]
+            if n_rows >= args.fit_tokens:
+                done = True
+                break
+        if done:
+            break
+    for preds in engine.drain_final():
+        pred_buf.append(preds)
+    preds_all = np.concatenate(pred_buf, axis=0)[:args.fit_tokens]  # [N, K]
+    print(f"[fit] collected {preds_all.shape[0]} pred rows (K={K})")
+
+    # 2) fit continents PCA on those preds
+    cont = preds_all[:, cont_cols]                      # [N, m]
+    pca_comp = fit_pca_2d(cont)                         # [m, 2]
+    pca = {"continents": pca_comp}
+
+    # 3) build coords for the sample, derive coord mean/std + global scale
+    coords, legend = build_coords(preds_all, concepts, families, pca=pca, pred_order=pred_order)
+    assert coords.shape[1] == args.r_check
+    coord_mean = coords.mean(0).astype(np.float32)
+    coord_std = coords.std(0).astype(np.float32)
+    scale = compute_scale(np.maximum(coord_std, 1e-8), args.clip_sigma)
+    # clip fraction diagnostic
+    q = quantize(coords, scale)
+    clip_frac = float(np.mean(np.abs(q.astype(np.int32)) >= 127))
+
+    fit_path = os.path.join(args.out, "coord_fit.npz")
+    os.makedirs(args.out, exist_ok=True)
+    np.savez(fit_path + ".tmp.npz",
+             pca_components=pca_comp, coord_mean=coord_mean, coord_std=coord_std,
+             scale=np.float32(scale), clip_sigma=np.float32(args.clip_sigma),
+             legend=np.array(legend), pred_order=np.array(pred_order),
+             block=np.int64(block), n_fit=np.int64(coords.shape[0]))
+    os.replace(fit_path + ".tmp.npz", fit_path)
+    meta = {"scale": float(scale), "clip_sigma": float(args.clip_sigma),
+            "clip_frac_fit": clip_frac, "n_fit": int(coords.shape[0]),
+            "coord_mean": coord_mean.tolist(), "coord_std": coord_std.tolist(),
+            "legend": list(legend), "pca_fit_hash": _hash_array(pca_comp)}
+    with open(os.path.join(args.out, "coord_fit.json"), "w") as f:
+        json.dump(meta, f, indent=2)
+    print(f"[fit] wrote {fit_path}: scale={scale:.5g} clip_frac={clip_frac:.4%} "
+          f"pca_hash={meta['pca_fit_hash'][:12]}")
+    return fit_path
+
+
+class _RawPredEngine(CoordEngine):
+    """Variant of CoordEngine that emits per-doc raw L8 preds [n,K] (not coords)
+    -- used by --fit before PCA/stats exist. Reuses the batching machinery."""
+
+    def __init__(self, model, head, block, K, device, dtype, pad_id, batch_seqs):
+        # build_coords deps unused; pass placeholders
+        super().__init__(model, head, block, K, [], {}, {}, [], K, device, dtype,
+                         pad_id, batch_seqs)
+        self._raw = {}
+
+    def add_doc(self, hsh, n, segments):  # note: no doc_key arg (hash is key)
+        if n == 0:
+            return
+        key = len(self._order)
+        self._docs[key] = {"coords": None, "remaining": len(segments), "n": n, "hash": hsh}
+        self._raw[key] = np.zeros((n, self.K), np.float32)
+        self._order.append(key)
+        for seg in segments:
+            if len(seg["q_ids"]) == 0:
+                self._docs[key]["remaining"] -= 1
+            else:
+                self._pending.append((key, seg))
+        if self._docs[key]["remaining"] == 0:
+            self._ready.append(key)
+        if len(self._pending) >= self.batch_seqs:
+            self.flush()
+
+    def flush(self):
+        if not self._pending:
+            return
+        import torch
+        batch, self._pending = self._pending, []
+        maxlen = max(len(seg["q_ids"]) for _, seg in batch)
+        B = len(batch)
+        input_ids = torch.full((B, maxlen), self.pad_id, dtype=torch.long)
+        attn = torch.zeros((B, maxlen), dtype=torch.long)
+        for i, (_, seg) in enumerate(batch):
+            L = len(seg["q_ids"])
+            input_ids[i, :L] = torch.tensor(seg["q_ids"], dtype=torch.long)
+            attn[i, :L] = 1
+        input_ids = input_ids.to(self.device); attn = attn.to(self.device)
+        with torch.inference_mode():
+            out = self.model(input_ids=input_ids, attention_mask=attn)
+            preds, _ = self.head(out.last_hidden_state)
+            l8 = preds[..., self.block * self.K:(self.block + 1) * self.K].float().cpu().numpy()
+        for i, (key, seg) in enumerate(batch):
+            amap = seg["amap"]; win_len = seg["win_len"]
+            g = np.zeros((win_len, self.K), np.float32)
+            valid = amap >= 0
+            if valid.any():
+                g[valid] = l8[i, amap[valid], :]
+            self._raw[key][seg["win_start"]:seg["win_start"] + win_len] = g
+            self._docs[key]["remaining"] -= 1
+            if self._docs[key]["remaining"] == 0:
+                self._ready.append(key)
+
+    def drain(self):
+        self.flush()
+        for key in self._ready:
+            self._docs.pop(key, None)
+            yield self._raw.pop(key)
+        self._ready = []
+
+    def drain_final(self):
+        yield from self.drain()
+
+
+def _hash_array(a):
+    import hashlib
+    return hashlib.blake2b(np.ascontiguousarray(a).tobytes(), digest_size=16).hexdigest()
+
+
+def _load_qwen_tok(args, model_name):
+    from transformers import AutoTokenizer
+    name = args.qwen_model or model_name
+    tok = AutoTokenizer.from_pretrained(name)
+    if tok.pad_token_id is None:
+        tok.pad_token = tok.eos_token
+    return tok
+
+
+def load_fit(out_dir):
+    p = os.path.join(out_dir, "coord_fit.npz")
+    if not os.path.exists(p):
+        raise FileNotFoundError(
+            f"coord_fit.npz missing in {out_dir}: run `--mode fit` on pod 0 first "
+            f"(fits continents PCA + coord scale; shared by all pods).")
+    z = np.load(p, allow_pickle=True)
+    return {"pca": {"continents": z["pca_components"].astype(np.float32)},
+            "coord_mean": z["coord_mean"].astype(np.float32),
+            "coord_std": z["coord_std"].astype(np.float32),
+            "scale": float(z["scale"]), "clip_sigma": float(z["clip_sigma"]),
+            "legend": list(z["legend"]), "pred_order": list(z["pred_order"]),
+            "block": int(z["block"]), "pca_hash": _hash_array(z["pca_components"])}
+
+
+# --------------------------------------------------------------------------- #
+# SWEEP: per-shard store files (resumable, atomic) + partial Welford stats
+# --------------------------------------------------------------------------- #
+def shard_done_marker(out_dir, sid):
+    return os.path.join(out_dir, "shards", f"shard_{sid:05d}.done")
+
+
+def run_sweep(args):
+    import torch
+    from tqdm import tqdm
+    out_shards = os.path.join(args.out, "shards")
+    os.makedirs(out_shards, exist_ok=True)
+    ps = load_probe_meta(args.probe_set)
+    concepts, families, pred_order, block, K, legend = resolve_layout(ps, args.layer8_block, args.r_check)
+    fit = load_fit(args.out)
+    if fit["block"] != block:
+        raise ValueError(f"fit block {fit['block']} != resolved block {block}")
+    r = args.r_check
+    dtype = torch.bfloat16 if str(args.device).startswith("cuda") else torch.float32
+    model, head, hidden, model_name, K2 = load_encoder(args.encoder_ckpt, args.device, dtype)
+    assert K2 == K
+    enc = load_nanochat_enc(args.nano_tokenizer_dir)
+    qwen_tok = _load_qwen_tok(args, model_name)
+    qwen_encode = make_qwen_encode(qwen_tok, add_special=not args.qwen_no_special)
+
+    all_shards = parse_shard_range(args.shards)
+    my_shards = assign_shards(all_shards, args.pod_index, args.n_pods)
+    print(f"[sweep] pod {args.pod_index}/{args.n_pods}: {len(my_shards)} shards "
+          f"{my_shards[:6]}{'...' if len(my_shards) > 6 else ''}")
+
+    welford = Welford(r)
+    hb_path = args.heartbeat_path
+    for sid in my_shards:
+        if os.path.exists(shard_done_marker(args.out, sid)):
+            print(f"[sweep] shard {sid}: DONE (skip)")
+            # still fold its partial stats into this pod's running Welford? No --
+            # merge-stats reads the per-shard stats files, so skip is enough.
+            continue
+        _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
+                         concepts, families, pred_order, fit, r, dtype, welford, hb_path)
+    # write this pod's partial stats (post-hoc corpus stats; scale already fixed by fit)
+    part_path = os.path.join(out_shards, f"stats_pod{args.pod_index}.json")
+    with open(part_path + ".tmp", "w") as f:
+        json.dump(welford.to_dict(), f)
+    os.replace(part_path + ".tmp", part_path)
+    print(f"[sweep] pod {args.pod_index} done; partial stats -> {part_path} (n={welford.n})")
+
+
+def _sweep_one_shard(args, sid, enc, qwen_encode, qwen_tok, model, head, block, K,
+                     concepts, families, pred_order, fit, r, dtype, welford, hb_path):
+    from tqdm import tqdm
+    out_shards = os.path.join(args.out, "shards")
+    tmp_int8 = os.path.join(out_shards, f"coords_{sid:05d}.int8.tmp")
+    tmp_idx = os.path.join(out_shards, f"index_{sid:05d}.tmp.npy")  # .npy suffix so np.save won't re-append
+    engine = CoordEngine(model, head, block, K, concepts, families, fit["pca"], pred_order,
+                         r, args.device, dtype, qwen_tok.pad_token_id, args.batch_seqs)
+    scale = fit["scale"]
+    recs = []
+    off = 0
+    n_docs = 0
+    n_tokens = 0
+    n_zero_tokens = 0
+    doc_keys_seen = 0
+    with open(tmp_int8, "wb") as fout:
+        pbar = tqdm(desc=f"shard {sid}", unit="doc")
+
+        def emit(hsh, n, coords):
+            nonlocal off, n_docs, n_tokens, n_zero_tokens
+            q = quantize(coords, scale)
+            fout.write(q.tobytes())
+            recs.append((np.uint64(hsh), np.int64(off), np.int32(n)))
+            welford.update(coords)
+            off += n
+            n_docs += 1
+            n_tokens += n
+            n_zero_tokens += int(np.all(q == 0, axis=1).sum())
+
+        for text in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
+            hsh, n, segs = iter_doc_segments(text, enc, qwen_encode,
+                                             args.max_doc_tokens, args.max_qwen_tokens)
+            engine.add_doc(("d", doc_keys_seen), hsh, n, segs)
+            doc_keys_seen += 1
+            for chsh, cn, ccoords in engine.drain():
+                emit(chsh, cn, ccoords)
+                pbar.update(1)
+            if hb_path and n_docs % 2000 == 0:
+                _heartbeat(hb_path, sid=sid, docs=n_docs, tokens=n_tokens)
+        for chsh, cn, ccoords in engine.drain():
+            emit(chsh, cn, ccoords)
+            pbar.update(1)
+        pbar.close()
+
+    index = np.array(recs, dtype=INDEX_DTYPE) if recs else np.empty(0, dtype=INDEX_DTYPE)
+    np.save(tmp_idx, index)  # tmp_idx ends in .npy -> no double suffix
+    # atomic publish
+    final_int8 = os.path.join(out_shards, f"coords_{sid:05d}.int8")
+    final_idx = os.path.join(out_shards, f"index_{sid:05d}.npy")
+    os.replace(tmp_int8, final_int8)
+    os.replace(tmp_idx, final_idx)
+    meta = {"sid": sid, "n_docs": n_docs, "n_tokens": n_tokens,
+            "n_zero_tokens": n_zero_tokens,
+            "zero_frac": (n_zero_tokens / n_tokens if n_tokens else 0.0),
+            "scale": scale}
+    with open(os.path.join(out_shards, f"meta_{sid:05d}.json"), "w") as f:
+        json.dump(meta, f)
+    # done marker last (resumability gate)
+    with open(shard_done_marker(args.out, sid), "w") as f:
+        f.write(json.dumps(meta))
+    print(f"[sweep] shard {sid}: {n_docs} docs, {n_tokens} tokens, "
+          f"zero_frac={meta['zero_frac']:.3%}")
+
+
+def _heartbeat(path, **fields):
+    import time
+    try:
+        with open(path, "w") as f:
+            f.write(json.dumps({"t": time.strftime("%Y-%m-%d %H:%M:%S"), **fields}))
+    except OSError:
+        pass
+
+
+# --------------------------------------------------------------------------- #
+# MERGE-STATS: fold per-pod Welford partials into corpus mean/std
+# --------------------------------------------------------------------------- #
+def run_merge_stats(args):
+    out_shards = os.path.join(args.out, "shards")
+    parts = []
+    for p in sorted(glob.glob(os.path.join(out_shards, "stats_pod*.json"))):
+        with open(p) as f:
+            parts.append(json.load(f))
+    if not parts:
+        print("[merge-stats] no stats_pod*.json partials found")
+        return
+    n, mean, std = Welford.merge_dicts(parts)
+    out = {"n": int(n), "coord_mean_observed": mean.tolist(), "coord_std_observed": std.tolist()}
+    with open(os.path.join(args.out, "corpus_coord_stats.json"), "w") as f:
+        json.dump(out, f, indent=2)
+    print(f"[merge-stats] merged {len(parts)} partials over n={n} tokens -> corpus_coord_stats.json")
+
+
+# --------------------------------------------------------------------------- #
+# ASSEMBLE: per-shard files -> consolidated coords.int8 / index.npy / meta / P
+# --------------------------------------------------------------------------- #
+def run_assemble(args):
+    out_shards = os.path.join(args.out, "shards")
+    all_shards = parse_shard_range(args.shards)
+    ps = load_probe_meta(args.probe_set)
+    concepts, families, pred_order, block, K, legend = resolve_layout(ps, args.layer8_block, args.r_check)
+    fit = load_fit(args.out)
+    r = args.r_check
+    P = make_orthonormal_P(args.n_embd, r=r, seed=args.p_seed)
+    np.save(os.path.join(args.out, "P.npy"), P.astype(np.float32))
+
+    coords_out = os.path.join(args.out, "coords.int8")
+    idx_recs = []
+    global_off = 0
+    per_shard = {}
+    n_docs_total = 0
+    n_tokens_total = 0
+    n_zero_total = 0
+    missing = []
+    with open(coords_out + ".tmp", "wb") as fout:
+        for sid in all_shards:
+            fi = os.path.join(out_shards, f"coords_{sid:05d}.int8")
+            xi = os.path.join(out_shards, f"index_{sid:05d}.npy")
+            if not (os.path.exists(fi) and os.path.exists(xi)):
+                missing.append(sid)
+                continue
+            arr = np.fromfile(fi, dtype=np.int8).reshape(-1, r)
+            index = np.load(xi)
+            fout.write(arr.tobytes())
+            for h, o, n in zip(index["hash"], index["off"], index["n"]):
+                idx_recs.append((np.uint64(h), np.int64(global_off + int(o)), np.int32(n)))
+            global_off += arr.shape[0]
+            mp = os.path.join(out_shards, f"meta_{sid:05d}.json")
+            if os.path.exists(mp):
+                with open(mp) as f:
+                    m = json.load(f)
+                per_shard[str(sid)] = {"n_docs": m["n_docs"], "n_tokens": m["n_tokens"],
+                                        "zero_frac": m["zero_frac"]}
+                n_docs_total += m["n_docs"]
+                n_tokens_total += m["n_tokens"]
+                n_zero_total += m.get("n_zero_tokens", 0)
+    os.replace(coords_out + ".tmp", coords_out)
+    index = np.array(idx_recs, dtype=INDEX_DTYPE)
+    np.save(os.path.join(args.out, "index.npy"), index)
+
+    # duplicate-hash check (content collisions across shards are real duplicate docs)
+    _, counts = np.unique(index["hash"], return_counts=True)
+    n_dup = int((counts > 1).sum())
+
+    observed = None
+    csp = os.path.join(args.out, "corpus_coord_stats.json")
+    if os.path.exists(csp):
+        with open(csp) as f:
+            observed = json.load(f)
+
+    meta = {
+        "r": r,
+        "scale": fit["scale"],
+        "clip_sigma": fit["clip_sigma"],
+        "n_embd": args.n_embd,
+        "layer8_block": args.layer8_block,
+        "block_index": block,
+        "block_columns": [block * K, (block + 1) * K],
+        "K": K,
+        "legend": list(fit["legend"]),
+        "families": families,
+        "class_order": CYCLIC_ORDER,
+        "noncyclic_pca": sorted(NONCYCLIC_PCA),
+        "pred_order": list(pred_order),
+        "coord_mean": fit["coord_mean"].tolist(),
+        "coord_std": fit["coord_std"].tolist(),
+        "coord_stats_observed": observed,
+        "pca_fit_hash": fit["pca_hash"],
+        "encoder_ckpt": os.path.abspath(args.encoder_ckpt) if args.encoder_ckpt else None,
+        "P_path": "P.npy",
+        "p_seed": args.p_seed,
+        "n_docs": n_docs_total,
+        "n_tokens": n_tokens_total,
+        "n_docs_dup_hash": n_dup,
+        "zero_frac": (n_zero_total / n_tokens_total if n_tokens_total else 0.0),
+        "per_shard": per_shard,
+        "missing_shards": missing,
+        "noise_baked": False,
+        "noise_note": "sigma=0.15 added by coord_dataloader at train time, keyed by doc hash",
+    }
+    with open(os.path.join(args.out, "meta.json"), "w") as f:
+        json.dump(meta, f, indent=2)
+    print(f"[assemble] {n_docs_total} docs / {n_tokens_total} tokens over "
+          f"{len(all_shards) - len(missing)} shards -> coords.int8 ({global_off} rows), "
+          f"index.npy, meta.json, P.npy. zero_frac={meta['zero_frac']:.3%}, dup_hash={n_dup}")
+    if missing:
+        print(f"[assemble] WARNING: {len(missing)} shards missing from store: {missing}")
+
+
+# --------------------------------------------------------------------------- #
+# VERIFY: recompute K docs live from a finished shard, check int8 round-trip
+# --------------------------------------------------------------------------- #
+def run_verify(args):
+    import torch
+    from coords_store import CoordSource
+    cs = CoordSource(args.out, noise_sigma=0.0)  # dequant only, no noise
+    ps = load_probe_meta(args.probe_set)
+    concepts, families, pred_order, block, K, legend = resolve_layout(ps, args.layer8_block, args.r_check)
+    fit = load_fit(args.out)
+    r = args.r_check
+    dtype = torch.bfloat16 if str(args.device).startswith("cuda") else torch.float32
+    model, head, hidden, model_name, K2 = load_encoder(args.encoder_ckpt, args.device, dtype)
+    enc = load_nanochat_enc(args.nano_tokenizer_dir)
+    qwen_tok = _load_qwen_tok(args, model_name)
+    qwen_encode = make_qwen_encode(qwen_tok, add_special=not args.qwen_no_special)
+    scale = fit["scale"]
+
+    sid = parse_shard_range(args.shards)[0]
+    texts = []
+    for t in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
+        texts.append(t)
+        if len(texts) >= args.verify_docs * 4:
+            break
+    rng = np.random.default_rng(0)
+    picks = rng.choice(len(texts), size=min(args.verify_docs, len(texts)), replace=False)
+
+    engine = CoordEngine(model, head, block, K, concepts, families, fit["pca"], pred_order,
+                         r, args.device, dtype, qwen_tok.pad_token_id, args.batch_seqs)
+    live = {}
+    for j in picks:
+        hsh, n, segs = iter_doc_segments(texts[j], enc, qwen_encode,
+                                         args.max_doc_tokens, args.max_qwen_tokens)
+        engine.add_doc(("v", int(j)), hsh, n, segs)
+        for chsh, cn, cc in engine.drain():
+            live[int(chsh)] = cc
+    for chsh, cn, cc in engine.drain():
+        live[int(chsh)] = cc
+
+    max_err = 0.0
+    checked = 0
+    missing = 0
+    zero_tokens = 0
+    tot_tokens = 0
+    for j in picks:
+        text = texts[j]
+        hsh = int(doc_hash(text))
+        stored, _ = cs.lookup(text, len(enc.encode_ordinary(text)))
+        if stored is None:
+            missing += 1
+            continue
+        live_c = live.get(hsh)
+        if live_c is None:
+            continue
+        want = quantize(live_c, scale).astype(np.float32) * scale
+        err = float(np.max(np.abs(stored - want))) if stored.size else 0.0
+        max_err = max(max_err, err)
+        zero_tokens += int(np.all(stored == 0, axis=1).sum())
+        tot_tokens += stored.shape[0]
+        checked += 1
+    print(f"[verify] shard {sid}: checked {checked} docs, missing {missing}, "
+          f"int8 round-trip max_abs_err={max_err:.3e} (scale={scale:.3e}), "
+          f"zero_frac={zero_tokens / max(tot_tokens, 1):.3%}")
+    assert max_err <= scale * 1.0 + 1e-6, \
+        f"round-trip error {max_err} exceeds one quant step {scale}"
+    print("[verify] OK: stored coords reproduce live recompute within one int8 step.")
+
+
+# --------------------------------------------------------------------------- #
+# MEASURE-CROSSING: prefix-mode crossing rate for the qwen<->nanochat pair
+# --------------------------------------------------------------------------- #
+def run_measure_crossing(args):
+    enc = load_nanochat_enc(args.nano_tokenizer_dir)
+    from transformers import AutoModel  # noqa: F401  (ensure transformers importable path)
+    qwen_tok = _load_qwen_tok(args, args.qwen_model or "Qwen/Qwen3-0.6B-Base")
+    qwen_encode = make_qwen_encode(qwen_tok, add_special=not args.qwen_no_special)
+    shards = parse_shard_range(args.shards)
+    rates = []
+    n = 0
+    for sid in shards:
+        for text in iter_shard_texts(args.climbmix_dir, sid, args.text_column):
+            nano_ids = enc.encode_ordinary(text)
+            if not nano_ids:
+                continue
+            nano_off = nanochat_char_offsets(enc, nano_ids, text)
+            q_ids, q_off = qwen_encode(text)
+            # NOTE: source = nanochat (we align nano tokens onto qwen anchors).
+            rates.append(crossing_rate(text, nano_off, q_off))
+            n += 1
+            if n >= args.crossing_docs:
+                break
+        if n >= args.crossing_docs:
+            break
+    if not rates:
+        print("[measure-crossing] no docs processed")
+        return
+    print(f"[measure-crossing] nanochat->qwen prefix-mode crossing over {n} docs: "
+          f"mean={np.mean(rates):.4%} median={np.median(rates):.4%} "
+          f"p90={np.percentile(rates, 90):.4%}")
+
+
+# --------------------------------------------------------------------------- #
+# CLI
+# --------------------------------------------------------------------------- #
+def build_argparser():
+    ap = argparse.ArgumentParser(description=__doc__,
+                                 formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--mode", default="sweep",
+                    choices=["fit", "sweep", "merge-stats", "assemble", "verify",
+                             "measure-crossing"])
+    ap.add_argument("--encoder-ckpt", help="expA best.pt (Qwen full-FT + 1024->162 head)")
+    ap.add_argument("--probe-set", help="probe_set.json file or its dir")
+    ap.add_argument("--shards", default="0-190", help="e.g. 0-190 or 0-3,10")
+    ap.add_argument("--out", required=True, help="coord store dir")
+    ap.add_argument("--climbmix-dir", default=None,
+                    help="dir with shard_<sid>.parquet from karpathy/climbmix-400b-shuffle "
+                         "(default $NANOCHAT_BASE_DIR/base_data_climbmix)")
+    ap.add_argument("--text-column", default="text")
+    ap.add_argument("--nano-tokenizer-dir", default=None,
+                    help="dir with tokenizer.pkl (baseline noVE tokenizer); default "
+                         "$NANOCHAT_BASE_DIR/tokenizer")
+    ap.add_argument("--qwen-model", default=None,
+                    help="override encoder tokenizer name (default = ckpt model_name)")
+    ap.add_argument("--qwen-no-special", action="store_true",
+                    help="tokenize qwen WITHOUT special tokens (default adds them, "
+                         "matching train_encoder.process_doc)")
+    ap.add_argument("--device", default=None)
+    ap.add_argument("--pod-index", type=int, default=0)
+    ap.add_argument("--n-pods", type=int, default=1)
+    ap.add_argument("--layer8-block", type=int, default=8,
+                    help="gemma layer whose K predicted cols build the coords (block=layers.index)")
+    ap.add_argument("--n-embd", type=int, default=1536)
+    ap.add_argument("--r-check", type=int, default=14)
+    ap.add_argument("--p-seed", type=int, default=1337)
+    ap.add_argument("--max-doc-tokens", type=int, default=2048,
+                    help="nano-token window size (docs longer than this are windowed)")
+    ap.add_argument("--max-qwen-tokens", type=int, default=4096,
+                    help="hard cap on qwen tokens per window (clip beyond)")
+    ap.add_argument("--batch-seqs", type=int, default=32,
+                    help="qwen segments per padded forward")
+    ap.add_argument("--clip-sigma", type=float, default=6.0,
+                    help="int8 clip at +-clip_sigma*max(coord_std)")
+    ap.add_argument("--fit-tokens", type=int, default=2_000_000,
+                    help="pred rows collected for the PCA + coord-scale fit")
+    ap.add_argument("--noise-none", action="store_true",
+                    help="no-op (noise is added by the loader, never baked here)")
+    ap.add_argument("--verify-docs", type=int, default=64)
+    ap.add_argument("--crossing-docs", type=int, default=2000)
+    ap.add_argument("--heartbeat-path", default=None)
+    return ap
+
+
+def main():
+    args = build_argparser().parse_args()
+    if args.device is None:
+        try:
+            import torch
+            args.device = "cuda" if torch.cuda.is_available() else "cpu"
+        except Exception:
+            args.device = "cpu"
+    if args.climbmix_dir is None:
+        args.climbmix_dir = default_climbmix_dir()
+    if args.nano_tokenizer_dir is None:
+        base = os.environ.get("NANOCHAT_BASE_DIR", os.path.expanduser("~/.cache/nanochat"))
+        args.nano_tokenizer_dir = os.path.join(base, "tokenizer")
+    os.makedirs(args.out, exist_ok=True)
+
+    if args.mode == "fit":
+        _require(args, ["encoder_ckpt", "probe_set"])
+        run_fit(args)
+    elif args.mode == "sweep":
+        _require(args, ["encoder_ckpt", "probe_set"])
+        run_sweep(args)
+    elif args.mode == "merge-stats":
+        run_merge_stats(args)
+    elif args.mode == "assemble":
+        _require(args, ["probe_set"])
+        run_assemble(args)
+    elif args.mode == "verify":
+        _require(args, ["encoder_ckpt", "probe_set"])
+        run_verify(args)
+    elif args.mode == "measure-crossing":
+        run_measure_crossing(args)
+
+
+def _require(args, names):
+    missing = [n for n in names if getattr(args, n) is None]
+    if missing:
+        raise SystemExit(f"--mode {args.mode} requires: {', '.join('--' + m.replace('_','-') for m in missing)}")
 
 
 if __name__ == "__main__":

@@ -208,12 +208,21 @@ precompute path — inline would compute z inside the training step instead.
 # 0. Preconditions: G2 GO (or marginal+caveat); Exp-A checkpoint chosen;
 #    corpus_stats + continents PCA saved into/next to probe_set.json.
 
-# 1. Precompute coords (fleet; long pole — start first)
-#    per pod: split --shards across the fleet (0-47, 48-95, ...)
-python concept_probes/stage7_oracle/code/nanochat_patch/precompute_coords.py \
-    --encoder-ckpt <expA.pt> --probe-set concept_probes/stage7_oracle/out/probe_set.json \
-    --shards 0-190 --out /workspace/coords
-#    -> consolidate coords.int8/index.npy/P.npy/meta.json onto the training node
+# 1. Precompute coords (fleet; long pole — start first). IMPLEMENTED (CPU-tested).
+#    Fleet 4-6 H100 pods. Each pod needs the baseline tokenizer at
+#    $NANOCHAT_BASE_DIR/tokenizer and the karpathy shards at
+#    $NANOCHAT_BASE_DIR/base_data_climbmix (python -m nanochat.dataset -n 191).
+CO=concept_probes/stage7_oracle/code/nanochat_patch/precompute_coords.py
+PS=concept_probes/stage7_oracle/out/probe_set.json
+python $CO --mode fit   --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-3   --out /workspace/coords  # pod 0 ONCE (PCA+scale)
+python $CO --mode sweep --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-190 --out /workspace/coords --pod-index $P --n-pods $NP  # every pod (round-robin, resumable)
+python $CO --mode merge-stats --out /workspace/coords                                                    # after fleet done, one node
+python $CO --mode assemble --encoder-ckpt <expA.pt> --probe-set $PS --shards 0-190 --out /workspace/coords
+#    -> coords.int8 / index.npy / P.npy / meta.json consolidated onto the training node.
+#    NOTE: coord quantization is zero-preserving (no mean-centering) so concept-free
+#    tokens (raw coord 0) stay int8 0 => injection no-op; loader applies the single
+#    global meta.scale. L8 coord block VERIFIED = preds columns [54:108] (layers=[6,8,14],
+#    block index 1). Optional QA: --mode verify / --mode measure-crossing.
 
 # 2. Stage nanochat on the 8×H100 node, apply patch on a throwaway branch
 cd nanochat && git checkout -b stage7-inject

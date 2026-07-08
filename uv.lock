@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.12"
 resolution-markers = [
     "python_full_version >= '3.14' and sys_platform == 'win32'",
@@ -1830,6 +1830,7 @@ dependencies = [
     { name = "pillow" },
     { name = "plotly" },
     { name = "pyparsing" },
+    { name = "python-dotenv" },
     { name = "ruff" },
     { name = "torch" },
     { name = "tqdm" },
@@ -1859,6 +1860,7 @@ requires-dist = [
     { name = "pillow", specifier = ">=12.2.0" },
     { name = "plotly", specifier = ">=6.7.0" },
     { name = "pyparsing", specifier = ">=3.3.2" },
+    { name = "python-dotenv", specifier = ">=1.0.1" },
     { name = "ruff", specifier = ">=0.15.15" },
     { name = "torch", specifier = ">=2.9.1", index = "https://download.pytorch.org/whl/cu128" },
     { name = "tqdm", specifier = ">=4.67.3" },

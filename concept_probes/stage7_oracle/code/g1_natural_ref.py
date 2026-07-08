@@ -20,9 +20,14 @@ def main():
     ps = json.loads(PROBE_SET.read_text())
     layers = ps["layers"]  # [6, 8, 14]
     ablation_layer = ps["ablation_layer"]  # 8
-    concepts = ps["concepts"]  # K=54, canonical order
+    concepts = ps["concepts"]  # K=54, canonical (name-sorted) order
     families = ps["families"]
     selection = ps["selection"]  # {"<layer>": {"<concept>": {"arm":...}}}
+    # Emit columns in the SAME layout as the score store (out/PERMUTATION_FIX.md)
+    # so a same-column-index comparison against g1_corpus_stats.json is
+    # apples-to-apples: MAIN block = main_block_concepts (store/W order), DOM
+    # block = concepts (name-sorted). Fall back to concepts if absent.
+    main_block_concepts = ps.get("main_block_concepts", concepts)
 
     # cache loaded family npz files
     fam_cache = {}
@@ -52,9 +57,10 @@ def main():
 
     columns = []  # ordered list, index = column index in score store
 
-    # main blocks: layer0, layer1, layer2 (concepts 0..53 each)
+    # main blocks: layer0, layer1, layer2 (main_block_concepts 0..53 each,
+    # matching the score store's column order)
     for layer in layers:
-        for concept in concepts:
+        for concept in main_block_concepts:
             fam = families[concept]
             d = get_family(fam)
             class_idx = class_index(d, concept)

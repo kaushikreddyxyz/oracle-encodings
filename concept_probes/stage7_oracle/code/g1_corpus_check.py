@@ -83,6 +83,22 @@ def main():
     ablation_layer = ps["ablation_layer"]
     K = len(concepts)
     assert 4 * K == N_COLS, (K, N_COLS)
+    # Block-order contract (out/PERMUTATION_FIX.md): the score store's MAIN
+    # block columns (l*K+ci) are in main_block_concepts order (family-sorted
+    # in the current immutable store), NOT `concepts` (name-sorted). The DOM
+    # block (3K+ci) is in concepts order. Using `concepts` for the main block
+    # here was the exact indexing half of the permutation bug that made the
+    # spot checks read the WRONG concept's column. Fall back to `concepts` if
+    # the key is absent (pre-fix probe_set.json), which reproduces the bug --
+    # so warn.
+    main_block_concepts = ps.get("main_block_concepts")
+    if main_block_concepts is None:
+        print("WARNING: probe_set.json has no 'main_block_concepts'; main-block "
+              "columns will be indexed by name-sorted 'concepts' -- this is the "
+              "permutation bug. Regenerate probe_set.json with the fix.",
+              file=sys.stderr)
+        main_block_concepts = concepts
+    main_idx = {c: i for i, c in enumerate(main_block_concepts)}
 
     quant = json.loads(open(QUANT_PATH).read())
     zero = np.array(quant["zero"], dtype=np.float64)
@@ -90,11 +106,10 @@ def main():
     assert len(zero) == N_COLS and len(scale) == N_COLS
 
     def col_index(concept, layer, dom=False):
-        ci = concepts.index(concept)
         if dom:
-            return 3 * K + ci
+            return 3 * K + concepts.index(concept)      # dom block: name-sorted
         li = layers.index(layer)
-        return li * K + ci
+        return li * K + main_idx[concept]               # main block: main_block order
 
     spot_cols = {c: col_index(c, SPOT_CHECK_LAYER) for c in SPOT_CHECK_CONCEPTS}
     jan_col = col_index("january", SPOT_CHECK_LAYER)
@@ -198,10 +213,10 @@ def main():
         if block == "main":
             li = col // K
             layer = layers[li]
-            concept = concepts[col % K]
+            concept = main_block_concepts[col % K]   # true concept in this store col
         else:
             layer = ablation_layer
-            concept = concepts[col - 3 * K]
+            concept = concepts[col - 3 * K]          # dom block: name-sorted
         tot = int(totals[col])
         qvals = {}
         for qname, qfrac in zip(QNAMES, QUANTILES):

@@ -69,6 +69,19 @@ def main():
 
     ps = json.load(open(args.probe_set))
     concepts, families = ps["concepts"], ps["families"]
+    # The encoder head's per-layer K output columns are in the score store's
+    # MAIN-block order == main_block_concepts (see out/PERMUTATION_FIX.md), NOT
+    # `concepts` (name-sorted). build_coords MUST index the encoder preds by
+    # this order so each family's phase angles attach to the TRUE concept.
+    # Fall back to `concepts` (with a warning) only if the key is absent.
+    pred_order = ps.get("main_block_concepts")
+    if pred_order is None:
+        print("WARNING: probe_set.json has no 'main_block_concepts'; using "
+              "name-sorted 'concepts' as the encoder pred column order. If the "
+              "encoder was trained on the pre-fix (family-sorted) score store, "
+              "this attaches coord phase angles to the WRONG concepts.",
+              file=sys.stderr)
+        pred_order = concepts
     layers = ps["layers"]
     block = layers.index(args.layer8_block)  # which of the 3 layer-blocks in preds[3K]
     K = len(concepts)
@@ -93,7 +106,8 @@ def main():
     #     pt = preds[amap.clamp(min=0)]                       # (n, 3K); amap==-1 -> row0 masked
     #     pt[amap < 0] = 0.0
     #     kcols = pt[:, block*K:(block+1)*K]                  # gemma-layer-8 K cols
-    #     z, legend = build_coords(kcols.numpy(), concepts, families, pca=pca)  # (n, r)
+    #     # pred_order = main_block_concepts: encoder-output column order (store MAIN block)
+    #     z, legend = build_coords(kcols.numpy(), concepts, families, pca=pca, pred_order=pred_order)  # (n, r)
     #     if not args.noise_none: z += ...                    # (default: leave noise to train time)
     #     append z (int8, scale=4*std/127) to coords.int8; record (doc_hash(text), off, n)
     #

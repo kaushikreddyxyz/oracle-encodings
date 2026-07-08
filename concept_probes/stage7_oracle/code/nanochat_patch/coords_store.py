@@ -80,12 +80,22 @@ def make_orthonormal_P(n_embd: int, r: int, seed: int = 1337) -> np.ndarray:
 #   preds: (..., K) predicted probe scores for ONE gemma layer block (the
 #          "layer-8" block, i.e. the K columns of the encoder head for
 #          gemma layer 8), already corpus-standardized.
-#   concepts: canonical K names (probe_set.json "concepts", same order as preds)
+#   pred_order: the concept name of each of the K `preds` columns, IN COLUMN
+#          ORDER. This MUST be the encoder head's output order, which equals
+#          the score store's MAIN-block order == probe_set.json
+#          "main_block_concepts" (family-sorted in the current store) -- NOT
+#          "concepts" (name-sorted). Attaching phase angles to the wrong
+#          concept was the coords half of the permutation bug (see
+#          out/PERMUTATION_FIX.md). If None, defaults to `concepts` for
+#          backward compatibility (only correct for a fixed/rerun probe_set
+#          where main_block_concepts == concepts).
 #   families: {concept: family}
 # Returns coords (..., r) ordered family-by-family, and a column legend.
 # --------------------------------------------------------------------------- #
-def build_coords(preds: np.ndarray, concepts, families, pca=None):
-    idx = {c: i for i, c in enumerate(concepts)}
+def build_coords(preds: np.ndarray, concepts, families, pca=None, pred_order=None):
+    if pred_order is None:
+        pred_order = concepts
+    idx = {c: i for i, c in enumerate(pred_order)}
     fam_to_concepts = {}
     for c in concepts:
         fam_to_concepts.setdefault(families[c], []).append(c)

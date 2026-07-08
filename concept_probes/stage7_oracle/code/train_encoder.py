@@ -152,6 +152,35 @@ class ProbeSet:
         self.K = len(self.concepts)
         self.families = self.meta["families"]
 
+        # LABEL-ORDER CONTRACT (see out/PERMUTATION_FIX.md). The score store
+        # main block [layer0 K, layer1 K, layer2 K] is in the order the W/b
+        # arrays were assembled, which the original select_probes.py bug left
+        # in (family,concept)-sorted order -- NOT the same as `concepts`
+        # (name-sorted) except at the one fixed point ("september"). The dom
+        # block [dom K] is in `concepts` (name-sorted) order. probe_set.json
+        # now records both explicitly:
+        #   main_block_concepts -> true concept of store cols l*K+c (main)
+        #   dom_block_concepts  -> true concept of store cols 3K+c   (dom)
+        # These MUST be used to attach names to per-column R^2. If they are
+        # absent (an old probe_set.json), fall back to `concepts` for BOTH
+        # (the pre-fix behavior) and warn loudly -- for a fixed/rerun
+        # probe_set both lists equal `concepts` so the fallback is harmless
+        # there, but for the CURRENT immutable store the main-block fallback
+        # is the exact bug and the warning says so.
+        self.main_block_concepts = list(self.meta.get("main_block_concepts", self.concepts))
+        self.dom_block_concepts = list(self.meta.get("dom_block_concepts", self.concepts))
+        if "main_block_concepts" not in self.meta:
+            warnings.warn(
+                "probe_set.json has no 'main_block_concepts' key: per-concept "
+                "MAIN-block R^2 labels will fall back to 'concepts' (name-sorted). "
+                "If this probe_set/score store came from the pre-fix "
+                "select_probes.py, that fallback MISLABELS 53/54 main-block "
+                "concepts (family-sorted store vs name-sorted labels). Only the "
+                "labels are wrong; the median/aggregate R^2 is permutation-"
+                "invariant and unaffected. Regenerate probe_set.json with the "
+                "fixed select_probes.py, or add the two block-order keys."
+            )
+
         if self.ablation_layer not in list(self.layer_index):
             raise ValueError(
                 f"ablation_layer={self.ablation_layer} not among probe "
@@ -539,24 +568,31 @@ def run_eval(shards, scores_dir, climbmix_dir, gemma_tok, qwen_tok, model, head,
     result = {"n_tokens": n_tokens_seen}
     if mode == "expA":
         r2 = acc.r2()
-        names = [f"{ps.concepts[c]}@L{ps.layers[l]}" for l in range(3) for c in range(K)]
+        # MAIN-block store columns are in main_block_concepts order (see
+        # ProbeSet / PERMUTATION_FIX.md), NOT `concepts`. Label column l*K+c
+        # with main_block_concepts[c].
+        mbc = ps.main_block_concepts
+        names = [f"{mbc[c]}@L{ps.layers[l]}" for l in range(3) for c in range(K)]
         result["per_probe_r2"] = dict(zip(names, r2.tolist()))
         result["median_r2"] = float(np.median(r2))
         fam_groups = {}
         for l in range(3):
             for c in range(K):
-                fam = ps.families[ps.concepts[c]]
+                fam = ps.families[mbc[c]]
                 fam_groups.setdefault(fam, []).append(r2[l * K + c])
         result["per_family_median_r2"] = {f: float(np.median(v)) for f, v in fam_groups.items()}
         result["primary_metric"] = result["median_r2"]
     else:
         r2 = acc.r2()
-        names = ps.concepts
+        # DOM-block store columns are in dom_block_concepts (== concepts,
+        # name-sorted) order; label explicitly for self-description.
+        dbc = ps.dom_block_concepts
+        names = dbc
         result["per_probe_r2"] = dict(zip(names, r2.tolist()))
         result["median_r2"] = float(np.median(r2))
         fam_groups = {}
         for c in range(K):
-            fam = ps.families[ps.concepts[c]]
+            fam = ps.families[dbc[c]]
             fam_groups.setdefault(fam, []).append(r2[c])
         result["per_family_median_r2"] = {f: float(np.median(v)) for f, v in fam_groups.items()}
         result["v_star_r2"] = acc_v.r2_overall()
@@ -839,9 +875,9 @@ def _down_cosine(head, ps):
     if head.down is None:
         return {}
     W = head.down.weight.detach().float().cpu().numpy()  # [2304, K]
-    D = ps.D_dom  # [2304, K]
+    D = ps.D_dom  # [2304, K]  (columns in dom_block_concepts order)
     out = {}
-    for c, name in enumerate(ps.concepts):
+    for c, name in enumerate(ps.dom_block_concepts):
         a, b = W[:, c], D[:, c]
         na, nb = np.linalg.norm(a), np.linalg.norm(b)
         out[name] = float(np.dot(a, b) / (na * nb)) if na > 0 and nb > 0 else 0.0

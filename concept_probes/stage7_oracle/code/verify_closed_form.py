@@ -459,14 +459,19 @@ def run_verify(args) -> dict:
     arm_rms_over_scale = arm_acc.rmse() / np.maximum(arm_scale, 1e-12)
     check4 = {
         "dom_columns": {
-            "concepts": ps.concepts,
+            # DOM block was always correctly name-sorted; label explicitly.
+            "concepts": ps.dom_block_concepts,
             "pearson_r": dom_r.tolist(),
             "rms_err_over_scale": dom_rms_over_scale.tolist(),
             "median_pearson_r": float(np.median(dom_r)),
             "median_rms_over_scale": float(np.median(dom_rms_over_scale)),
         },
         "arm_columns": {
-            "names": [f"L{l}:{c}" for l in ps.layers for c in ps.concepts],
+            # MAIN-block arm columns follow main_block_concepts (store/W order),
+            # NOT `concepts` -- see out/PERMUTATION_FIX.md. The per-column r
+            # values are self-consistent (stored vs live both use W's order);
+            # only the NAME attached needs the correct block order.
+            "names": [f"L{l}:{c}" for l in ps.layers for c in ps.main_block_concepts],
             "pearson_r": arm_r.tolist(),
             "rms_err_over_scale": arm_rms_over_scale.tolist(),
             "median_pearson_r": float(np.median(arm_r)),

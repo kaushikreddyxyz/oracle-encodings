@@ -457,7 +457,17 @@ def main():
             nat_mean[li] = probes_any["nat_mean"]
             nat_std[li] = probes_any["nat_std"]
 
-        for ci, (fam, c, rows_l) in enumerate(survivors):
+        # CANONICAL ORDER FIX (permutation bug, see out/PERMUTATION_FIX.md):
+        # `survivors` is (family,concept)-sorted, but `concept_names` (which is
+        # written to probe_set.json["concepts"] and consumed positionally by
+        # every downstream reader) is name-sorted. Index W/b by the concept's
+        # position in `concept_names`, exactly as the relaxed branch (below)
+        # and the DoM block already do -- NOT by enumerate(survivors), which
+        # silently permuted 53/54 main-block rows. Do NOT rely on iteration
+        # order here.
+        idx_of_c = {c: i for i, c in enumerate(concept_names)}
+        for (fam, c, rows_l) in survivors:
+            ci = idx_of_c[c]
             for li, (L, r) in enumerate(zip(chosen_layers, rows_l)):
                 arm = r["arm"]
                 key = (fam, L)
@@ -561,11 +571,23 @@ def main():
     G_dom = W_dom_abl @ W_dom_abl.T                    # [K, K] std-space Gram
     G_dom_inv = np.linalg.pinv(G_dom) if K > 0 else np.zeros((0, 0), dtype=np.float32)
 
+    # Defensive self-description of the score-store column layout (see
+    # out/PERMUTATION_FIX.md). After the canonical-order fix above, the W/b
+    # MAIN block and the DoM block are BOTH assembled in `concept_names`
+    # (name-sorted) order, so both lists equal `concepts` here. We still emit
+    # them explicitly so every downstream consumer can attach names to store
+    # columns by an explicit contract rather than assuming an order -- and so
+    # that a future reordering (or a re-scored store built from an
+    # out-of-order W) is described by data, not by convention.
+    main_block_concepts = list(concept_names)   # true order of W/b main-block rows + each layer's main store block
+    dom_block_concepts = list(concept_names)    # true order of W_dom_abl/b_dom_abl/t_nat_dom/G_dom + store dom block
     probe_set = dict(
         layers=chosen_layers,
         ablation_layer=abl_layer,
         concepts=concept_names,
         families={c: concept_family[c] for c in concept_names},
+        main_block_concepts=main_block_concepts,
+        dom_block_concepts=dom_block_concepts,
         selection=selection,
         s95=s95_out,
         corpus_stats=None,

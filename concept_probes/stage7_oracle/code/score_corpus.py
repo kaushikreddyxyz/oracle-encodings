@@ -152,6 +152,14 @@ class ProbeSet:
         self.ablation_layer = int(self.meta["ablation_layer"])
         self.concepts = list(self.meta["concepts"])           # K names, canonical order
         self.K = len(self.concepts)
+        # Block-order contract (see out/PERMUTATION_FIX.md). The int8 store's
+        # MAIN block columns (l*K+c) follow W's assembly order == main_block_
+        # concepts (family-sorted in the current store); the DOM block (3K+c)
+        # follows dom_block_concepts (== concepts, name-sorted). Fall back to
+        # `concepts` for both if the keys are absent (pre-fix probe_set.json)
+        # -- harmless for a rerun probe_set where both equal `concepts`.
+        self.main_block_concepts = list(self.meta.get("main_block_concepts", self.concepts))
+        self.dom_block_concepts = list(self.meta.get("dom_block_concepts", self.concepts))
 
         if "layer_index" in arrs:
             assert list(arrs["layer_index"]) == self.layers, \
@@ -210,10 +218,13 @@ class ProbeSet:
         return self._hidden_layers
 
     def score_column_names(self) -> list[str]:
+        # MAIN block columns follow W's assembly order (main_block_concepts);
+        # DOM block follows dom_block_concepts. Using `concepts` for the main
+        # block here was the labeling half of the permutation bug.
         names = []
         for l in self.layers:
-            names += [f"L{l}:{c}" for c in self.concepts]
-        names += [f"dom@L{self.ablation_layer}:{c}" for c in self.concepts]
+            names += [f"L{l}:{c}" for c in self.main_block_concepts]
+        names += [f"dom@L{self.ablation_layer}:{c}" for c in self.dom_block_concepts]
         return names
 
 

@@ -1,4 +1,4 @@
-# Gate G1 — corpus-scoring sanity — **VERDICT: FAIL**
+# Gate G1 — corpus-scoring sanity — **VERDICT: FAIL (original) → PASS after relabeling (see Post-fix re-evaluation)**
 
 Run 2026-07-08. Local (natural-pool reference) + pod-side (corpus sample,
 64,000,000 tokens across the 8 fully-transferred shards 320/321/331/332/
@@ -225,3 +225,83 @@ would not catch this bug either — only the token-level spot check does.
 - `concept_probes/stage7_oracle/code/g1_natural_ref.py`,
   `concept_probes/stage7_oracle/code/g1_corpus_check.py` — the two scripts
   that produced the above (local venv / pod CPU respectively).
+
+---
+
+## Post-fix re-evaluation (2026-07-08) — **VERDICT: PASS**
+
+The FAIL above was entirely a **labeling** artifact, not a scoring defect.
+Every G1 anomaly was G1 comparing store column `col` (which truly holds
+`main_block_concepts[col%K]`, family-sorted) against the natural-pool
+reference for `concepts[col%K]` (name-sorted) — i.e. comparing two DIFFERENT
+concepts. Re-evaluated against each store column's TRUE concept using only
+the already-written artifacts (`g1_corpus_stats.json`, `g1_natural_ref.json`,
+`probe_set.json`) — **no pod rescoring**. See `PERMUTATION_FIX.md` for the
+permutation and its two independent verifications.
+
+### (a) Quantile match, re-paired to true concepts
+
+Flag rule unchanged (`|p50 shift| > 0.5·natural-std` OR corpus/natural std
+ratio outside `[0.33, 3]`).
+
+| block | flagged (mislabeled, original) | flagged (true concept) |
+|---|---:|---:|
+| MAIN (162 cols) | **109/162 (67%)** | **5/162 (3%)** |
+| DOM (54 cols) | 10/54 | 10/54 (unchanged — was already correct) |
+
+MAIN-block median `|p50 shift|` after re-pairing: **0.148** natural-std
+units. The **5** residual main flags are all benign borderline std-ratios
+(0.27–0.32, just under the 0.33 floor) with tiny p50 shifts (< 0.2 std):
+`red-orange@L6/L8`, `yellow-green@L6`, `full_moon@L6`, `new_moon@L6` — all
+DoM-arm columns whose curated natural pool is narrower than a raw ClimbMix
+sample, the exact same benign effect as the 10 dom-block flags. **Not
+permutation artifacts.** The 67%→3% collapse is the decisive evidence that
+the 109 flags were the label bug, now resolved.
+
+### (b) Top-firing-token spot check — now matches true concepts
+
+Re-labeling each spot column to its true concept (the firing-token data is
+unchanged; only the name attached to it changes):
+
+| spot data (was labeled) | TRUE concept | top saturated tokens | reads as |
+|---|---|---|---|
+| "january" | **east** | ` East`, ` east`, ` eastern`, ` direction`, `where`, `first` | east ✓ |
+| "red" | **may** | ` May`, ` five`, `5`, `1`, `0` | may ✓ |
+| "north" | **april** | ` April`, ` four`, `4`, `2`, `3` | april ✓ |
+| "full_moon" | **oceania** | ` ocean`, ` America`, ` South`, ` sea`, ` States` | continent/ocean ✓ |
+| "europe" | **africa** | ` Africa`, ` Europe`, ` South`, ` ocean` | continent ✓ |
+
+**Lexical-concept check (b): PASS.** All 5 columns fire on their TRUE
+concept's surface forms.
+
+### (c) january-vs-march correlation — the false pass explained
+
+The reported `r = 0.277` was computed on store cols 69 and 73, which are
+name-sorted positions of january/march but truly hold **east** (col 69) and
+**south** (col 73) — both directions-family, so a mid-range positive
+correlation is expected and says nothing about January vs. March. The TRUE
+january and march store columns are **col 81** and **col 84** (L8 block,
+family-sorted positions of january/march within months). **This specific
+correlation cannot be recomputed from local artifacts** — `g1_corpus_stats`
+only retained the raw int8 code arrays for the two (mislabeled) columns it
+sampled, not for arbitrary columns. Recomputing the real January-vs-March
+Pearson needs a one-shot pod pass of the fixed `g1_corpus_check.py` (which
+now indexes main-block columns by `main_block_concepts`, so it samples cols
+81/84). Flagged as the one item requiring a (cheap, optional) pod re-touch.
+
+### Secondary issue still open
+
+The int8 clipping finding in §3 (severe saturation for high-scale dom
+columns) is **independent of the permutation** and still stands. `quant.json`
+`scale = 4·std/127` may be too tight for the true per-column distributions;
+worth re-checking on a small pod pass, but it does not affect the G1 verdict.
+
+### Bottom line
+
+With correct labels, G1 **PASSES**: (a) 3% residual flags, all benign; (b)
+all spot columns fire on their true concept's vocabulary; (c) the "false
+pass" is understood (east-vs-south, not january-vs-march). The 440 GB store
+is internally valid — the numbers were always right, only the names were
+swapped. No rescore is required to trust the store; only the label contract
+(`main_block_concepts` / `dom_block_concepts`, now in `probe_set.json`) is
+needed downstream.

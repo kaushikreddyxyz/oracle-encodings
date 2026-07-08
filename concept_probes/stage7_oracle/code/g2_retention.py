@@ -340,9 +340,12 @@ def run_g2(args, encoder_and_tok=None):
                     ref_sources.add("probe_set_stored")
                 enc_col = enc_scores[:, l * K + col]
                 e_auroc = auroc(enc_col[lab_t == 1], enc_col[lab_t == 0])
-                raw = (e_auroc / g_auroc) if (np.isfinite(g_auroc) and g_auroc > 0) else float("nan")
+                raw = (e_auroc / g_auroc) if (np.isfinite(e_auroc) and np.isfinite(g_auroc) and g_auroc > 0) else float("nan")
                 denom = g_auroc - 0.5
-                cc = ((e_auroc - 0.5) / denom) if (np.isfinite(denom) and denom >= MIN_DENOM) else None
+                # cc requires BOTH a usable denominator AND a finite encoder
+                # AUROC (a NaN enc_auroc must yield cc=None, not float('nan'),
+                # or it silently poisons the np.median gate aggregate).
+                cc = ((e_auroc - 0.5) / denom) if (np.isfinite(e_auroc) and np.isfinite(denom) and denom >= MIN_DENOM) else None
                 layer_rows.append(dict(layer=int(L), arm=arm,
                                        enc_auroc=_f(e_auroc), gemma_auroc=_f(g_auroc),
                                        gemma_auroc_stored=(float(stored) if stored is not None else None),
@@ -405,6 +408,14 @@ def run_g2(args, encoder_and_tok=None):
                                  n_concepts=len(cc_l))
 
     median_cc = med(cc_vals)
+    # SECONDARY (conservative) variant: fixed layer for BOTH encoder and gemma
+    # (no per-concept best-of-3 selection). The primary metric picks each
+    # concept's best encoder layer on the SAME test data it gates on, so it
+    # carries a small systematic max-of-3 selection inflation (AUROC SE at
+    # median n_pos=55 is ~0.02-0.03/layer; correlated across layers, net
+    # ~+0.01-0.02 in cc units). If the primary median sits within ~0.02 of the
+    # bar, read it alongside these fixed-layer numbers before calling GO.
+    fixed_layer_cc = {str(L): per_layer[str(L)]["median_cc_ratio"] for L in layers}
     verdict = {
         "pass_gate": bool(np.isfinite(median_cc) and median_cc >= RETAIN_BAR),
         "retain_bar": RETAIN_BAR,
@@ -417,6 +428,11 @@ def run_g2(args, encoder_and_tok=None):
         "n_concepts_cc_defined": len(cc_vals),
         "n_concepts_cc_excluded": len(excluded_cc),
         "cc_excluded_concepts": excluded_cc,
+        "secondary_median_cc_ratio_fixed_layer": fixed_layer_cc,
+        "secondary_note": ("conservative variant: median cc ratio at a single "
+                           "fixed layer for both encoder and gemma; immune to "
+                           "best-of-3 layer-selection inflation of the primary "
+                           "metric (~+0.01-0.02 cc units)"),
     }
 
     result = dict(
@@ -472,8 +488,12 @@ def run_g2(args, encoder_and_tok=None):
         pl = per_layer[str(L)]
         print(f"  L{L:<2d} cc={pl['median_cc_ratio']:.4f} raw={pl['median_raw_ratio']:.4f} "
               f"enc={pl['median_enc_auroc']:.4f} gemma={pl['median_gemma_auroc']:.4f}")
+    print("secondary (fixed-layer, conservative) median cc ratio: "
+          + "  ".join(f"L{L}={fixed_layer_cc[str(L)]:.4f}" for L in layers))
     print(f"\nVERDICT: {'PASS' if verdict['pass_gate'] else 'FAIL'} "
-          f"(median cc ratio {median_cc:.4f} vs bar {RETAIN_BAR})")
+          f"(median cc ratio {median_cc:.4f} vs bar {RETAIN_BAR}; "
+          f"conservative fixed-layer medians "
+          + ", ".join(f"L{L}={fixed_layer_cc[str(L)]:.4f}" for L in layers) + ")")
     print(f"wrote {args.out}  ({result['seconds']}s)")
     return result
 

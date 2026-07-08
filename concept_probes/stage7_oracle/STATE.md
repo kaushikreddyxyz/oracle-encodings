@@ -2,14 +2,43 @@
 
 (newest first)
 
+## ⚠️ COORDS REPO MOVED (12:50 PM 2026-07-08): use `stage7-oracle-coords-b`
+
+The self-cleanup daemons hit HF's **128 commits/hour per-repo rate limit**
+(they committed per-file; 6 pods × ~128 files blew the window at ~130 files
+in) and would have idled the fleet ~1h at ~$18/hr. Manual takeover instead:
+
+- Killed the `coords_selfcleanup` daemons on all 6 pods; launched
+  `manual_upload.py` on each — the ENTIRE `shards/` dir in ONE
+  `upload_folder` commit per pod, to a fresh repo with a fresh rate-limit
+  counter: **https://huggingface.co/datasets/kaushikreddyxyz/stage7-oracle-coords-b**
+  (layout identical: `shards/` at root; per-pod `meta/podN_state.json`,
+  pod1 also `meta/pod1_coord_fit.{json,npz}`).
+- All 6 sweeps had COMPLETED before takeover (pod1 32/32 finished last,
+  ~12:45); expect **764 files** in `shards/` (191 shards × 4 files).
+- `done_podN.json` markers will NEVER appear (that flow is dead). The
+  per-pod completion marker is now `meta/podN_state.json` in coords-b.
+- A local reaper (`scratchpad/upload_reaper.sh`, bg task) polls each pod's
+  `manual_upload.log`, verifies its meta marker on coords-b, then
+  **terminates the pod** via runpodctl. UPLOAD_FAILED ⇒ pod left up.
+- **Trainer TERMINATED manually 12:49 PM** — conditions (a)+(b) were green
+  for hours; `expB-learn/best.pt` (1,084,290 B) and expA `best.pt`
+  (3,577,614,718 B) byte-verified on the encoder repo. Condition (c) is
+  obsolete (see above).
+- The ORIGINAL repo `stage7-oracle-coords` holds a partial 128-file subset
+  from the daemons' per-file commits — ignore it; coords-b is authoritative.
+- **Runbook step 2 below: download coords-b, not coords.** Assemble
+  hard-fails if any shard is missing, so a partial coords-b is self-catching.
+
 ## TONIGHT'S LAUNCH RUNBOOK (attended, ~15 min of gates; written ~4:45 PM)
 
-Expected state on return: ZERO pods running (all self-terminated after
-uploading to HF); coords at hf.co/datasets/kaushikreddyxyz/stage7-oracle-coords
-(6 done_pod{i}.json markers = complete), scores archived, encoder + all
+Expected state on return: ZERO pods running; coords at
+hf.co/datasets/kaushikreddyxyz/stage7-oracle-coords-b (764 `shards/` files
++ 6 `meta/podN_state.json` = complete; done_podN.json markers DEPRECATED,
+see entry above), scores archived, encoder + all
 run artifacts on HF, wandb project stage7-oracle current. If any pod is
-still alive, read its /workspace/HOLD_REASON.txt (also uploaded to the
-coords repo) before touching anything.
+still alive, read its /workspace/manual_upload.log first (HOLD_REASON.txt
+only applies to the old daemon flow).
 
 Launch sequence (fresh session: read SPEC.md Phase 4 + nanochat_prep.md §5
 + code/nanochat_patch/APPLY.md first):

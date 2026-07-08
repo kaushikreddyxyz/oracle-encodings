@@ -128,25 +128,39 @@ at a noise ceiling, not an encoder-capacity ceiling. Verdict: **partially
 supported**.
 
 For it:
-- corr(per-concept encoder R², judge-eval retention) = **−0.42** — concepts the
-  encoder fits *worse* retain judge-eval AUROC *better*, which is what you'd
-  expect if low R² reflects unpredictable probe noise rather than missed signal.
-- On the LLM-judge natural eval the oracle is only slightly worse than the
-  gemma probes it imitates: median AUROC delta **−0.016** (mean −0.026), and it
-  actually beats the probes on 5/54 concepts — consistent with the oracle
-  smoothing away some probe noise.
+- The R²-vs-retention mismatch: the encoder fits only 63% of probe-score
+  variance yet retains 96.6% of chance-corrected judge AUROC. If the missing
+  37% were concept-relevant signal, retention couldn't stay that high — most
+  of the residual is judge-irrelevant variance.
+- Per-concept encoder R² is **uncorrelated** with judge retention (Pearson
+  −0.03, Spearman −0.02) and with probe quality (+0.01): how well the oracle
+  fits a probe's scores tells you nothing about how well it detects the
+  concept. That decoupling is what you'd expect if R² differences reflect
+  differing noise fractions, not differing signal capture.
+- Encoder R² is tightly clustered (0.52–0.78 across all 54 concepts) despite
+  wildly varying probe quality — it behaves like a floor property of the
+  regression *target*, not of encoder capacity.
 
 Against a *pure* noise ceiling:
+- On the LLM-judge natural eval the oracle loses to the gemma probes on
+  **49/54 concepts** (median AUROC delta −0.016, mean −0.026; wins on 5, best
+  blue-green +0.016, worst october/yellow-green/waning_crescent ≈ −0.09). If
+  the residual were pure noise and the oracle recovered the signal, it should
+  beat the noisy probe on an independent eval about as often as not — a
+  systematic deficit on 91% of concepts means some real signal is missed.
 - Same-layer probe-arm agreement (ridge vs alternative arm on identical
   activations) is r² ≈ 0.90, well above the encoder's 0.64. If 0.6 were the
   true signal content, two independent readouts of the same layer couldn't
-  agree at 0.90. So some real, predictable signal is being left on the table.
+  agree at 0.90.
 
 Net: a meaningful fraction of the missing 0.36 is probe noise the encoder
-correctly refuses to fit (hence retention holding at 0.966), but not all of
-it — the same-layer agreement gap says the encoder is also short of the
-achievable ceiling. Numbers derive from `out/g2_retention.json` per-concept
-`enc_auroc` vs `gemma_auroc` and the Exp A/B analyses above.
+correctly refuses to fit (hence retention holding at 0.966), but the 49/54
+judge deficit and the same-layer agreement gap say the encoder is also
+short of the achievable ceiling. Numbers derive from `out/g2_retention.json`
+per-concept `enc_auroc` vs `gemma_auroc` (× `out/retro_metrics/`
+`expA_prod_metrics.jsonl` for the correlations) and the Exp A/B analyses
+above. (An earlier revision of this section claimed corr(R², retention)
+= −0.42; recomputation gives −0.03 — corrected.)
 
 ---
 

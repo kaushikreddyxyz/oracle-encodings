@@ -716,6 +716,16 @@ def run_training(args, encoder_and_tok=None):
     ps = ProbeSet(args.probe_set)
     zero, scale = load_quant(args.scores)
     corpus_mean, corpus_std, corpus_stats_real = load_corpus_stats(args.scores, zero, scale)
+    n_cols = ps.n_score_cols()
+    for name, arr in (("quant.json zero", zero), ("quant.json scale", scale),
+                       ("corpus_stats mean", corpus_mean), ("corpus_stats std", corpus_std)):
+        if arr.shape != (n_cols,):
+            raise ValueError(
+                f"{name} has shape {arr.shape}, expected ({n_cols},) = 4*K for "
+                f"K={ps.K} concepts: the score store / stats files do not match "
+                f"this probe_set (stale corpus_stats.json or wrong --scores dir?). "
+                f"Refusing to train against mispaired standardization stats."
+            )
 
     dtype = torch.bfloat16 if args.device.startswith("cuda") else torch.float32
     if encoder_and_tok is not None:
@@ -749,6 +759,14 @@ def run_training(args, encoder_and_tok=None):
 
     train_shards = [int(x) for x in args.train_shards.split(",") if x != ""]
     val_shards = [int(x) for x in args.val_shards.split(",") if x != ""]
+    overlap = sorted(set(train_shards) & set(val_shards))
+    if overlap:
+        raise ValueError(
+            f"--train-shards and --val-shards overlap on shard ids {overlap}: "
+            f"heldout R^2 (the G2 gate metric) would be computed on training "
+            f"data. Use disjoint shard sets (DESIGN.md: 'heldout = distinct "
+            f"shards')."
+        )
 
     train_stream = iter_docs(train_shards, args.scores, args.climbmix_dir, loop=True)
 

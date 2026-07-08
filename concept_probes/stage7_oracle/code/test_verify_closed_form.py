@@ -7,32 +7,17 @@ scored shard store, so the Phase-1 store conventions this script depends on
 (BOS handling, quantization, docs.jsonl bookkeeping) cannot drift out of
 sync with score_corpus.py's own smoke test (test_score_corpus.py).
 
-IMPORTANT FIXTURE CAVEAT (found while writing this test -- see
-verify_closed_form.VerifyProbeSet.gram_consistency_check for the runtime
-version of this check): make_fixture.build_probe_set() computes G_dom from
-the RAW-space Gram of d_c = nat_std_abl * w_c ("d_raw @ d_raw.T"). DESIGN.md
-is explicit that this is exactly the bug fixed in the real Phase-0 script
-(select_probes.py, ~4:15 AM): "G_dom must be the STANDARDIZED-space Gram
-W_dom_abl @ W_dom_abl.T ... NOT the raw Gram of d_c = sigma*w ... (Original
-raw-Gram spec was a bug, corrected ~4:15 AM before Exp B ran.)". select_probes.py
-(the actual production Phase-0 script) computes it correctly
-(`G_dom = W_dom_abl @ W_dom_abl.T`); test_train_encoder.py's OWN standalone
-probe_set fixture builder (build_probe_set() in that file) has the same
-raw-space bug as make_fixture.py. Neither fixture builder was updated when
-DESIGN.md's math was corrected.
-
-Since the whole point of this script is to verify the closed-form math
-against LIVE forward-computed ablations (not just replay a self-consistent
-synthetic target the way test_train_encoder.py's smoke test does), using
-make_fixture.py's G_dom as-is would make check 1 (score restoration) and
-check 2 (closed-form identity) FAIL for a data/fixture reason unrelated to
-verify_closed_form.py's own logic (a non-uniform nat_std_abl means the
-raw-space Gram inverse does not actually zero the ablated dom scores). So
-this test patches G_dom/G_dom_inv in the fixture's npz to the CORRECT
-standardized-space convention before running verify_closed_form.py --
-`fix_gram_to_standardized_space()` below. This mirrors exactly what
-select_probes.py already does correctly in production; only the stale test
-fixtures needed the patch.
+FIXTURE GRAM HISTORY: make_fixture.build_probe_set() originally computed
+G_dom from the RAW-space Gram of d_c = nat_std_abl * w_c -- the exact bug
+DESIGN.md documents as fixed in select_probes.py ~4:15 AM ("G_dom must be
+the STANDARDIZED-space Gram W_dom_abl @ W_dom_abl.T"). make_fixture.py has
+since been FIXED upstream (commit 29015df) to the standardized-space
+convention; test_gram_consistency_check() below asserts both that the fixed
+fixture passes VerifyProbeSet.gram_consistency_check() and that a
+deliberately raw-space-corrupted G_dom_inv is still caught.
+`fix_gram_to_standardized_space()` is retained (it now merely swaps
+make_fixture's 1e-3-regularized inverse for an exact pinv, keeping check 1's
+1e-3 tolerance sharp on the tiny fixture).
 
 Run:
   python concept_probes/stage7_oracle/code/test_verify_closed_form.py
@@ -67,10 +52,11 @@ def _get_tokenizer():
 
 
 def fix_gram_to_standardized_space(probe_set_dir: str) -> None:
-    """Patch make_fixture.py's probe_set_arrays.npz: recompute G_dom/G_dom_inv
-    as the STANDARDIZED-space Gram of W_dom_abl (DESIGN.md's corrected
-    convention, matching select_probes.py), replacing make_fixture's stale
-    raw-space version. See module docstring above."""
+    """Recompute G_dom/G_dom_inv as the exact (pinv) STANDARDIZED-space Gram
+    of W_dom_abl. make_fixture.py already uses the standardized-space Gram
+    (fixed upstream); this now only replaces its 1e-3-regularized inverse
+    with an exact pseudo-inverse so check 1's 1e-3 tolerance stays sharp.
+    See module docstring."""
     p = Path(probe_set_dir) / "probe_set_arrays.npz"
     d = dict(np.load(p))
     W_dom_abl = d["W_dom_abl"].astype(np.float32)
@@ -81,26 +67,54 @@ def fix_gram_to_standardized_space(probe_set_dir: str) -> None:
     np.savez(p, **d)
 
 
-def test_gram_bug_is_real():
-    """Documents (and locks in) the fixture bug itself: with
-    make_fixture.py's UNPATCHED probe_set, the standardized-space Gram
-    inverse the math actually needs disagrees with what's stored -- i.e.
-    VerifyProbeSet.gram_consistency_check() must catch it. If this test ever
-    starts failing because make_fixture.py was fixed upstream, that's good
-    news: just delete this test and drop the patch step below."""
+def test_gram_consistency_check():
+    """make_fixture.py's build_probe_set() was FIXED upstream (commit
+    29015df "fixture Gram fix"): it now builds the standardized-space Gram
+    W_dom_abl @ W_dom_abl.T, so (a) the fixture must pass
+    gram_consistency_check as-is, and (b) a probe_set whose G_dom_inv is
+    deliberately corrupted back to the RAW-space Gram inverse (the pre-4:15AM
+    bug DESIGN.md documents) must still be CAUGHT by
+    gram_consistency_check. (This test replaces the earlier
+    test_gram_bug_is_real canary, which asserted the fixture bug was still
+    present -- per its own docstring, it became obsolete when make_fixture
+    was fixed.)"""
     tmp_root = tempfile.mkdtemp(prefix="stage7_gram_bug_test_")
     try:
         probe_dir = os.path.join(tmp_root, "probe_set")
-        make_fixture.build_probe_set(probe_dir)  # unpatched -- raw-space Gram
+        make_fixture.build_probe_set(probe_dir)
         ps = vcf.VerifyProbeSet(probe_dir)
         gc = ps.gram_consistency_check()
-        assert not gc["consistent"], (
-            "expected make_fixture.py's unpatched G_dom to disagree with the "
-            "standardized-space convention (the known bug) -- if this assertion "
-            "fails, make_fixture.py was fixed and fix_gram_to_standardized_space() "
-            "is no longer needed")
-        print(f"[test] confirmed make_fixture.py's raw-space Gram bug is caught by "
-              f"gram_consistency_check (rel dist={gc['rel_frobenius_dist_G_dom_inv_vs_standardized_space']:.4g})")
+        assert gc["consistent"], (
+            f"make_fixture.py's G_dom is supposed to be standardized-space "
+            f"(fixed upstream) but gram_consistency_check flags it: {gc}")
+        print(f"[test] fixed make_fixture.py Gram passes gram_consistency_check "
+              f"(rel dist={gc['rel_frobenius_dist_G_dom_inv_vs_standardized_space']:.4g})")
+
+        # (b) regression guard: corrupt G_dom_inv to the raw-space convention
+        # and confirm it is caught.
+        p = Path(probe_dir) / "probe_set_arrays.npz"
+        d = dict(np.load(p))
+        W_dom_abl = d["W_dom_abl"].astype(np.float32)
+        nat_std = d["nat_std"].astype(np.float32)
+        layers = list(d["layer_index"])
+        with open(Path(probe_dir) / "probe_set.json") as f:
+            abl_layer = json.load(f)["ablation_layer"]
+        if abl_layer in layers:
+            nat_std_abl = nat_std[layers.index(abl_layer)]
+        else:
+            nat_std_abl = d["nat_std_abl"].astype(np.float32)
+        D_raw = nat_std_abl[None, :] * W_dom_abl
+        G_raw = (D_raw @ D_raw.T).astype(np.float32)
+        d["G_dom"] = G_raw
+        d["G_dom_inv"] = np.linalg.pinv(G_raw).astype(np.float32)
+        np.savez(p, **d)
+        ps_bad = vcf.VerifyProbeSet(probe_dir)
+        gc_bad = ps_bad.gram_consistency_check()
+        assert not gc_bad["consistent"], (
+            "gram_consistency_check failed to catch a raw-space Gram inverse "
+            f"(the exact historical bug): {gc_bad}")
+        print(f"[test] raw-space Gram corruption correctly caught "
+              f"(rel dist={gc_bad['rel_frobenius_dist_G_dom_inv_vs_standardized_space']:.4g})")
     finally:
         shutil.rmtree(tmp_root, ignore_errors=True)
 
@@ -263,7 +277,7 @@ def test_token_id_assertion_fires_on_drift():
 
 
 def main():
-    test_gram_bug_is_real()
+    test_gram_consistency_check()
     test_end_to_end()
     test_token_id_assertion_fires_on_drift()
     print("\nALL TESTS PASSED")

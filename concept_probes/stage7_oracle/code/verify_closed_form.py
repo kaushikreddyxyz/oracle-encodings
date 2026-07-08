@@ -25,8 +25,10 @@ checks four things (see DESIGN.md / SPEC.md for the exact prose):
      store end-to-end, not just the dom slice.
 
 Frozen math (from the task spec, matches DESIGN.md's corrected G_dom note
-and train_encoder.py's ProbeSet.v_star -- see the module-level assertion in
-VerifyProbeSet.__init__ that cross-checks this):
+and train_encoder.py's ProbeSet.v_star -- agreement with train_encoder's
+implementation is asserted at runtime by
+VerifyProbeSet._crosscheck_train_encoder_v_star, reported as
+"v_star_crosscheck_vs_train_encoder"):
     h_std   = (h - nat_mean_abl) / nat_std_abl
     s       = W_dom_abl @ h_std + b_dom_abl                      # [K]
     y       = G_dom_inv @ (s - t_nat_dom)                        # [K]
@@ -115,6 +117,49 @@ class VerifyProbeSet(sc.ProbeSet):
         # D_raw[c] = nat_std_abl * W_dom_abl[c]  (raw-space dom direction rows,
         # DESIGN.md/SPEC.md's D_raw; train_encoder.ProbeSet's D_dom == D_raw.T).
         self.D_raw = (self.nat_std_abl[None, :] * self.W_dom).astype(np.float32)  # [K,D]
+        self.v_star_crosscheck = self._crosscheck_train_encoder_v_star(probe_set_dir)
+
+    def _crosscheck_train_encoder_v_star(self, probe_set_dir: str) -> dict:
+        """The verdict of this script gates Exp-B training, and Exp-B's
+        targets are computed by train_encoder.ProbeSet.v_star -- a formula
+        this script re-implements independently. If the two ever diverge
+        (e.g. a transposed D, a re-ordered t), this script could PASS while
+        training consumes wrong targets. So: evaluate BOTH implementations
+        on random dom-score vectors and hard-fail on mismatch. Import/
+        instantiation failure (train_encoder.py not deployed alongside, or
+        an incompatible fixture) degrades to a loud warning, never silently.
+        """
+        try:
+            from train_encoder import ProbeSet as _TrainProbeSet
+            te_ps = _TrainProbeSet(probe_set_dir)
+        except Exception as e:  # noqa: BLE001 -- optional cross-check, warn loudly
+            print(
+                f"[{SCRIPT}] WARNING: could not instantiate train_encoder.ProbeSet "
+                f"for the v_star cross-check ({type(e).__name__}: {e}). The "
+                f"closed-form checks below still run, but agreement with the "
+                f"formula Exp-B training actually consumes is NOT being verified.",
+                file=sys.stderr,
+            )
+            return {"ran": False, "error": f"{type(e).__name__}: {e}"}
+        rng = np.random.default_rng(0)
+        s = (self.t_nat_dom[None, :]
+             + rng.normal(scale=10.0, size=(64, self.K))).astype(np.float32)
+        y_te, v_te = te_ps.v_star(s)
+        y_here = (s - self.t_nat_dom) @ self.G_dom_inv
+        v_here = y_here @ self.D_raw
+        scale_y = max(float(np.abs(y_here).max()), 1e-12)
+        scale_v = max(float(np.abs(v_here).max()), 1e-12)
+        rel_y = float(np.abs(np.asarray(y_te) - y_here).max()) / scale_y
+        rel_v = float(np.abs(np.asarray(v_te) - v_here).max()) / scale_v
+        ok = rel_y < 1e-5 and rel_v < 1e-5
+        if not ok:
+            raise AssertionError(
+                f"train_encoder.ProbeSet.v_star DISAGREES with verify_closed_form's "
+                f"own v* math on the same probe_set (max rel diff y={rel_y:.3g}, "
+                f"v={rel_v:.3g}). Exp-B training targets would not be the quantity "
+                f"this script verifies -- fix the divergence before trusting either."
+            )
+        return {"ran": True, "max_rel_diff_y": rel_y, "max_rel_diff_v": rel_v, "pass": ok}
 
     def gram_consistency_check(self) -> dict:
         """Defensive audit, independent of the checks below: the CORRECT
@@ -486,6 +531,7 @@ def run_verify(args) -> dict:
         "ablation_layer": ps.ablation_layer,
         "K": K,
         "gram_consistency_check": gram_check,
+        "v_star_crosscheck_vs_train_encoder": ps.v_star_crosscheck,
         "check1_score_restoration": check1,
         "check2_closed_form_identity_float": check2,
         "check3_quant_path": check3,
@@ -510,6 +556,12 @@ def print_summary(report: dict) -> None:
     print(f"[{SCRIPT}] Gram consistency (G_dom_inv vs standardized-space, expect ~0): "
           f"{gc['rel_frobenius_dist_G_dom_inv_vs_standardized_space']:.4g} "
           f"({'OK' if gc['consistent'] else 'MISMATCH -- see warning above'})")
+    xc = report["v_star_crosscheck_vs_train_encoder"]
+    if xc.get("ran"):
+        print(f"[{SCRIPT}] v* cross-check vs train_encoder.ProbeSet.v_star: "
+              f"max rel diff y={xc['max_rel_diff_y']:.3g} v={xc['max_rel_diff_v']:.3g} -> OK")
+    else:
+        print(f"[{SCRIPT}] v* cross-check vs train_encoder: SKIPPED ({xc.get('error')})")
     print(f"[{SCRIPT}] CHECK 1 score restoration: max|s(h')-t|/std(s) = {c1['max_ratio']:.4g} "
           f"(tol {c1['tol']:.0e}) -> {'PASS' if c1['pass'] else 'FAIL'}")
     print(f"[{SCRIPT}] CHECK 2 closed-form identity (float): p50={c2['p50']:.4g} p99={c2['p99']:.4g} "

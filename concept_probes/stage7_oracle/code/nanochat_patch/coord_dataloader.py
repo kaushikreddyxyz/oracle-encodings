@@ -39,9 +39,16 @@ def coord_data_loader_with_state(
         doc_batch, (pq_idx, rg_idx, epoch) = next(batches)
         toks = tokenizer.encode(doc_batch, prepend=bos, num_threads=tokenizer_threads)
         for text, t in zip(doc_batch, toks):
-            n_body = len(t) - 1                       # minus prepended BOS
-            z = coord_source.lookup(text, n_body)     # (n_body, r)
-            z = coord_source.add_noise(z)
+            n_body = len(t) - 1                        # minus prepended BOS
+            z, key = coord_source.lookup(text, n_body) # (n_body, r) or None
+            if z is None:
+                # doc missing from precompute (or token-count drift): EXACT zeros,
+                # NO noise -- the injection site renormalizes any nonzero coord to
+                # full beta amplitude, so noised zeros would inject pure noise.
+                # Exact zeros make the injection a strict no-op for this doc.
+                z = np.zeros((n_body, r), np.float32)
+            else:
+                z = coord_source.add_noise(z, key)     # deterministic per doc content
             z = np.concatenate([np.zeros((1, r), np.float32), z], axis=0)  # BOS row = 0
             tok_buffer.append(t)
             crd_buffer.append(z)

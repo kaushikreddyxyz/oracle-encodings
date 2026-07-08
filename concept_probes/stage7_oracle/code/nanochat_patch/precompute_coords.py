@@ -36,13 +36,27 @@ from align import get_offsets, gemma_to_qwen_map            # noqa: E402
 from coords_store import build_coords, make_orthonormal_P, doc_hash, CYCLIC_ORDER  # noqa: E402
 
 
-def nanochat_char_offsets(tok, ids):
+def nanochat_char_offsets(tok, ids, text):
     """Reconstruct (start,end) CHAR spans for tiktoken/RustBPE ids by accumulating
-    per-token decoded byte lengths and converting byte spans -> char spans."""
+    per-token decoded byte lengths and converting byte spans -> char spans.
+
+    ``text`` must be the exact string the ids were produced from (via
+    encode_ordinary, i.e. NO BOS/special ids in ``ids``): byte-level BPE
+    partitions text.encode('utf-8'), so the per-token byte lengths must sum to
+    the doc's byte length (asserted). We use text's own bytes rather than
+    enc.decode(ids) so tiktoken's errors='replace' decoding can never desync
+    byte offsets. A char is attributed to the token holding its UTF-8 LEAD byte;
+    a token that ends mid-character (byte-level BPE can split a multibyte char)
+    gets span end just past that char, and the next token starts there (empty
+    spans possible for pure-continuation-byte tokens -- align.py treats empty
+    source spans as unmapped (-1), which we then zero-fill)."""
     enc = tok.enc if hasattr(tok, "enc") else tok  # tiktoken.Encoding
     byte_lens = [len(enc.decode_single_token_bytes(i)) for i in ids]
-    b = np.concatenate([[0], np.cumsum(byte_lens)])          # byte offset per token boundary
-    fb = enc.decode(ids).encode("utf-8")
+    b = np.concatenate([[0], np.cumsum(byte_lens)]).astype(np.int64)  # byte offset per token boundary
+    fb = text.encode("utf-8")
+    assert int(b[-1]) == len(fb), (
+        f"token byte lengths do not partition the document bytes "
+        f"({int(b[-1])} != {len(fb)}); ids must come from encode_ordinary(text)")
     # byte offset -> char offset: a utf-8 continuation byte (0b10xxxxxx) does not
     # start a new char, so the char index increments only on lead bytes.
     char_at = [0]
@@ -63,6 +77,7 @@ def main():
     ap.add_argument("--out", required=True)
     ap.add_argument("--layer8-block", type=int, default=8, help="gemma layer whose K predicted cols build the coords")
     ap.add_argument("--n-embd", type=int, default=1536)
+    ap.add_argument("--r-check", type=int, default=14, help="expected coord dim r (7 families x 2); build_coords' legend length is asserted against this")
     ap.add_argument("--noise-none", action="store_true", help="do NOT bake noise (added fresh at train time -- default)")
     args = ap.parse_args()
     os.makedirs(args.out, exist_ok=True)
@@ -82,37 +97,55 @@ def main():
               "this attaches coord phase angles to the WRONG concepts.",
               file=sys.stderr)
         pred_order = concepts
+    assert set(concepts) == set(pred_order), (
+        "main_block_concepts and concepts must be the same 54 names (order differs)")
     layers = ps["layers"]
     block = layers.index(args.layer8_block)  # which of the 3 layer-blocks in preds[3K]
     K = len(concepts)
 
-    # fixed P + save once (seed pinned)
-    P = make_orthonormal_P(args.n_embd, r=None or 14, seed=1337)  # r resolved after first build
+    # fixed P + save once (seed pinned; r asserted against build_coords' legend below)
+    P = make_orthonormal_P(args.n_embd, r=args.r_check, seed=1337)
     # --- load encoder (frozen Exp-A) + qwen + nanochat tokenizers ---
     #   encoder = load_expA(args.encoder_ckpt)  # Qwen3-0.6B-Base + up head, eval, bf16
     #   qwen_tok = AutoTokenizer.from_pretrained("Qwen/Qwen3-0.6B-Base")   # fast
     #   nano_tok = RustBPETokenizer.from_directory($NANOCHAT_BASE_DIR/tokenizer)
+    #     (MUST be the baseline run's tokenizer.pkl -- coord/token alignment is
+    #      keyed to its exact merges; pull from HF oracle_baseline_noVE_d24_fp8)
     #   pca = {"continents": np.load(.../continents_pca.npy)}  # saved family-PCA-2D
-    #   corpus_stats = ps["corpus_stats"]  # per-col mean/std to standardize preds
+    #     (fit ONCE on corpus-standardized continents preds with a fixed seed,
+    #      save components; NEVER refit per shard/pod -- axes must be identical
+    #      everywhere. NOTE probe_set.json["corpus_stats"] is currently null;
+    #      the encoder does NOT need it: expA was trained with MSE against
+    #      corpus-standardized targets (train_encoder.py), so encoder.head
+    #      outputs are ALREADY in standardized score space -- do NOT
+    #      standardize preds again here.)
     #
     # for each doc text in the shard range (nanochat.dataset.parquets_iter_batched):
-    #     n_ids = nano_tok.encode(text)                       # no BOS here (BOS row added by loader)
-    #     nano_off = nanochat_char_offsets(nano_tok, n_ids)
+    #     n_ids = nano_tok.encode(text)                       # encode_ordinary; no BOS (BOS row added by loader)
+    #     nano_off = nanochat_char_offsets(nano_tok, n_ids, text)
     #     q_ids, q_off = get_offsets(qwen_tok, text)
     #     amap = gemma_to_qwen_map(text, nano_off, q_off, mode="prefix")  # (len(n_ids),)
     #     H = encoder.qwen(torch.tensor([q_ids])).hidden      # (Tq, 1024)
-    #     preds = encoder.head(H)                             # (Tq, 3K)  standardized
-    #     preds = standardize(preds, corpus_stats)
-    #     pt = preds[amap.clamp(min=0)]                       # (n, 3K); amap==-1 -> row0 masked
-    #     pt[amap < 0] = 0.0
-    #     kcols = pt[:, block*K:(block+1)*K]                  # gemma-layer-8 K cols
+    #     preds = encoder.head(H)                             # (Tq, 3K)  already standardized (see above)
+    #     pt = preds[amap.clip(min=0)]                        # (n, 3K)
+    #     pt[amap < 0] = 0.0                                  # unmapped nanochat tokens -> zero preds
+    #     kcols = pt[:, block*K:(block+1)*K]                  # gemma-layer-8 K cols, main_block order
     #     # pred_order = main_block_concepts: encoder-output column order (store MAIN block)
     #     z, legend = build_coords(kcols.numpy(), concepts, families, pca=pca, pred_order=pred_order)  # (n, r)
-    #     if not args.noise_none: z += ...                    # (default: leave noise to train time)
-    #     append z (int8, scale=4*std/127) to coords.int8; record (doc_hash(text), off, n)
+    #     assert len(legend) == args.r_check == P.shape[1]
+    #     buffer z; record (doc_hash(text), off, n)
     #
-    # write index.npy (hash,off,n), meta.json {r, scale, layer8_block, legend,
-    #   families, class_order=CYCLIC_ORDER, encoder_ckpt, P_path}, P.npy
+    # coord standardization (SEPARATE from score standardization): compute
+    # per-column mean/std of z over the corpus (streaming or on a large prefix
+    # sample), standardize all z, then quantize int8 with a single global
+    # scale = 4*std/127 (clip +-4 sigma). Save the coord mean/std AND scale in
+    # meta.json so train-time dequant + any later reuse are exact.
+    # Noise is NOT baked (default; --noise-none is a no-op kept for symmetry):
+    # the loader adds sigma-noise fresh at train time, keyed by doc hash.
+    #
+    # write index.npy (structured dtype [("hash","<u8"),("off","<i8"),("n","<i4")]),
+    # meta.json {r, scale, coord_mean, coord_std, layer8_block, legend, families,
+    #   class_order=CYCLIC_ORDER, pred_order, encoder_ckpt, P_path}, P.npy
     raise SystemExit("SKELETON: wire encoder/tokenizers/pca per the commented block "
                      "once the Exp-A checkpoint exists; structure + bridge are final.")
 

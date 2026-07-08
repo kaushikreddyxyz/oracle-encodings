@@ -130,32 +130,43 @@ def build_coords(preds: np.ndarray, concepts, families, pca=None, pred_order=Non
 # Coord source: hash -> (offset, n) index over the int8 coord memmap.
 # --------------------------------------------------------------------------- #
 class CoordSource:
-    def __init__(self, coords_dir, device="cuda", noise_sigma=0.15, seed=0):
+    def __init__(self, coords_dir, noise_sigma=0.15, seed=0):
         meta = json.load(open(os.path.join(coords_dir, "meta.json")))
         self.r = int(meta["r"])
         self.scale = float(meta["scale"])       # int8 -> float dequant scale
         self.noise_sigma = float(noise_sigma)
-        self.device = device
+        self.seed = int(seed)
         self.mm = np.memmap(os.path.join(coords_dir, "coords.int8"),
                             dtype=np.int8, mode="r").reshape(-1, self.r)
         idx = np.load(os.path.join(coords_dir, "index.npy"))
         self._index = {int(h): (int(o), int(n))
                        for h, o, n in zip(idx["hash"], idx["off"], idx["n"])}
-        self._gen = np.random.default_rng(seed)
-        self.zero = np.zeros((0, self.r), np.float32)
 
-    def lookup(self, text: str, n_tokens: int) -> np.ndarray:
-        """Return (n_tokens, r) float32 coords for a doc; zeros if not precomputed
-        or on any length mismatch (defensive: never crash training)."""
-        rec = self._index.get(int(doc_hash(text)))
+    def __len__(self):
+        return len(self._index)
+
+    def lookup(self, text: str, n_tokens: int):
+        """Return ((n_tokens, r) float32 coords, hash) for a doc, or (None, hash)
+        if the doc is not in the precompute or its stored token count mismatches
+        (tokenizer drift). Callers MUST map None to EXACT zeros with NO noise, so
+        the fallback keeps the injection an exact no-op (the injection site
+        renormalizes any nonzero zc to full beta amplitude, so noised zeros would
+        inject pure noise at full strength -- never do that)."""
+        h = int(doc_hash(text))
+        rec = self._index.get(h)
         if rec is None:
-            return np.zeros((n_tokens, self.r), np.float32)
+            return None, h
         off, n = rec
         if n != n_tokens:                       # tokenizer drift -> fail safe to zero
-            return np.zeros((n_tokens, self.r), np.float32)
-        return self.mm[off:off + n].astype(np.float32) * self.scale
+            return None, h
+        return self.mm[off:off + n].astype(np.float32) * self.scale, h
 
-    def add_noise(self, z: np.ndarray) -> np.ndarray:
+    def add_noise(self, z: np.ndarray, key: int) -> np.ndarray:
+        """Gaussian noise on standardized coords, deterministic per doc CONTENT
+        (seeded by (train seed, doc hash)): rank-order-independent under DDP,
+        reproducible across resumes, and never memorizable as a per-position
+        identity (it varies with the doc, not the training position)."""
         if self.noise_sigma <= 0:
             return z
-        return z + self._gen.normal(0.0, self.noise_sigma, size=z.shape).astype(np.float32)
+        rng = np.random.default_rng([self.seed & 0x7FFFFFFF, key & 0xFFFFFFFFFFFFFFFF])
+        return z + rng.normal(0.0, self.noise_sigma, size=z.shape).astype(np.float32)

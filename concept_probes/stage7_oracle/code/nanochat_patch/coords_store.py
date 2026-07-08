@@ -1,0 +1,151 @@
+"""Stage-7 oracle coords: fixed projection P, structured-coord construction, and
+the *ride-along* coord dataloader for nanochat pretraining.
+
+This module lives OUTSIDE the nanochat submodule (do not edit the submodule in
+place). ``base_train.py`` imports it only when ``--inject-coords`` is passed;
+absent, nanochat trains vanilla.
+
+Design (see out/nanochat_prep.md):
+  * Injection is CONTEXTUAL and per-token-occurrence, not per-token-id: each
+    training position gets the r-dim coord vector produced by the frozen Qwen
+    encoder over that token's document context.
+  * The nanochat dataloader packs+crops documents (best-fit, ~35% cropped) in a
+    data-dependent order, so a flat per-position memmap cannot be pre-aligned.
+    Instead we store coords PER DOCUMENT keyed by a 64-bit hash of the doc text,
+    and ride the coords through the exact same best-fit packing as the tokens.
+    Same crop, same placement -> coords stay in lockstep with tokens, and the
+    scheme is DDP-/order-independent (hash keying, not iteration position).
+  * P is a FIXED random orthonormal (n_embd x r) matrix (seeded, saved once).
+    Orthonormal columns => ||P z|| = ||z||, so the injected direction is an
+    isometric embedding of the coord manifold.
+
+Storage format (produced by precompute_coords.py):
+  <coords_dir>/coords.int8         memmap int8  [n_doc_tokens, r]   (standardized coords, quantized)
+  <coords_dir>/index.npy           structured   [n_docs] fields (hash uint64, off int64, n int32)
+  <coords_dir>/meta.json           {r, scale, families, class_order, P_path, encoder_ckpt, ...}
+  <coords_dir>/P.npy               float32 [n_embd, r]  fixed orthonormal projection
+"""
+import hashlib
+import json
+import math
+import os
+
+import numpy as np
+import torch
+
+
+# --------------------------------------------------------------------------- #
+# Canonical cyclic class orderings (NOT alphabetical -- calendar/wheel order).
+# The phase of class k in a family of n is theta_k = 2*pi*k/n.
+# Concept names match out/probe_set.json exactly.
+# --------------------------------------------------------------------------- #
+CYCLIC_ORDER = {
+    "months": ["january", "february", "march", "april", "may", "june", "july",
+               "august", "september", "october", "november", "december"],
+    "weekdays": ["monday", "tuesday", "wednesday", "thursday", "friday",
+                 "saturday", "sunday"],
+    "seasons": ["spring", "summer", "autumn", "winter"],
+    "directions": ["north", "northeast", "east", "southeast", "south",
+                   "southwest", "west", "northwest"],
+    # new_moon .. waning_crescent, one full synodic cycle
+    "moon_phases": ["new_moon", "waxing_crescent", "first_quarter",
+                    "waxing_gibbous", "full_moon", "waning_gibbous",
+                    "last_quarter", "waning_crescent"],
+    # standard 9-survivor color wheel (3 blends dropped in Phase 0)
+    "color_wheel": ["red", "red-orange", "orange", "yellow", "yellow-green",
+                    "green", "blue-green", "blue", "violet"],
+}
+# non-cyclic families: coords via saved family-PCA-2D (continents, 6 classes)
+NONCYCLIC_PCA = {"continents"}
+
+
+def doc_hash(text: str) -> np.uint64:
+    """Stable 64-bit content hash of a document string (order-independent key)."""
+    h = hashlib.blake2b(text.encode("utf-8"), digest_size=8).digest()
+    return np.frombuffer(h, dtype="<u8")[0]
+
+
+# --------------------------------------------------------------------------- #
+# Fixed orthonormal projection P (n_embd x r), seeded + saved once.
+# --------------------------------------------------------------------------- #
+def make_orthonormal_P(n_embd: int, r: int, seed: int = 1337) -> np.ndarray:
+    g = torch.Generator().manual_seed(seed)
+    a = torch.randn(n_embd, r, generator=g, dtype=torch.float64)
+    q, _ = torch.linalg.qr(a, mode="reduced")   # (n_embd, r), orthonormal columns
+    return q.to(torch.float32).numpy()
+
+
+# --------------------------------------------------------------------------- #
+# Structured coords from encoder probe-score predictions.
+#   preds: (..., K) predicted probe scores for ONE gemma layer block (the
+#          "layer-8" block, i.e. the K columns of the encoder head for
+#          gemma layer 8), already corpus-standardized.
+#   concepts: canonical K names (probe_set.json "concepts", same order as preds)
+#   families: {concept: family}
+# Returns coords (..., r) ordered family-by-family, and a column legend.
+# --------------------------------------------------------------------------- #
+def build_coords(preds: np.ndarray, concepts, families, pca=None):
+    idx = {c: i for i, c in enumerate(concepts)}
+    fam_to_concepts = {}
+    for c in concepts:
+        fam_to_concepts.setdefault(families[c], []).append(c)
+
+    cols, legend = [], []
+    for fam in sorted(fam_to_concepts):        # deterministic family order
+        cs = fam_to_concepts[fam]
+        if fam in CYCLIC_ORDER:
+            order = CYCLIC_ORDER[fam]
+            present = [c for c in order if c in idx]
+            n = len(order)
+            ang = np.array([2 * math.pi * order.index(c) / n for c in present])
+            sub = preds[..., [idx[c] for c in present]]         # (..., m)
+            cx = (sub * np.cos(ang)).sum(-1)
+            cy = (sub * np.sin(ang)).sum(-1)
+            cols += [cx, cy]
+            legend += [f"{fam}.cos", f"{fam}.sin"]
+        elif fam in NONCYCLIC_PCA:
+            sub = preds[..., [idx[c] for c in cs]]              # (..., m)
+            comp = pca[fam]                                     # (m, 2) saved PCA
+            proj = sub @ comp
+            cols += [proj[..., 0], proj[..., 1]]
+            legend += [f"{fam}.pc1", f"{fam}.pc2"]
+        else:  # 1-D fallback for any surviving scalar family
+            for c in cs:
+                cols.append(preds[..., idx[c]]); legend.append(c)
+    coords = np.stack(cols, axis=-1).astype(np.float32)
+    return coords, legend
+
+
+# --------------------------------------------------------------------------- #
+# Coord source: hash -> (offset, n) index over the int8 coord memmap.
+# --------------------------------------------------------------------------- #
+class CoordSource:
+    def __init__(self, coords_dir, device="cuda", noise_sigma=0.15, seed=0):
+        meta = json.load(open(os.path.join(coords_dir, "meta.json")))
+        self.r = int(meta["r"])
+        self.scale = float(meta["scale"])       # int8 -> float dequant scale
+        self.noise_sigma = float(noise_sigma)
+        self.device = device
+        self.mm = np.memmap(os.path.join(coords_dir, "coords.int8"),
+                            dtype=np.int8, mode="r").reshape(-1, self.r)
+        idx = np.load(os.path.join(coords_dir, "index.npy"))
+        self._index = {int(h): (int(o), int(n))
+                       for h, o, n in zip(idx["hash"], idx["off"], idx["n"])}
+        self._gen = np.random.default_rng(seed)
+        self.zero = np.zeros((0, self.r), np.float32)
+
+    def lookup(self, text: str, n_tokens: int) -> np.ndarray:
+        """Return (n_tokens, r) float32 coords for a doc; zeros if not precomputed
+        or on any length mismatch (defensive: never crash training)."""
+        rec = self._index.get(int(doc_hash(text)))
+        if rec is None:
+            return np.zeros((n_tokens, self.r), np.float32)
+        off, n = rec
+        if n != n_tokens:                       # tokenizer drift -> fail safe to zero
+            return np.zeros((n_tokens, self.r), np.float32)
+        return self.mm[off:off + n].astype(np.float32) * self.scale
+
+    def add_noise(self, z: np.ndarray) -> np.ndarray:
+        if self.noise_sigma <= 0:
+            return z
+        return z + self._gen.normal(0.0, self.noise_sigma, size=z.shape).astype(np.float32)

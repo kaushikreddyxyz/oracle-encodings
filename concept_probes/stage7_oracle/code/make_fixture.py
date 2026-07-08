@@ -102,8 +102,9 @@ def build_probe_set(out_dir: str, hidden_size: int = TINY_HIDDEN,
         if include_abl_arrays:
             extra = {"nat_mean_abl": nat_mean_abl, "nat_std_abl": nat_std_abl}
 
-    d_raw = nat_std_abl[None, :] * W_dom_abl  # [K,D] raw-space dom directions
-    G_dom = (d_raw @ d_raw.T).astype(np.float32)
+    # STANDARDIZED-space Gram (matches select_probes.py post-fix; the raw
+    # Gram of σ⊙w was the pre-4:15AM bug — see DESIGN.md).
+    G_dom = (W_dom_abl @ W_dom_abl.T).astype(np.float32)
     G_dom_inv = np.linalg.inv(G_dom + 1e-3 * np.eye(K, dtype=np.float32)).astype(np.float32)
 
     np.savez(

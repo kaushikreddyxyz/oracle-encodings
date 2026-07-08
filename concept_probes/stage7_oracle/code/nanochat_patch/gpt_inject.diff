@@ -1,0 +1,31 @@
+--- a/nanochat/gpt.py
++++ b/nanochat/gpt.py
+@@ -415,7 +415,7 @@ class GPT(nn.Module):
+-    def forward(self, idx, targets=None, kv_cache=None, loss_reduction='mean'):
++    def forward(self, idx, targets=None, kv_cache=None, loss_reduction='mean', coords=None):
+         B, T = idx.size()
+
+@@ -464,10 +464,25 @@ class GPT(nn.Module):
+         # Forward the trunk of the Transformer
+         x0 = x  # save initial normalized embedding for x0 residual
+         n_layer = self.config.n_layer
+         backout_layer = n_layer // 2  # cache at halfway point
+         x_backout = None
++        # Stage-7 oracle coord injection: after a chosen mid-band block, add an
++        # isometric embedding (fixed orthonormal P) of the per-token coord vector,
++        # scaled so its per-token RMS is exactly `inject_beta` * RMS(residual).
++        # Graph-friendly (no data-dependent branching): `coords is None` and
++        # `inject_after_block` are trace-time constants for a given run, and the
++        # clamp handles zero-coord tokens (BOS / no-concept) without a branch.
++        inject_block = getattr(self, "inject_after_block", -1)
+         for i, block in enumerate(self.transformer.h):
+             x = self.resid_lambdas[i] * x + self.x0_lambdas[i] * x0
+             ve = self.value_embeds[str(i)](idx).to(x.dtype) if str(i) in self.value_embeds else None
+             x = block(x, ve, cos_sin, self.window_sizes[i], kv_cache)
++            if coords is not None and i == inject_block:
++                zc = coords.to(x.dtype) @ self.inject_P.to(x.dtype).t()          # (B,T,n_embd)
++                rms_h = x.pow(2).mean(-1, keepdim=True).add(1e-8).sqrt()
++                rms_z = zc.pow(2).mean(-1, keepdim=True).clamp_min(1e-8).sqrt()
++                x = x + self.inject_beta * (rms_h / rms_z) * zc
+             if i == backout_layer:
+                 x_backout = x

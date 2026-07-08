@@ -101,8 +101,9 @@ def build_probe_set(probe_set_dir, K, families, layers, ablation_layer, rng, see
     W_dom_abl = rng.normal(0, 0.05, size=(K, D_MODEL)).astype(np.float32)
     abl_idx = layers.index(ablation_layer)
     nat_std_abl = nat_std[abl_idx]
-    D_dom = (nat_std_abl[None, :] * W_dom_abl).T  # [2304, K]
-    G_dom = (D_dom.T @ D_dom + 1e-3 * np.eye(K)).astype(np.float32)
+    # STANDARDIZED-space Gram (matches select_probes.py post-fix; the raw
+    # Gram of σ⊙w was the pre-4:15AM bug — see DESIGN.md).
+    G_dom = (W_dom_abl @ W_dom_abl.T + 1e-3 * np.eye(K)).astype(np.float32)
     G_dom_inv = np.linalg.inv(G_dom).astype(np.float32)
     b_dom_abl = rng.normal(0, 0.1, size=(K,)).astype(np.float32)
     t_nat_dom = rng.normal(0, 0.5, size=(K,)).astype(np.float32)

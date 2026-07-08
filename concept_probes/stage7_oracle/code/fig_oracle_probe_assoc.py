@@ -158,15 +158,72 @@ def spearman_matrix(A, B):
     return (rz(A).T @ rz(B)) / n
 
 
+def plot_panels(panels, disp, fam_of, out_path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    K = len(disp)
+    fam_breaks = [i for i in range(1, K) if fam_of[i] != fam_of[i - 1]]
+    labels = [f"{fam_of[i]}.{c}" if (i == 0 or fam_of[i] != fam_of[i - 1]) else c
+              for i, c in enumerate(disp)]
+
+    fig, axes = plt.subplots(3, 3, figsize=(26, 27))
+    slots = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1)]
+    for (title, M), (r, cc) in zip(panels, slots):
+        ax = axes[r][cc]
+        im = ax.imshow(M, cmap="RdBu_r", vmin=-1, vmax=1, interpolation="nearest")
+        diag = float(np.nanmedian(np.diag(M)))
+        off = float(np.nanmedian(M[~np.eye(K, dtype=bool)]))
+        ax.set_title(f"{title}\nmedian diag {diag:.3f} | off-diag {off:.3f}", fontsize=11)
+        for b in fam_breaks:
+            ax.axhline(b - .5, color="gray", lw=0.4)
+            ax.axvline(b - .5, color="gray", lw=0.4)
+        ax.set_xticks(range(K))
+        ax.set_xticklabels(labels, rotation=90, fontsize=3.6)
+        ax.set_yticks(range(K))
+        ax.set_yticklabels(labels, fontsize=3.6)
+        ax.set_xlabel("gemma probe activation (max-pool, test split)", fontsize=8)
+        ax.set_ylabel("oracle prediction (max-pool)", fontsize=8)
+    axes[2][2].axis("off")
+    cb = fig.colorbar(im, ax=axes[2][2], fraction=0.6, aspect=12)
+    cb.set_label("Spearman corr (oracle prediction vs probe activation)")
+    fig.suptitle("oracle prediction × probe activation — Spearman association, "
+                 "Stage-6 natural eval TEST split (rows=oracle concept, cols=probe)",
+                 fontsize=14)
+    fig.tight_layout(rect=[0, 0, 1, 0.985])
+    Path(out_path).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(out_path, dpi=170)
+    print(f"wrote {out_path}")
+
+
+def panel_titles(layers):
+    return ([f"expA {k} @ L{L}" for k in ("fullFT", "frozen") for L in layers]
+            + [f"{k} @ dom(L{DOM_LAYER})" for k in ("expB-learn", "expB-fixed")])
+
+
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--ckpt-dir", required=True)
+    ap.add_argument("--ckpt-dir")
     ap.add_argument("--probe-set", required=True)
-    ap.add_argument("--eval-data", required=True)
+    ap.add_argument("--eval-data")
     ap.add_argument("--out", required=True)
     ap.add_argument("--device", default=None)
     ap.add_argument("--bsz", type=int, default=16)
+    ap.add_argument("--replot-from", help="existing *_matrices.npz: skip encoding, just replot")
     args = ap.parse_args()
+
+    if args.replot_from:
+        ps = te.ProbeSet(args.probe_set)
+        disp = sorted(ps.concepts, key=lambda c: (ps.families[c], c))
+        fam_of = [ps.families[c] for c in disp]
+        z = np.load(args.replot_from, allow_pickle=True)
+        panels = [(t, z[_npz_key(t)]) for t in panel_titles([int(x) for x in ps.layers])]
+        plot_panels(panels, disp, fam_of, args.out)
+        _print_stats(panels, ps.K)
+        return
+    if not (args.ckpt_dir and args.eval_data):
+        ap.error("--ckpt-dir and --eval-data are required unless --replot-from is given")
 
     device = args.device or ("cuda" if torch.cuda.is_available()
                              else "mps" if torch.backends.mps.is_available() else "cpu")
@@ -240,54 +297,22 @@ def main():
                 M[:, disp.index(c)] = S[:, k]
         panels.append((f"{kind} @ dom(L{DOM_LAYER})", M))
 
-    # ---------------- figure
-    import matplotlib
-    matplotlib.use("Agg")
-    import matplotlib.pyplot as plt
-    from matplotlib.patches import Rectangle
-
-    fam_breaks = [i for i in range(1, K) if fam_of[i] != fam_of[i - 1]]
-    labels = [f"{fam_of[i]}.{c}" if (i == 0 or fam_of[i] != fam_of[i - 1]) else c
-              for i, c in enumerate(disp)]
-
-    fig, axes = plt.subplots(3, 3, figsize=(26, 27))
-    slots = [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1)]
-    for (title, M), (r, cc) in zip(panels, slots):
-        ax = axes[r][cc]
-        im = ax.imshow(M, cmap="RdBu_r", vmin=-1, vmax=1, interpolation="nearest")
-        diag = float(np.nanmedian(np.diag(M)))
-        off = float(np.nanmedian(M[~np.eye(K, dtype=bool)]))
-        ax.set_title(f"{title}\nmedian diag {diag:.3f} | off-diag {off:.3f}", fontsize=11)
-        for i in range(K):
-            ax.add_patch(Rectangle((i - .5, i - .5), 1, 1, fill=False,
-                                   edgecolor="lime", lw=0.9))
-        for b in fam_breaks:
-            ax.axhline(b - .5, color="gray", lw=0.4)
-            ax.axvline(b - .5, color="gray", lw=0.4)
-        ax.set_xticks(range(K))
-        ax.set_xticklabels(labels, rotation=90, fontsize=3.6)
-        ax.set_yticks(range(K))
-        ax.set_yticklabels(labels, fontsize=3.6)
-        ax.set_xlabel("gemma probe activation (max-pool, test split)", fontsize=8)
-        ax.set_ylabel("oracle prediction (max-pool)", fontsize=8)
-    axes[2][2].axis("off")
-    cb = fig.colorbar(im, ax=axes[2][2], fraction=0.6, aspect=12)
-    cb.set_label("Spearman corr (oracle prediction vs probe activation)")
-    fig.suptitle("oracle prediction × probe activation — Spearman association, "
-                 "Stage-6 natural eval TEST split (rows=oracle concept, cols=probe; "
-                 "green=on-target)", fontsize=14)
-    fig.tight_layout(rect=[0, 0, 1, 0.985])
-    Path(args.out).parent.mkdir(parents=True, exist_ok=True)
-    fig.savefig(args.out, dpi=170)
-    print(f"wrote {args.out}")
+    plot_panels(panels, disp, fam_of, args.out)
 
     # numeric companion
     npz_out = str(Path(args.out).with_suffix("")) + "_matrices.npz"
     np.savez_compressed(npz_out,
                         concepts=np.array(disp),
-                        **{t.replace(" ", "_").replace("(", "").replace(")", ""): M
-                           for t, M in panels})
+                        **{_npz_key(t): M for t, M in panels})
     print(f"wrote {npz_out}")
+    _print_stats(panels, K)
+
+
+def _npz_key(title):
+    return title.replace(" ", "_").replace("(", "").replace(")", "")
+
+
+def _print_stats(panels, K):
     for t, M in panels:
         d = np.diag(M)
         print(f"{t:24s} diag median {np.nanmedian(d):.4f} "

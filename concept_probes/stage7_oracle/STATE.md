@@ -2,6 +2,33 @@
 
 (newest first)
 
+## 🛑 DESIGN CORRECTION (user, 2026-07-09): ONE LAYER PER MODEL — 162-joint pipeline invalidated
+
+Kaushik's intended design, stated explicitly: probe scores for layers 6, 8,
+14 are THREE INDEPENDENT artifacts; every trained model (encoder, injected
+nanochat run) consumes EXACTLY ONE layer's 54 scores end to end. Training one
+encoder on all 162 targets jointly violated this ("You shouldve trained 3
+different encoders on 54 each"), and everything derived from that encoder is
+invalidated (~$200+ of the overnight spend).
+
+Actions taken:
+- **DELETED from HF**: `oracle-encoder` (all four checkpoints: deployed
+  full fine-tune, frozen control, both recovery-head arms — all 162-output),
+  `oracle-coords-b` and `oracle-coords` (coordinate stores derived from it).
+  The tonight's-launch runbook below is therefore VOID.
+- **KEPT**: the score store (`concept-probes-corpus-scores{,-2}`) — its 216
+  columns are already four independent 54-column blocks
+  [L6 det | L8 det | L14 det | L8 difference-of-means]; READMEs now carry an
+  IMPERATIVE warning to slice one layer's block before ANY training.
+- **gold_probes restructured** on `concept-probes-gemma2-2b`: three
+  self-contained per-layer folders (`layer06/ layer08/ layer14/`), each with
+  detection + steering npz (concept names embedded as string arrays); the
+  bundled 3-layer files were removed. Local copies:
+  `out/gold_probes_per_layer/`.
+- Rebuild path when funded: per-layer encoder (54 targets) -> per-layer
+  coordinate fit + sweep -> one nanochat run per layer, each vs
+  `oracle_baseline_noVE_d24_fp8`.
+
 ## ⚠️ COORDS REPO MOVED (12:50 PM 2026-07-08): use `oracle-coords-b`
 
 The self-cleanup daemons hit HF's **128 commits/hour per-repo rate limit**

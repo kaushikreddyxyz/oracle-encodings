@@ -25,6 +25,14 @@ the 5,000 ClimbMix docs of shard 310. The probe weights were trained on top of
 this rescaled input, so this step is part of the probe's definition. Never
 refit it — changing it changes what the probe computes.
 
+**Step 1 is PER-LAYER.** mean/std are computed and stored separately for each
+layer (`nat_mean`/`nat_std`, shape [2304], one set per layer 6/8/14;
+`natstats.py`). This matters — residual-stream norms grow with depth, so a
+layer-14 activation standardized with layer-6 stats would be badly scaled.
+Within a layer the stats are shared across all concepts (they are a property
+of the activation space, not the concept); across layers they are never
+shared. Each gold-probe layer file embeds its own `nat_mean`/`nat_std`.
+
 **Step 2 — after the probe (score standardization).**
 Each probe outputs one number per token, on its own private scale (see §4 for
 why the scales differ). To make scores comparable across probes and storable,
@@ -43,10 +51,67 @@ Scores are stored as int8 — integers from −127 to +127 — to keep the 2.0B-
 store small. The mapping puts ±4 standard deviations around the mean onto that
 integer range:
 
-    stored_int8 = round( (score − mean) / (4σ/127) )
+    stored_int8 = round( (score − mean) / scale )      scale = 4σ/127
 
-So one int8 step = 4σ/127 ≈ 0.03σ of resolution, and scores beyond ±4σ clip
-to ±127. That's all "(4σ/127)" is: the size of one integer step.
+    decode:      score = stored_int8 * scale + mean
+
+`mean` and `scale` are stored per probe in `quant.json` (`zero` = mean,
+`scale` = 4σ/127); raw per-probe mean/std are also in `corpus_stats.json`.
+The decode is exact up to one quantization step.
+
+### The int8 does NOT store integer z-scores (common misread — read this)
+
+The step is `4σ/127 ≈ 0.0315σ`, NOT `σ`. So the integer and the z-score are
+related by a factor of ~32, and resolution is ~0.03σ, not 1σ:
+
+    z-score      stored_int8
+    ------------------------
+      0            0
+     +1          ~+32
+     +2          ~+64
+     +4         +127   (clip point)
+
+A token at 1.5σ is stored as ~48, not "1 or 2". The bulk of the data (within
+±2σ) occupies the middle ~half of the range (~−64…+64) = **128 distinct
+levels for the common region**. Quantization error is ~scale/√12 ≈ 0.009σ RMS
+— far below the ~0.15σ prediction-noise floor, so int8 costs effectively
+nothing here. If the scale were `σ` (true integer z-scores) you'd have ~5
+usable levels and it WOULD be a bad codec; the `4σ` is exactly the choice that
+avoids that, spending the bits on the dense ±2σ region and clipping only the
+rare tail beyond ±4σ.
+
+### Zero-centering is both a codec AND principled — and it deletes nothing
+
+- **Codec:** without per-column centering, a probe whose scores sit at
+  +37 ± 2 would clip or waste the range encoding a constant offset.
+- **Principled:** a probe's raw mean carries no concept info — it's an
+  artifact of that probe's weight-norm, bias convention (ridge has a bias,
+  difference-of-means has 0), and the fact that ~all corpus tokens are
+  negatives. The signal is *deviation from corpus-typical*. You would
+  standardize before any multi-probe training/comparison even with unlimited
+  storage (otherwise an MSE loss over mixed-scale columns is dominated by the
+  large-scale probes).
+- **Nothing is discarded:** the per-probe mean is SAVED (`quant.json` `zero`)
+  and added back on decode. If a corpus's baseline level is real signal, it
+  lives in that stored number — recover it by using the stored mean, not by
+  assuming the true mean is 0. Centering only removes ONE global constant per
+  probe; all per-token / per-document / per-domain baseline *structure* is in
+  the deviations and is fully preserved. A global constant cannot distinguish
+  one token from another and is absorbed by any downstream model's bias terms.
+
+### z-score comparability ≠ percentile comparability
+
+After step 2, decoded value `z` means "z standard deviations above this
+probe's corpus mean" for EVERY probe — so equal z = equal number of SDs out
+(this is what lets the encoder train with one MSE across all columns). But
+probe score distributions are heavy-tailed and right-skewed (rare positives,
+dense negative lump), and the skew differs by concept, so **equal z is NOT
+equal percentile**: z=10 might be p99.9 for one probe and p99.99 for another.
+z-scores equalize the first two moments (mean, variance), not skew/tails.
+When you need true cross-probe *rank* equivalence (steering doses,
+thresholds), use **s95** (95th-percentile score per probe, shipped in the
+gold-probe and score-store metadata) — it is explicitly rank-based. Step 2 =
+comparable scale; s95 = comparable rank.
 
 ## 4. "Arm" — plain translation
 

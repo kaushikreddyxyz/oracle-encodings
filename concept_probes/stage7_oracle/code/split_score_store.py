@@ -33,6 +33,7 @@ os.environ.setdefault("HF_HOME", "/workspace/hf_cache")
 
 import io
 import json
+import signal
 import sys
 import time
 import traceback
@@ -73,15 +74,35 @@ def hold(reason):
     sys.exit(1)
 
 
-def with_retries(desc, fn):
+class _Timeout(Exception):
+    pass
+
+
+def _alarm(signum, frame):
+    raise _Timeout()
+
+
+signal.signal(signal.SIGALRM, _alarm)
+
+
+def with_retries(desc, fn, timeout=900):
+    """Retry fn with exponential backoff. A per-attempt SIGALRM watchdog turns a
+    silent hang (HF uploader wedged in pipe_read, no exception ever thrown) into
+    a _Timeout that triggers the same retry path. Interruptible because the
+    blocking call runs in the main thread."""
     for attempt in range(RETRIES):
         try:
-            return fn()
-        except Exception as e:  # noqa: BLE001 - transient network errors
+            signal.alarm(timeout)
+            try:
+                return fn()
+            finally:
+                signal.alarm(0)
+        except Exception as e:  # noqa: BLE001 - transient errors + _Timeout
             if attempt == RETRIES - 1:
                 raise
             wait = 15 * (2 ** attempt)
-            log(f"retry {attempt+1}/{RETRIES} after error in {desc}: {e!r}; sleeping {wait}s")
+            kind = "TIMEOUT" if isinstance(e, _Timeout) else "error"
+            log(f"retry {attempt+1}/{RETRIES} after {kind} in {desc}: {e!r}; sleeping {wait}s")
             time.sleep(wait)
     raise RuntimeError("unreachable")
 

@@ -1,6 +1,6 @@
 # Probe normalization, explained plainly
 
-*(2026-07-09; corrects a confusing earlier explanation)*
+(2026-07-09; corrects a confusing earlier explanation)
 
 ## 1. "Is the natural text not ClimbMix?"
 
@@ -75,3 +75,41 @@ strong-natural-occurrence level". It is a project convention, not a field
 standard (the field has no single standard; percentile-of-max scaling like
 this is common in SAE work, and steering papers often just sweep raw
 coefficients).
+
+## 6. Does step-2 normalization clash with nanochat's residual-stream units?
+
+No — by construction the probe/score units never reach nanochat. The
+injection site (`nanochat_patch/gpt_inject.diff`, after block 7) does, per
+token:
+
+    rms_x = RMS of nanochat's own residual vector at this token
+    rms_z = RMS of the projected coord vector zc = P @ coords   (P: fixed
+            orthonormal 1536x14)
+    x = x + beta * (rms_x / rms_z) * zc          # beta = 0.064
+
+Dividing by `rms_z` erases whatever units the coords arrived in; multiplying
+by `rms_x` re-expresses the vector in nanochat's units at that exact token.
+So the injected vector is always exactly 6.4% of the residual's own RMS —
+whether nanochat's activations are small at init or grow 10x during training,
+the injection tracks them. That is what makes it "in distribution" in
+magnitude: it is defined relative to the model's own live statistics, never
+in gemma/probe units.
+
+What survives from the probe pipeline is only the DIRECTION of the 14-dim
+coord vector (the pattern across dims), not its overall size — any nonzero
+coord vector is renormalized to full beta amplitude. Two consequences:
+
+- Step-2 standardization is actually what makes that direction meaningful:
+  all 14 dims are on unit variance over ClimbMix, so no dim dominates the
+  direction by a units artifact.
+- All-zero coords (doc missing from the store, or no concept signal) give
+  exactly zero injection — a true no-op, no noise (the loader deliberately
+  skips adding noise to zeros, since renormalization would blow pure noise
+  up to full amplitude).
+
+Remaining in-distribution safeguards: the 14-dim target subspace is a fixed
+random orthonormal basis (statistically indistinguishable from any other
+direction at init); coords carry deterministic per-doc noise (sigma = 0.15)
+so the channel isn't a noiseless oracle; beta was set to 0.064 = 0.05/sqrt(0.61)
+so the TRUE-signal component is ~5% of residual RMS after oracle fidelity;
+and gate G4 kills the run if loss diverges >5% bpb from baseline by 2k steps.

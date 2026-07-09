@@ -90,8 +90,8 @@ reach nanochat. The injection site (`nanochat_patch/gpt_inject.diff`, after
 block 7) does, per token:
 
     rms_x = RMS of nanochat's own residual vector at this token
-    rms_z = RMS of the projected 14-number summary, projected: zc = P @ coords   (P: fixed
-            orthonormal 1536x14)
+    rms_z = RMS of zc = P @ coords, the 14-number summary mapped into
+            nanochat's 1536-dim space (P: fixed orthonormal 1536x14)
     x = x + beta * (rms_x / rms_z) * zc          # beta = 0.064
 
 Dividing by `rms_z` erases whatever units the coords arrived in; multiplying
@@ -103,8 +103,8 @@ magnitude: it is defined relative to the model's own live statistics, never
 in gemma/probe units.
 
 What survives from the probe pipeline is only the DIRECTION of the 14-number
-summary (the pattern across its 14 entries), not its overall size — any nonzero
-coord vector is renormalized to full beta amplitude. Two consequences:
+summary (the pattern across its 14 entries), not its overall size — any
+nonzero summary is renormalized to full beta amplitude. Two consequences:
 
 - Step-2 standardization is actually what makes that direction meaningful:
   all 14 dims are on unit variance over ClimbMix, so no dim dominates the

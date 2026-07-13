@@ -2,5 +2,7 @@
 *.npz
 *.png
 *.jsonl
+*.pt
+*.safetensors
 retro_metrics/
 figures/

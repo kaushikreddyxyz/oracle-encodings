@@ -46,7 +46,7 @@ Orchestration: `pod_setup.sh` (installs deps, pulls data), `pod_run.sh`
 - Inputs: 2_probes ridge/DoM/LDA rows (`2_probes/probes/<family>/probes_l{L}.npz`),
   3_validation natscores (`3_validation/data/natscores/<family>.natscores.npz`) for
   dose calibration and natural positives, 1_dataset-generated matched pairs for
-  E1/E5, prompt banks in `4_causal/prompts/<family>.{cloze,tokens}.json`.
+  E1/E5, prompt banks in `4_causal/prompts/<family>.{cloze,ordinal,tokens}.json`.
 - Local outputs (gitignored): `out/{e0,e1,e2_cloze,e2_ppl,e3,e4,e5}/*`,
   `out/analysis/causal_cards.json` (per-concept card: sufficiency slopes+CIs,
   anti-steerable fraction, necessity per arm, specificity, salient/write layers,

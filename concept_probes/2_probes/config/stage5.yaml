@@ -40,5 +40,5 @@ pods:                               # family groups, one pod each (48GB GPU, >=2
 
 data:
   hf_dataset: kaushikreddyxyz/concept-probes-stage4-data
-  local_stage4: concept_probes/stage4/data
+  local_stage4: concept_probes/1_dataset/data
 hf_weights_repo: kaushikreddyxyz/concept-probes-gemma2-2b

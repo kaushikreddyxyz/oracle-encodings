@@ -71,9 +71,9 @@ Smoke tests (no GPU/real weights needed): `test_train_encoder.py`,
   time to recover text for tokenizer alignment — scores alone aren't enough),
   `../concept_probes/3_validation/` natural-eval texts (for G2).
 - **Local** (`out/`, mostly gitignored — bulk eval + checkpoints live on HF,
-  see `out/.gitignore`): `g2_retention.json`, `expB_final_analysis.json`,
-  `expA_frozen_metrics.jsonl`, `retro_metrics/` (gitignored),
-  `figures/` (gitignored).
+  see `out/.gitignore`): `g2_retention.json`, `expB_final_analysis.json`
+  (both committed); gitignored: `expA_frozen_metrics.jsonl` (HF copy under
+  `stage7_eval/`), `retro_metrics/`, `figures/`.
 - **HF**: `oracle-encoders` (model repo) — three independent per-layer
   checkpoints, `layer06/`, `layer08/`, `layer14/`, each `best_stripped.pt`
   (deployed weights only) + `metrics.jsonl`; `layer06/cont1/` and

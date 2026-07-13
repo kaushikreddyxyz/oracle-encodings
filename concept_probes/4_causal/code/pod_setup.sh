@@ -4,7 +4,7 @@
 # SECRETS COME FROM STDIN (never argv, never logged):
 #   line 1: HF token (required; gemma-2-2b is gated + authorizes uploads)
 #   line 2: GitHub token (optional; needed only if the repo is not yet cloned)
-# Orchestrator invocation (see FLEET.md):
+# Orchestrator invocation (see the 4_causal README, Gotchas/ops section):
 #   scp pod_setup.sh <pod>:/workspace/
 #   { cat ~/.cache/huggingface/token; gh auth token; } | \
 #       ssh <pod> 'bash /workspace/pod_setup.sh'
@@ -85,7 +85,8 @@ fi
 
 # ------------------------------------- probes + natscores (HF model repo)
 # HF layout: families/<fam>/probes_l*.npz, natscores/<fam>.natscores.npz,
-# stage6_1/inputs/random_pool.jsonl (uploaded by FLEET.md step 0).
+# stage6_1/inputs/random_pool.jsonl (uploaded by the step-0 uploads described
+# in the 4_causal README, Gotchas/ops section).
 # Repo-relative targets are exactly what 4_causal/code/common.py resolves:
 #   concept_probes/2_probes/probes/<fam>/  and
 #   concept_probes/3_validation/data/natscores/ .
@@ -118,7 +119,8 @@ else
        "$CP/3_validation/data/natural/random_pool.jsonl"
   else
     echo "WARNING: stage6_1/inputs/random_pool.jsonl not on HF yet — E3 will"
-    echo "         fall back to judged_nat neutrals. Run FLEET.md step 0."
+    echo "         fall back to judged_nat neutrals. Run the step-0 uploads"
+    echo "         (see the 4_causal README, Gotchas/ops section)."
   fi
   # tokenized natural eval jsonls — primary positives source for E2/E4/E5
   if [ -d "$STAGING/stage6_1/inputs/eval" ]; then
@@ -162,7 +164,7 @@ for f in fams:
 print("natscores missing:", missing_nat or "none",
       "(glorptitude expected: nonsense control, no natural scoring)")
 print("judged_nat.jsonl missing:", missing_jn or "none",
-      "(if unexpected, run FLEET.md step 0 uploads)")
+      "(if unexpected, run the step-0 uploads — see the 4_causal README, Gotchas/ops section)")
 pool = common.CP_DIR / "3_validation" / "data" / "natural" / "random_pool.jsonl"
 print("random_pool.jsonl:", "present" if pool.exists() else "MISSING")
 ev = common.CP_DIR / "3_validation" / "data" / "natural" / "eval"

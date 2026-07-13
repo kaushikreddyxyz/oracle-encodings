@@ -8,9 +8,9 @@ concepts for every token of --text.
 
 Provenance: probes were trained in concept_probes/2_probes (ridge /
 difference-of-means / LDA per concept, best arm kept), certified in
-3_validation + 4_causal, and frozen for the 5_oracle corpus scan. This
-script reproduces the scoring math of 5_oracle/code/score_corpus.py on a
-single piece of text.
+3_validation + 4_causal, and frozen for the corpus attribution scan (repo-root
+attribution/, formerly concept_probes/5_oracle). This script reproduces the
+scoring math of attribution/score_corpus.py on a single piece of text.
 
 Expected runtime: seconds on GPU, 1-3 min on CPU (2.6B params, one
 sentence; model load dominates). Deps: torch, transformers,
@@ -77,7 +77,7 @@ def load_gemma(device: torch.device):
     # eager attention is REQUIRED: sdpa silently skips gemma-2's attention
     # logit softcapping, which shifts the residual stream the probes read.
     # bfloat16 matches the activations the probes were trained on (2_probes/
-    # code/extract.py); float32 on CPU mirrors 5_oracle/code/score_corpus.py.
+    # code/extract.py); float32 on CPU mirrors attribution/score_corpus.py.
     dtype = torch.bfloat16 if device.type == "cuda" else torch.float32
     model = AutoModel.from_pretrained(
         GEMMA_MODEL, dtype=dtype, attn_implementation="eager"

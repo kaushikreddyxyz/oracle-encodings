@@ -2,6 +2,39 @@
 
 (newest first)
 
+## ✅ CONTINUATION RUNS COMPLETE (2026-07-10 17:03Z): both plateaued, pods self-terminated
+
+L6: R² 0.8331→**0.8368** (ρ 0.900) @ 854M total tokens, plateau Δ=0.0027.
+L8: R² 0.7965→**0.8002** (ρ 0.877) @ 865M total tokens, plateau Δ=0.0033.
+Both stopped by the pre-registered plateau rule ~160M tokens in — the
+overnight endgame slope did not extrapolate; full-epoch budget unspent
+(~$17 actual vs ~$120 projected). Artifacts byte-verified on HF under
+layerXX/cont1/ (incl. best_full.pt WITH optimizer state + DONE.json);
+originals untouched; repo README now carries the provenance table.
+Both pods self-terminated cleanly (L8 16:52Z, L6 ~17:04Z). Details in
+REPORT.md §2026-07-10.
+
+## (launch entry, superseded) CONTINUATION RUNS LIVE (2026-07-10 ~14:30): L6 + L8 per-layer encoders
+
+Per user handoff: continue L6/L8 (NOT L14) from
+`kaushikreddyxyz/oracle-encoders` layerXX/best_stripped.pt to a full epoch of
+corpus-scores(+overflow); save as NEW checkpoints under `layerXX/cont1/`
+(originals untouched — trainer gained `--hf-subdir`). Pods s7cont-L6
+(vjm7njcfi0ahom) + s7cont-L8 (lett3zn9f38jwj), 1×H100 each, self-managing
+(prefetch → trainer → upload-verify → self-terminate; HOLD on any problem).
+Control: `code/cont_launch.py --status`.
+
+Key numbers: kept-ratio 0.99996 (measured, 4k docs) ⇒ boundary L6 = 80.4%
+through shard 339 (339 re-queued at tail), L8 = 3.7% into 338 (338 at head).
+Continuation lists: 338..321,355,356..362 (+339 tail for L6). Val {353,354}
+unchanged. max_tokens L6 1.9495B / L8 1.9137B; plateau rule unchanged
+(Δ<0.005 over 150M tok); wall backstop 26h; ETA ~20h ≈ $120 total.
+Warm restart w/o optimizer state ⇒ new continuation LR schedule: 150-step
+re-warmup to the original cosine's value at the resume step (L6 0.4528 @
+25200, L8 0.4395 @ 25600), then cosine to the 0.1 floor at projected epoch
+end (L6 step 71183, L8 69876). wandb: oracle-L{6,8}-perlayer-cont1.
+DO NOT touch the ~21 attrib-w* pods (separate climbmix-scored fleet).
+
 ## 🛑 DESIGN CORRECTION (user, 2026-07-09): ONE LAYER PER MODEL — 162-joint pipeline invalidated
 
 Kaushik's intended design, stated explicitly: probe scores for layers 6, 8,

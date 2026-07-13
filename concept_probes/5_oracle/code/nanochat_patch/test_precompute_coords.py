@@ -42,7 +42,7 @@ import precompute_coords as pc  # noqa: E402
 from coords_store import CoordSource, doc_hash, CYCLIC_ORDER  # noqa: E402
 
 REPO = os.path.abspath(os.path.join(PATCH, "..", "..", "..", ".."))
-PROBE_SET = os.path.join(REPO, "concept_probes/stage7_oracle/out/probe_set.json")
+PROBE_SET = os.path.join(REPO, "concept_probes/5_oracle/out/probe_set.json")
 
 fails = []
 

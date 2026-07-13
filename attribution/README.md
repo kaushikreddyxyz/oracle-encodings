@@ -22,7 +22,7 @@ python score_corpus.py --probe-set out --shards "320-362" --out <dir> \
     --attn eager --batch-size 32 --calib-tokens 10000000 \
     --quant-json <dir>/quant.json --model google/gemma-2-2b
 
-# Corpus scoring — climbmix-scored(+overflow-1..7): nanochat's actual training
+# Corpus scoring — climbmix-scored(+overflow, -overflow-2..7): nanochat's actual training
 # corpus (karpathy/climbmix-400b-shuffle), shards 0-184, FULL COVERAGE (env-driven)
 ONLY_SHARDS=<csv or unset-for-all> SCORE_WORKDIR=/workspace/scores python score_climbmix_stacked.py
 # fleet launcher (laptop-side):
@@ -72,7 +72,8 @@ one-shot store-consolidation/DoM scripts that used to live here were removed
     token ids, `scores_<sid>.npy` int8 `[n, 3, 54]` (axis1: 0=L6, 1=L8, 2=L14),
     `docs_<sid>.jsonl` (`{"doc","start","n"}` spans). Written by the now-removed
     `stack_corpus_scores.py` (one-shot consolidation; see Gotchas).
-  - `climbmix-scored` + `climbmix-scored-overflow-1..7` — 185 shards (0–184),
+  - `climbmix-scored` + `climbmix-scored-overflow`, `-overflow-2`…`-overflow-7`
+    (8 repos total) — 185 shards (0–184),
     **9,873,968,012 tokens**, same per-shard format, but **full-coverage
     convention**: no 2048-token truncation, no min-length filter, consecutive
     non-overlapping 2048-token windows tile every document exactly (this is

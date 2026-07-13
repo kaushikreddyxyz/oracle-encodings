@@ -66,7 +66,7 @@ not committed here).
 | `concept-probes-gemma2-2b` | model | 2_probes, 3_validation, 4_causal | gold probes (`families/*`, `stacked/W_l{L}.npz`, `probes/<family>.<class>.npz`), `probe_cards.json`, `natscores/*`; also mirrors 4_causal's `stage6_1/out/*` (causal cards, figures, rollup) under the same repo |
 | `corpus-scores` + `corpus-scores-overflow` | dataset | `../attribution/` | detection scores int8 `[n,3,54]`, ClimbMix shards 320–362 (overflow = 356–362); axis1: 0=L6, 1=L8, 2=L14 |
 | `corpus-scores-dom-layer8` | dataset | `../attribution/` | DoM steering scores `[n,54]` @ L8, same shards |
-| `climbmix-scored` + `-overflow-1`…`-7` | dataset | `../attribution/` | full-coverage (no truncation, no length filter) detection scores over the **nanochat training corpus**, shards 0–184, 9,873,968,012 tokens verified |
+| `climbmix-scored` + `-overflow`, `-overflow-2`…`-overflow-7` (8 repos total) | dataset | `../attribution/` | full-coverage (no truncation, no length filter) detection scores over the **nanochat training corpus**, shards 0–184, 9,873,968,012 tokens verified |
 | `oracle-encoders` | model | `../oracles/` | 3 independent per-layer Qwen3-0.6B oracles (`layer06/08/14`, R² 0.833/0.797/0.722) + `stage7_eval/` checkpoint folder |
 | `oracle_baseline_d24_fp8` / `oracle_baseline_noVE_d24_fp8` | model | nanochat baseline runs | negative-control nanochat d24 checkpoints, with/without value embeddings; CORE 0.2777 / 0.2711 |
 | ~~`oracle-encoder`~~, ~~`oracle-coords`~~, ~~`oracle-coords-b`~~ | — | `../oracles/` (early joint design) | **DELETED 2026-07-13-adjacent (2026-07-09)** — the joint 162-target ("3 layers in one model") encoder and its coord stores, superseded by the one-layer-per-model rule. Do not reference. |

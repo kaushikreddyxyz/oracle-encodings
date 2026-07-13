@@ -12,7 +12,8 @@ module pipelines both around the (unchanged) main-thread GPU scoring:
     moving it off-thread loses none);
   * ``submit_upload(item)`` hands a finished shard to a background uploader
     (bounded queue, default depth 1 => at most one shard's outputs pending, disk
-    stays ~2 shards) so the upload overlaps the next shard's scoring; the uploader
+    high-water ~3 shards: scoring + queued + uploading) so the upload overlaps
+    the next shard's scoring; the uploader
     deletes the shard's files after a verified upload.
 
 Watchdog semantics are preserved: ``with_retries`` in score_climbmix_stacked is

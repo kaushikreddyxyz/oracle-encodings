@@ -1,6 +1,6 @@
 # Oracle encoders (Qwen3-0.6B) — Results Report
 
-_Split from concept_probes/stage7_oracle/REPORT.md 2026-07-13 (encoder/oracle-training sections; corpus-scoring / attribution / climbmix-audit sections live in `../attribution/REPORT.md`). Living, human-readable narrative; operational blow-by-blow lives in `../concept_probes/5_oracle/STATE.md` (pending distill). Last updated 2026-07-10 (evening, L6/L8 continuation runs), by the continuation agent._
+_Split from concept_probes/stage7_oracle/REPORT.md 2026-07-13 (encoder/oracle-training sections; corpus-scoring / attribution / climbmix-audit sections live in `../attribution/REPORT.md`). Living, human-readable narrative; operational blow-by-blow lived in stage7_oracle/STATE.md (distilled into the attribution/oracles READMEs 2026-07-13; full text in git history). Last updated 2026-07-10 (evening, L6/L8 continuation runs), by the continuation agent._
 
 ---
 
@@ -213,13 +213,13 @@ above. (An earlier revision of this section claimed corr(R², retention)
 - no-VE nanochat baseline (tonight's match target): https://huggingface.co/kaushikreddyxyz/oracle_baseline_noVE_d24_fp8 (CORE 0.2711, val bpb 0.7091)
 
 **Key files** (paths updated for the 2026-07-13 restructure)
-- `../attribution/out/G1_REPORT.md` — the permutation-bug root cause
-- `../concept_probes/5_oracle/out/PERMUTATION_FIX.md` — metadata-only remediation (no rescore, no retrain)
+- G1 permutation-bug root cause: `../attribution/out/g1_*.json` + `../attribution/README.md` (G1_REPORT.md distilled 2026-07-13, git history)
+- Permutation remediation (metadata-only, no rescore/retrain): `../attribution/README.md` permutation note (PERMUTATION_FIX.md distilled 2026-07-13, git history)
 - `out/g2_retention.json` — natural-eval AUROC retention (the audited G2 gate)
 - `../attribution/out/verify_report.json` — closed-form verifier output (pod A)
 - `out/expB_final_analysis.json` — Exp B final analysis bundle (G3): v* R2, subspace
   principal angles + random control, per-token cos(v̂,v*)/magnitude slices, residual estimate
-- `../concept_probes/5_oracle/out/nanochat_prep.md` — injected-run launch checklist (incl. section 5b wandb wiring)
+- Injected-run launch guide: `../nanochat/nanochat/oracle/README.md` (supersedes nanochat_prep.md, distilled 2026-07-13)
 - `wandb_retrolog.py` — replays a `metrics.jsonl` into a wandb run
 
 ---
@@ -247,7 +247,7 @@ attention parity — live in `../attribution/REPORT.md`.)_
 - **coords sweep** (6x H100, coords1-6) — fast-forward path approved (~2x speedup),
   **ETA ~done 7-9 PM**; not a training run, so no wandb.
 - **nanochat d24 injected run** (no-VE match) — launches **tonight** by a separate
-  agent. wandb wiring is prepared in `../concept_probes/5_oracle/out/nanochat_prep.md`
+  agent. wandb wiring guidance now lives in `../nanochat/nanochat/oracle/README.md`
   section 5b: install+auth
   wandb on the launch node, `sed` the hardcoded `project="nanochat"` -> `"stage7-oracle"`,
   and set `--run=nanochat-d24-injected-noVE`. It will then log `train/tok_per_sec`,

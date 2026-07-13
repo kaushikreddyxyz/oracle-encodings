@@ -1,6 +1,6 @@
 # Corpus attribution (gold-probe scoring of ClimbMix) — Results Report
 
-_Split from concept_probes/stage7_oracle/REPORT.md 2026-07-13 (corpus-scoring / attribution / climbmix-audit sections; encoder/oracle-training sections — Exp A/B, per-layer oracles, the full G0–G4 gate table, and the geometry side-study — live in `../oracles/REPORT.md`). Gate G1 (corpus-scoring sanity) is attribution-side: **FAIL -> PASS** — label-permutation bug found + fixed via metadata, no rescore; root cause in `out/G1_REPORT.md`, remediation in `../concept_probes/5_oracle/out/PERMUTATION_FIX.md`, and the Incidents section below._
+_Split from concept_probes/stage7_oracle/REPORT.md 2026-07-13 (corpus-scoring / attribution / climbmix-audit sections; encoder/oracle-training sections — Exp A/B, per-layer oracles, the full G0–G4 gate table, and the geometry side-study — live in `../oracles/REPORT.md`). Gate G1 (corpus-scoring sanity) is attribution-side: **FAIL -> PASS** — label-permutation bug found + fixed via metadata, no rescore; root cause and remediation summarized in the Incidents section below (the original G1_REPORT.md / PERMUTATION_FIX.md docs were distilled into `README.md` 2026-07-13 and live in git history; numbers in `out/g1_*.json`)._
 
 ---
 

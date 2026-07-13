@@ -47,6 +47,7 @@ import io
 import json
 import signal
 import sys
+import threading
 import time
 import traceback
 from pathlib import Path
@@ -55,6 +56,7 @@ import numpy as np
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import score_corpus as sc  # noqa: E402
+from _shard_pipeline import ShardIOPipeline  # noqa: E402
 from huggingface_hub import CommitOperationAdd, HfApi, hf_hub_download  # noqa: E402
 
 U = "kaushikreddyxyz"
@@ -108,14 +110,40 @@ def _alarm(signum, frame):
 signal.signal(signal.SIGALRM, _alarm)
 
 
+def _call_with_timeout(fn, timeout):
+    """SIGALRM only fires on the main thread; when a network call runs in a worker
+    thread (the pipelined uploader), watch it with a daemon thread instead so it
+    still auto-recovers from a silent HF hang (abandon the call, raise _Timeout to
+    retry). Same watchdog semantics as the SIGALRM path."""
+    box = {}
+
+    def run():
+        try:
+            box["v"] = fn()
+        except BaseException as e:  # noqa: BLE001
+            box["e"] = e
+
+    th = threading.Thread(target=run, daemon=True)
+    th.start()
+    th.join(timeout)
+    if th.is_alive():
+        raise _Timeout()
+    if "e" in box:
+        raise box["e"]
+    return box["v"]
+
+
 def with_retries(desc, fn, timeout=900):
+    on_main = threading.current_thread() is threading.main_thread()
     for attempt in range(RETRIES):
         try:
-            signal.alarm(timeout)
-            try:
-                return fn()
-            finally:
-                signal.alarm(0)
+            if on_main:
+                signal.alarm(timeout)
+                try:
+                    return fn()
+                finally:
+                    signal.alarm(0)
+            return _call_with_timeout(fn, timeout)
         except Exception as e:  # noqa: BLE001
             if attempt == RETRIES - 1:
                 raise
@@ -378,13 +406,36 @@ def main():
     hb = sc.Heartbeat(HB)
     log(f"model loaded (eager, bf16); FULL-COVERAGE det-only; {len(SIDS)} shards: {SIDS}")
 
+    # Pipeline the per-shard I/O around GPU scoring (Amendment 4): the uploader +
+    # cleanup of shard N overlaps the scoring of shard N+1, and the next shard's
+    # parquet is prefetched during the current shard's scoring. PIPELINE=0 falls
+    # back to the exact synchronous path. Watchdog stays intact (with_retries is
+    # thread-aware); a HOLD inside the uploader is re-raised on the main thread.
+    def _cleanup(item):
+        for f in item["paths"].values():
+            Path(f).unlink(missing_ok=True)
+        for pq_f in Path("/workspace/hf_cache").rglob(f"shard_{item['tag']}.parquet"):
+            pq_f.unlink(missing_ok=True)
+
+    def _upload(item):
+        upload_verified(api, det_repo(item["sid"]), item["files"])
+        log(f"shard {item['sid']}: OK -> {det_repo(item['sid']).split('/')[-1]} (n={item['n']:,}, "
+            f"{npy_size((item['n'], 3, K), np.int8)/1e9:.2f}GB, {(time.time()-item['t0'])/60:.1f} min)")
+
+    pipeline = ShardIOPipeline(
+        _upload, delete_fn=_cleanup, prefetch_fn=lambda s: sc._shard_path(s), log=log,
+        upload_ahead=int(os.environ.get("PIPELINE_UPLOAD_AHEAD", "1")),
+        enabled=os.environ.get("PIPELINE", "1") != "0").start()
+
     bs = BATCH0
     first_done = False
-    for sid in SIDS:
+    for i, sid in enumerate(SIDS):
         tag = f"{sid:05d}"
+        pipeline.raise_if_fatal()  # surface any prior upload failure on the main thread -> HOLD
         if shard_on_hf(api, sid):
             log(f"shard {sid}: complete on HF — skip")
             continue
+        pipeline.prefetch(SIDS[i + 1] if i + 1 < len(SIDS) else None)  # warm next parquet during scoring
         t0 = time.time()
         while True:
             try:
@@ -399,16 +450,12 @@ def main():
                 log(f"shard {sid}: CUDA OOM -> retry at batch size {bs}")
         if not first_done and os.environ.get("VALIDATE_FIRST") == "1":
             validate_first(api, sid, paths, n, tok)
-        upload_verified(api, det_repo(sid), {f"scores_{tag}.npy": paths["scores"],
-                                              f"tokens_{tag}.npy": paths["tokens"],
-                                              f"docs_{tag}.jsonl": paths["docs"]})
-        log(f"shard {sid}: OK -> {det_repo(sid).split('/')[-1]} (n={n:,}, "
-            f"{npy_size((n, 3, K), np.int8)/1e9:.2f}GB, {(time.time()-t0)/60:.1f} min)")
         first_done = True
-        for f in paths.values():
-            Path(f).unlink(missing_ok=True)
-        for pq_f in Path("/workspace/hf_cache").rglob(f"shard_{tag}.parquet"):
-            pq_f.unlink(missing_ok=True)
+        pipeline.submit_upload({"sid": sid, "tag": tag, "n": n, "t0": t0, "paths": paths,
+                                "files": {f"scores_{tag}.npy": paths["scores"],
+                                          f"tokens_{tag}.npy": paths["tokens"],
+                                          f"docs_{tag}.jsonl": paths["docs"]}})
+    pipeline.drain()  # finish pending uploads (re-raises a stashed uploader HOLD on the main thread)
 
     bad = [sid for sid in SIDS if not shard_on_hf(api, sid)]
     if bad:

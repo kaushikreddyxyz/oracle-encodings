@@ -38,11 +38,6 @@ Working directory: `3_validation/code/` (scripts resolve `1_dataset` as
 - Local: `data/natural/{mined,standardization_sample.jsonl,random_pool.jsonl,MINING_REPORT.md}`,
   `data/natscores/<family>.natscores.npz`, `artifacts/probes/`, `artifacts/stacked/W_l{L}.npz`,
   `reports/*.gates.json`, `reports/rollup.{json,md,html}`, `reports/concepts/*.png`.
-- **Gitignore gap**: the root `.gitignore` still lists the pre-rename paths
-  (`concept_probes/stage6/artifacts/probes/`, `.../reports/concepts/`, `.../reports/part_*/`)
-  — the renamed `3_validation/artifacts/probes/`, `reports/concepts/`, `reports/part_*/` are
-  **currently untracked-but-not-ignored**. Fix the `.gitignore` paths before running `git add`
-  here, or large binaries will get staged.
 - HF (public): [`concept-probes-gemma2-2b`](https://huggingface.co/kaushikreddyxyz/concept-probes-gemma2-2b)
   — per-family raw training outputs, stacked deployment matrices (`W_l{L}.npz`),
   per-concept probe files, probe cards, metrics, natural scores, reports.

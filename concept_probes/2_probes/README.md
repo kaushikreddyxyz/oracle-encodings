@@ -92,9 +92,6 @@ confirming the mid-band layer selection.
 
 ## Gotchas
 
-- `.gitignore` at the repo root still references the pre-rename path
-  (`concept_probes/stage5/probes/`) rather than `2_probes/probes/` — not
-  updated by today's `git mv`.
 - `config/stage5.yaml` keeps the old stage name in its filename intentionally —
   do not rename it.
 - Natural scoring/gating numbers (44/15/5 deploy/caveat/reject) are a

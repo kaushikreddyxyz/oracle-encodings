@@ -121,7 +121,7 @@ Cost: ~$30 GPU (4-pod H100 fleet) + $14.82 natural judging + $0.66 glorptitude
   selection noise — harmless for deployment, but the selectivity-relevant band
   is 8-16.
 - Full deployment tuning (operating thresholds at the rare true prior) is done
-  by downstream consumers (`../4_causal/`, `../5_oracle/`), not here.
+  by downstream consumers (`../4_causal/`, `../../attribution/`), not here.
 - `artifacts/probe_cards.json` is the handoff artifact consumed downstream by
-  `../5_oracle/code/select_probes.py` (gold-54 selection) and by 4_causal's
+  `../../attribution/select_probes.py` (gold-54 selection) and by 4_causal's
   causal-validation fleet.

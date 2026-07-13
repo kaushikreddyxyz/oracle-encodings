@@ -56,7 +56,7 @@ Orchestration: `pod_setup.sh` (installs deps, pulls data), `pod_run.sh`
   `stage6_1/out/*` (old-stage-name path kept intentionally), pushed after every
   script when `UPLOAD=1`.
 - **`out/analysis/causal_cards.json` is the handoff artifact consumed downstream
-  by `../5_oracle/code/select_probes.py`** (gold-54 selection reads both this
+  by `../../attribution/select_probes.py`** (gold-54 selection reads both this
   and 3_validation's `probe_cards.json`).
 
 ## Design decisions that bind

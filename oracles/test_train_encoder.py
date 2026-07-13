@@ -30,6 +30,8 @@ import torch
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
+# _align_fallback.py (imported directly by one test) lives in repo_root/attribution
+sys.path.insert(0, os.path.join(os.path.dirname(HERE), "attribution"))
 
 import train_encoder as te  # noqa: E402
 from transformers import AutoTokenizer, Qwen2Config, Qwen2Model  # noqa: E402

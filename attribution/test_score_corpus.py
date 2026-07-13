@@ -3,7 +3,7 @@ weights, no network access to ClimbMix -- uses a tiny random Gemma2Model and
 a local fake parquet shard via the STAGE7_SHARD_DIR test seam).
 
 Run:
-  python concept_probes/stage7_oracle/code/test_score_corpus.py
+  python attribution/test_score_corpus.py
 """
 from __future__ import annotations
 

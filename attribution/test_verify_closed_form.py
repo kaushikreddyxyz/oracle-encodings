@@ -20,7 +20,7 @@ make_fixture's 1e-3-regularized inverse for an exact pinv, keeping check 1's
 1e-3 tolerance sharp on the tiny fixture).
 
 Run:
-  python concept_probes/stage7_oracle/code/test_verify_closed_form.py
+  python attribution/test_verify_closed_form.py
 """
 from __future__ import annotations
 

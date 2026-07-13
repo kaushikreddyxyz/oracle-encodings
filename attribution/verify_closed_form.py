@@ -86,6 +86,11 @@ from tqdm import tqdm
 HERE = Path(__file__).resolve().parent
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+# train_encoder.py (optional v_star cross-check below) lives in repo_root/oracles
+# locally; on pods everything is staged flat, so this insert is a no-op there.
+_ORACLES_DIR = HERE.parent / "oracles"
+if _ORACLES_DIR.is_dir() and str(_ORACLES_DIR) not in sys.path:
+    sys.path.insert(0, str(_ORACLES_DIR))
 
 import score_corpus as sc  # noqa: E402  -- reused directly, not reimplemented
 

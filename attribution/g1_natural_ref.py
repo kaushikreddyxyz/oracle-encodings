@@ -7,8 +7,9 @@ import json
 import numpy as np
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parents[1]
-NATSCORES_DIR = ROOT.parent / "stage6" / "data" / "natscores"
+ROOT = Path(__file__).resolve().parent            # repo_root/attribution
+REPO_ROOT = Path(__file__).resolve().parents[1]
+NATSCORES_DIR = REPO_ROOT / "concept_probes" / "3_validation" / "data" / "natscores"
 PROBE_SET = ROOT / "out" / "probe_set.json"
 OUT = ROOT / "out" / "g1_natural_ref.json"
 

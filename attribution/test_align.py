@@ -1,6 +1,6 @@
 """Unit + real-tokenizer tests for align.py (Stage 7-Oracle tokenizer bridge).
 
-Run with: pytest concept_probes/stage7_oracle/code/test_align.py -v -s
+Run with: pytest attribution/test_align.py -v -s
 (``-s`` to see the printed crossing-rate summary from the real-pair test.)
 
 Synthetic tests use hand-built offset maps (no tokenizer needed) to pin down

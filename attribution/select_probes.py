@@ -4,19 +4,19 @@ Implements SPEC.md "Phase 0 — Probe selection" against the frozen
 DESIGN.md probe_set.json / probe_set_arrays.npz schema.
 
 Inputs (all local):
-  concept_probes/stage6/data/natscores/<family>.natscores.npz
+  concept_probes/3_validation/data/natscores/<family>.natscores.npz
       preds_{ridge,dom,lda,logistic} [12, T, C] fp32 (raw, non-unit-norm W;
       bias INCLUDED for ridge/logistic, bias=0 for dom/lda — see
-      stage6/code/score_natural.py `proj()`), y [T, C], classes [C] (SPACE
+      3_validation/code/score_natural.py `proj()`), y [T, C], classes [C] (SPACE
       form), layers [12] = the probe-layer grid
       [1,3,6,8,10,12,14,16,18,20,23,25] (this IS the row order of the first
-      axis — confirmed both by stage6/code/score_natural.py `--layers`
+      axis — confirmed both by 3_validation/code/score_natural.py `--layers`
       default/loop order AND independently documented in
-      stage6_1/code/common.py's module docstring: "stage6/data/natscores/
+      4_causal/code/common.py's module docstring: "3_validation/data/natscores/
       <family>.natscores.npz: preds_ridge [12, n_tokens, C] ... layers [12]
       giving the row order"), token2ex [T] int, ex_nat_split [n_ex] in
       {"cal","test"}.
-  concept_probes/stage5/probes/<family>/probes_l{L}.npz
+  concept_probes/2_probes/probes/<family>/probes_l{L}.npz
       classes [C] (UNDERSCORE form), W_ridge [3,C,2304] (raw, non-unit),
       b_ridge [3,C], chosen_lambda_ridge [C] (the lambda index natscores'
       preds_ridge was generated with), W_dom/W_lda/W_logistic [C,2304]
@@ -25,13 +25,13 @@ Inputs (all local):
       — verified empirically below at import time is skipped for speed but
       was checked interactively: months vs weekdays nat_mean/nat_std at L8
       are byte-identical).
-  concept_probes/stage6/artifacts/probe_cards.json — Stage-6 tier verdicts
+  concept_probes/3_validation/artifacts/probe_cards.json — Stage-6 tier verdicts
       (list of {concept, family, layer, tier, ...}), UNDERSCORE concept
       names.
-  concept_probes/stage6_1/out/analysis/causal_cards.json — causal verdicts;
+  concept_probes/4_causal/out/analysis/causal_cards.json — causal verdicts;
       cards[i]['layer_story']['e5_salient_layer_corrected'] is the per-
       concept causal-salient layer used for the ablation-layer vote.
-  concept_probes/stage6_1/out/dose_calib.json — independently-computed
+  concept_probes/4_causal/out/dose_calib.json — independently-computed
       {family: {class: {layer: {"s95":.., "t":..}}}} where s95/t are on the
       UNIT-w standardized ridge score (preds_ridge - b_ridge)/||W_ridge||
       over ALL natural-pool tokens (cal+test). Used ONLY as a ground-truth
@@ -53,15 +53,15 @@ from pathlib import Path
 import numpy as np
 from scipy.stats import rankdata
 
-CODE_DIR = Path(__file__).resolve().parent
-STAGE_DIR = CODE_DIR.parent                      # concept_probes/stage7_oracle
-CP_DIR = STAGE_DIR.parent                         # concept_probes
-NATSCORES_DIR = CP_DIR / "stage6" / "data" / "natscores"
-PROBES_DIR = CP_DIR / "stage5" / "probes"
-PROBE_CARDS_PATH = CP_DIR / "stage6" / "artifacts" / "probe_cards.json"
-CAUSAL_CARDS_PATH = CP_DIR / "stage6_1" / "out" / "analysis" / "causal_cards.json"
-DOSE_CALIB_PATH = CP_DIR / "stage6_1" / "out" / "dose_calib.json"
-OUT_DIR = STAGE_DIR / "out"
+CODE_DIR = Path(__file__).resolve().parent        # repo_root/attribution
+REPO_ROOT = Path(__file__).resolve().parents[1]
+CP_DIR = REPO_ROOT / "concept_probes"
+NATSCORES_DIR = CP_DIR / "3_validation" / "data" / "natscores"
+PROBES_DIR = CP_DIR / "2_probes" / "probes"
+PROBE_CARDS_PATH = CP_DIR / "3_validation" / "artifacts" / "probe_cards.json"
+CAUSAL_CARDS_PATH = CP_DIR / "4_causal" / "out" / "analysis" / "causal_cards.json"
+DOSE_CALIB_PATH = CP_DIR / "4_causal" / "out" / "dose_calib.json"
+OUT_DIR = CODE_DIR / "out"
 
 ARMS = ["ridge", "dom", "lda", "logistic"]
 YMAX_THRESH = 0.34            # example-level positive-label threshold (SPEC)
@@ -73,14 +73,14 @@ MIN_SPREAD_SPAN = 4           # min grid-index span among the 3 chosen layers
 
 
 def _u(s: str) -> str:
-    """Canonicalize a concept name to the UNDERSCORE form (stage5/probes,
-    probe_cards, causal_cards convention; stage6_1/common.py deviation #3)."""
+    """Canonicalize a concept name to the UNDERSCORE form (2_probes/probes,
+    probe_cards, causal_cards convention; 4_causal/common.py deviation #3)."""
     return s.replace(" ", "_")
 
 
 def auroc(pos: np.ndarray, neg: np.ndarray) -> float:
     """Mann-Whitney AUROC via rank-sum; identical formula to
-    stage6/code/gates.py `auroc()`."""
+    3_validation/code/gates.py `auroc()`."""
     if len(pos) == 0 or len(neg) == 0:
         return float("nan")
     r = rankdata(np.concatenate([pos, neg]))
@@ -89,7 +89,7 @@ def auroc(pos: np.ndarray, neg: np.ndarray) -> float:
 
 
 def spearman(a: np.ndarray, b: np.ndarray) -> float:
-    """Spearman rho; identical formula to stage6/code/gates.py `spearman()`
+    """Spearman rho; identical formula to 3_validation/code/gates.py `spearman()`
     (rank + z-score correlation, no ceiling correction — this task's raw rho,
     reported for audit only, not used as a selection gate)."""
     a, b = np.asarray(a, float), np.asarray(b, float)
@@ -272,7 +272,7 @@ def ablation_layer(survivor_concepts: set[tuple[str, str]]) -> tuple[int, dict]:
 def native_wb(fam: str, cls_underscore: str, layer: int, arm: str, probes: dict):
     """Return (w [2304] fp32, b float) in STANDARDIZED, native (non-unit)
     space, exactly the arm's own scale — i.e. the same W,b used by
-    stage6/code/score_natural.py `proj()` to generate preds_{arm}. classes in
+    3_validation/code/score_natural.py `proj()` to generate preds_{arm}. classes in
     probes_l{L}.npz are UNDERSCORE form already."""
     classes = [str(c) for c in probes["classes"]]
     ci = classes.index(cls_underscore)
@@ -294,7 +294,7 @@ def compute_s95(nat: dict, ci: int, layer_idx: int, arm: str, y_thresh=YMAX_THRE
     unit-normalized) over TEST-split TOKENS whose own target y >= YMAX_THRESH
     ("natural test positives' tokens" per task spec).
 
-    This differs from stage6_1/code/common.py `dose_calib` in three ways,
+    This differs from 4_causal/code/common.py `dose_calib` in three ways,
     all deliberate given DESIGN.md's "native scale" requirement for W:
       1. units: native (arm's own ||W||) vs dose_calib's unit-w
          ((preds-b)/||W_ridge||) — because probe_set_arrays.npz stores W at
@@ -320,9 +320,9 @@ def verify_axes(natcache: dict, n_concepts: int = 2) -> list[dict]:
     """Cross-check our W/b/lambda/nat_mean/nat_std reading convention against
     stage6_1's INDEPENDENTLY computed dose_calib.json (built from the same
     underlying probes_l{L}.npz + natscores files by a different module,
-    stage6_1/code/common.py `_build_family_calib`, matching by class NAME
+    4_causal/code/common.py `_build_family_calib`, matching by class NAME
     not index). No raw gemma hidden states are available locally (the
-    per-token activation cache used by stage6/code/score_natural.py was
+    per-token activation cache used by 3_validation/code/score_natural.py was
     pod-local and not persisted) so this is the strongest available
     loop-closure: dose_calib's t/s95 are themselves derived from
     preds_ridge, so matching them end-to-end confirms (a) the ridge

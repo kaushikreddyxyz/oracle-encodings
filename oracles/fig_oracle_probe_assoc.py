@@ -23,8 +23,9 @@ arm from probe_set.json (same as g2); dom columns use preds_dom @ L8.
 
 Usage:
   python3 fig_oracle_probe_assoc.py --ckpt-dir <dir with best.pt, frozen-baseline/,
-      expB-{fixed,learn}/> --probe-set ../out --eval-data ../../stage6/data \
-      --out ../out/figures/oracle_probe_assoc.png
+      expB-{fixed,learn}/> --probe-set ../attribution/out \
+      --eval-data ../concept_probes/3_validation/data \
+      --out out/figures/oracle_probe_assoc.png    # run from oracles/
 """
 from __future__ import annotations
 

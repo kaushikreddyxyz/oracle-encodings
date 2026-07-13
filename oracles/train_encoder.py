@@ -23,7 +23,7 @@ Modes (--mode):
 
 Data flow (DESIGN.md "Exp A/B training data flow"): batch unit = doc. Per
 doc: recover raw text from the ClimbMix shard by doc index (docs_<sid>.jsonl
-+ the Stage-6 shard loader, see `stage6/code/mine_natural.py` /
++ the Stage-6 shard loader, see `3_validation/code/mine_natural.py` /
 `nat_common.py`) -> re-tokenize with gemma (offsets) -> assert token-id
 reproduction against tokens_<sid>.npy for the first N docs (hard fail
 otherwise: it means the Phase-1 scoring convention drifted from what this
@@ -50,12 +50,18 @@ import torch.nn as nn
 import pyarrow.parquet as pq
 from tqdm import tqdm
 
-HERE = Path(__file__).resolve().parent
-STAGE6_CODE = HERE.parent.parent / "stage6" / "code"
+HERE = Path(__file__).resolve().parent            # repo_root/oracles
+REPO_ROOT = HERE.parent
+STAGE6_CODE = REPO_ROOT / "concept_probes" / "3_validation" / "code"
 if str(STAGE6_CODE) not in sys.path:
     sys.path.insert(0, str(STAGE6_CODE))
 if str(HERE) not in sys.path:
     sys.path.insert(0, str(HERE))
+# align.py/_align_fallback.py live in repo_root/attribution locally; on pods
+# everything is staged flat into /workspace/code, where this is a no-op.
+_ATTRIBUTION_DIR = REPO_ROOT / "attribution"
+if _ATTRIBUTION_DIR.is_dir() and str(_ATTRIBUTION_DIR) not in sys.path:
+    sys.path.insert(0, str(_ATTRIBUTION_DIR))
 
 try:
     import nat_common as nc  # Stage-6 ClimbMix shard loader (hub-download fallback only)
@@ -213,7 +219,7 @@ def find_local_shard(climbmix_dir, sid):
 
 def load_shard_texts(climbmix_dir, sid, wanted_doc_idxs):
     """Recover raw doc text by doc-index-within-shard, mirroring the Stage-6
-    shard loader (stage6/code/mine_natural.py + nat_common.py): local
+    shard loader (3_validation/code/mine_natural.py + nat_common.py): local
     parquet file first (pod-local raw shards under --climbmix-dir), else
     fall back to nat_common's HF-hub loader (same shard-file naming/schema)
     if available. Single sequential pass, in parquet row order (deterministic,

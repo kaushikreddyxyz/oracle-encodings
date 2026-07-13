@@ -1,5 +1,5 @@
 """Stage 7-Oracle Phase 1: score a ClimbMix corpus shard-range with the
-frozen probe_set (concept_probes/stage7_oracle/DESIGN.md "Score store").
+frozen probe_set (concept_probes/5_oracle/DESIGN.md "Score store").
 
 Tokenizer convention (MUST match stage5/stage6, which trained the probes):
   tok(text, add_special_tokens=False)["input_ids"]  -- BOS is NEVER obtained
@@ -7,13 +7,13 @@ Tokenizer convention (MUST match stage5/stage6, which trained the probes):
   padded input_ids right before the forward pass, and the corresponding
   hidden_states row is dropped before anything is stored/scored, so stored
   positions line up 1:1 with the raw (BOS-free) token ids. Ported from
-  concept_probes/stage5/code/extract.py (`prepend_bos` / "drop the BOS row").
+  concept_probes/2_probes/code/extract.py (`prepend_bos` / "drop the BOS row").
 
-ClimbMix loader: ported from concept_probes/stage6/code/nat_common.py
+ClimbMix loader: ported from concept_probes/3_validation/code/nat_common.py
   (DATASET = "karpathy/climbmix-400b-shuffle", per-shard parquet files via
   hf_hub_download, `iter_shard_docs` batched-parquet-scan idiom). Duplicated
   here (not imported) so this file is self-contained for pod deployment
-  (DESIGN.md "Pod conventions": pods only need stage7_oracle/code + gemma +
+  (DESIGN.md "Pod conventions": pods only need attribution/ + gemma +
   probe_set.json + shard download). A local-override env var
   (STAGE7_SHARD_DIR) is provided purely as a test seam -- see
   test_score_corpus.py.
@@ -71,7 +71,7 @@ HEARTBEAT_INTERVAL_S = 60
 
 
 # --------------------------------------------------------------------------
-# ClimbMix loader (ported from concept_probes/stage6/code/nat_common.py)
+# ClimbMix loader (ported from concept_probes/3_validation/code/nat_common.py)
 # --------------------------------------------------------------------------
 
 def _shard_path(shard: int) -> str:

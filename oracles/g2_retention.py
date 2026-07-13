@@ -19,7 +19,7 @@ Stage-6 natural eval pool, per family:
   <eval-data>/eval/<fam>.jsonl        one row per example:
         {example_id, text, token_ids(gemma), n_tokens, nat_split(cal|test),
          targets: {concept: [[tok_idx, score], ...]}}
-  <eval-data>/natscores/<fam>.natscores.npz  (built by stage6/score_natural.py;
+  <eval-data>/natscores/<fam>.natscores.npz  (built by 3_validation/score_natural.py;
         rows 1:1 and IN THE SAME ORDER as the jsonl — verified at load):
         y [T, C], token2ex [T], ex_nat_split [n_ex], classes [C] (SPACE form),
         layers [12], preds_{ridge,dom,lda,logistic} [12, T, C].

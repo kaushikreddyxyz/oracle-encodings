@@ -43,8 +43,8 @@ just loop the above per family with polling/resume — no extra behaviour.
   `prompts/judging/{categorical,intensity}_rubric_{v1,v2,v3}.md`.
 - `data/<family>/{prompts,calls,raw_gen,judged,final}/` — local + HF (`prompts/` has
   `gen_prompts.jsonl` + `PREVIEW.md`; `calls/` has the verbatim per-call audit log).
-- Committed summary: `sweep_summary.json` (authoritative numbers, machine-readable) +
-  `SWEEP_SUMMARY.md` (prose).
+- Committed summary: `sweep_summary.json` (authoritative numbers, machine-readable;
+  the prose `SWEEP_SUMMARY.md` was distilled into it and removed — full text in git history).
 - HF: [`probe-train-data`](https://huggingface.co/datasets/kaushikreddyxyz/probe-train-data)
   (renamed from `concept-probes-stage4-data` in the 2026-07-10 HF cleanup; the
   old name still redirects — see top-level README's HF table).
@@ -88,9 +88,9 @@ From `sweep_summary.json` (committed, authoritative):
 
 ## Gotchas
 
-- `judge.py`'s cost figure in `SWEEP_SUMMARY.md`'s body ($131.06, "sweep-only") differs
-  from its title line and from `sweep_summary.json`'s `final_cost_usd` ($136.41, after
-  hardfix/supplement repairs). Use **$136.41** as authoritative.
+- `judge.py`'s cost figure in the removed `SWEEP_SUMMARY.md`'s body ($131.06, "sweep-only")
+  differed from its title line and from `sweep_summary.json`'s `final_cost_usd` ($136.41,
+  after hardfix/supplement repairs). Use **$136.41** as authoritative.
 - `registry.yaml`'s header comment says "64 concepts across 10 families" — stale; the
   file actually defines 13 real families + glorptitude (14 entries).
 - OpenRouter's `inception/mercury-2` saturates past ~96 concurrent requests (224

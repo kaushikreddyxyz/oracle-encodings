@@ -78,8 +78,9 @@ Orchestration: `pod_setup.sh` (installs deps, pulls data), `pod_run.sh`
 
 ## Results
 
-(cross-checked between REPORT_6_1.md and `out/analysis/causal_cards.json`
-verdict counts — they match)
+(REPORT_6_1.md's results were absorbed into this README 2026-07-13 — full text
+in git history; its verdict counts were cross-checked against
+`out/analysis/causal_cards.json` — they match)
 
 - **Ridge: 52 causal / 10 read-only / 2 artifact-suspect** (of 64). **DoM: 59 /
   4 / 1.**

@@ -35,9 +35,11 @@ Working directory: `3_validation/code/` (scripts resolve `1_dataset` as
 
 - Input: 2_probes probes + metrics; 1_dataset's `judge.py` (unchanged, called with
   `--tag nat`).
-- Local: `data/natural/{mined,standardization_sample.jsonl,random_pool.jsonl,MINING_REPORT.md}`,
+- Local: `data/natural/{mined,standardization_sample.jsonl,random_pool.jsonl}`
+  (the prose `MINING_REPORT.md` was removed — git history),
   `data/natscores/<family>.natscores.npz`, `artifacts/probes/`, `artifacts/stacked/W_l{L}.npz`,
-  `reports/*.gates.json`, `reports/rollup.{json,md,html}`, `reports/concepts/*.png`.
+  `reports/*.gates.json`, `reports/rollup.{json,html}` (`rollup.md` removed — use
+  `rollup.json` / git history), `reports/concepts/*.png`.
 - HF (public): [`concept-probes-gemma2-2b`](https://huggingface.co/kaushikreddyxyz/concept-probes-gemma2-2b)
   — per-family raw training outputs, stacked deployment matrices (`W_l{L}.npz`),
   per-concept probe files, probe cards, metrics, natural scores, reports.
@@ -88,7 +90,7 @@ concepts). Median ceiling-normalized natural-text ρ = 0.865 (min 0.448, max
 | physical_size | 0/1/0 | 0.56 |
 | lovingness | 0/0/1 | 0.45 |
 
-Full 64-row table: `reports/rollup.md` / `rollup.json`; per-concept detail in
+Full 64-row table: `reports/rollup.json` (`rollup.md` removed — git history); per-concept detail in
 `artifacts/probe_cards.json`. The five rejects: violet (homograph FPR 0.25),
 saturday (FPR 0.26 + margin), lovingness (ρ 0.45), december and southwest
 (Hewitt-Liang sanity < 0). Lexically-anchored concepts (weekdays, months, moon

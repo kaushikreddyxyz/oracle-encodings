@@ -1,0 +1,20 @@
+{
+  "source": "Transcribed from concept_probes/1_dataset/SWEEP_SUMMARY.md (Stage 4 sweep - closing summary, 2026-07-02); table columns preserved verbatim.",
+  "final_cost_usd": 136.41,
+  "rows": [
+    {"family": "months", "gen_ok": 29082, "judged": 29082, "probe_classes": 12, "dataset_rows": 47543},
+    {"family": "weekdays", "gen_ok": 19167, "judged": 19167, "probe_classes": 7, "dataset_rows": 28722},
+    {"family": "seasons", "gen_ok": 12254, "judged": 12254, "probe_classes": 4, "dataset_rows": 16914},
+    {"family": "color_wheel", "gen_ok": 30681, "judged": 30681, "probe_classes": 12, "dataset_rows": 49094},
+    {"family": "directions", "gen_ok": 21424, "judged": 21424, "probe_classes": 8, "dataset_rows": 32777},
+    {"family": "moon_phases", "gen_ok": 17474, "judged": 17474, "probe_classes": 8, "dataset_rows": 28589},
+    {"family": "continents", "gen_ok": 16085, "judged": 16085, "probe_classes": 6, "dataset_rows": 23865},
+    {"family": "location_type", "gen_ok": 7617, "judged": 7617, "probe_classes": 2, "dataset_rows": 8204},
+    {"family": "costliness", "gen_ok": 3712, "judged": 3712, "probe_classes": 1, "dataset_rows": 3709},
+    {"family": "physical_size", "gen_ok": 3708, "judged": 3708, "probe_classes": 1, "dataset_rows": 3708},
+    {"family": "lovingness", "gen_ok": 3717, "judged": 3717, "probe_classes": 1, "dataset_rows": 3715},
+    {"family": "duration", "gen_ok": 3687, "judged": 3687, "probe_classes": 1, "dataset_rows": 3687},
+    {"family": "harmfulness", "gen_ok": 3716, "judged": 3716, "probe_classes": 1, "dataset_rows": 3715}
+  ],
+  "totals": {"gen_ok": 172324, "judged": 172324, "probe_classes": 64, "dataset_rows": 254242}
+}

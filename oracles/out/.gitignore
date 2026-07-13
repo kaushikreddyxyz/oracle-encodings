@@ -1,0 +1,6 @@
+# binaries + bulk eval live on HF: kaushikreddyxyz/oracle-encoders/stage7_eval/
+*.npz
+*.png
+*.jsonl
+retro_metrics/
+figures/

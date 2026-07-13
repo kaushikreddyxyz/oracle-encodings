@@ -1,0 +1,7 @@
+# binaries live on HF: kaushikreddyxyz/corpus-scores + climbmix-scored(+overflow) repos
+*.npz
+*.png
+*.jsonl
+figures/
+gold_probes_per_layer/
+g1_corpus_stats.json

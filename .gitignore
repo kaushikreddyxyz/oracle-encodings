@@ -223,16 +223,19 @@ __marimo__/
 wandb/
 __pycache__/
 
-# concept-probes stage4: datasets + audit logs live on HF / locally, not in git
-concept_probes/stage4/data/
-concept_probes/stage5/probes/
-concept_probes/stage6/data/
-concept_probes/stage6/artifacts/probes/
-concept_probes/stage6/artifacts/stacked/
-concept_probes/stage6/reports/concepts/
-concept_probes/stage6/reports/part_*/
-concept_probes/stage6_1/out/
-concept_probes/stage6_1/figures/
+# concept-probes: datasets + bulk artifacts live on HF / locally, not in git
+# (dirs renamed 2026-07-13: stage4->1_dataset, stage5->2_probes,
+#  stage6->3_validation, stage6_1->4_causal; stage7_oracle split into
+#  attribution/ + oracles/)
+concept_probes/1_dataset/data/
+concept_probes/2_probes/probes/
+concept_probes/3_validation/data/
+concept_probes/3_validation/artifacts/probes/
+concept_probes/3_validation/artifacts/stacked/
+concept_probes/3_validation/reports/concepts/
+concept_probes/3_validation/reports/part_*/
+concept_probes/4_causal/out/
+concept_probes/4_causal/figures/
 
 # bulky run datasets — LOCAL-ONLY copies (gemma-9b probe artifacts; the HF
 # repos concept-probes-overnight / concept-probes-v2-* were deleted 2026-07-08

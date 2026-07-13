@@ -1,5 +1,6 @@
 """Stage 7-Oracle Phase 1: score a ClimbMix corpus shard-range with the
-frozen probe_set (concept_probes/5_oracle/DESIGN.md "Score store").
+frozen probe_set (see oracles/README.md; the original DESIGN.md "Score store"
+section is in git history).
 
 Tokenizer convention (MUST match stage5/stage6, which trained the probes):
   tok(text, add_special_tokens=False)["input_ids"]  -- BOS is NEVER obtained
@@ -152,7 +153,8 @@ class ProbeSet:
         self.ablation_layer = int(self.meta["ablation_layer"])
         self.concepts = list(self.meta["concepts"])           # K names, canonical order
         self.K = len(self.concepts)
-        # Block-order contract (see out/PERMUTATION_FIX.md). The int8 store's
+        # Block-order contract (see attribution/README.md permutation note;
+        # PERMUTATION_FIX.md in git history). The int8 store's
         # MAIN block columns (l*K+c) follow W's assembly order == main_block_
         # concepts (family-sorted in the current store); the DOM block (3K+c)
         # follows dom_block_concepts (== concepts, name-sorted). Fall back to

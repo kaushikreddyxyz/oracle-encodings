@@ -518,7 +518,8 @@ def run_verify(args) -> dict:
         },
         "arm_columns": {
             # MAIN-block arm columns follow main_block_concepts (store/W order),
-            # NOT `concepts` -- see out/PERMUTATION_FIX.md. The per-column r
+            # NOT `concepts` -- see attribution/README.md permutation note
+            # (PERMUTATION_FIX.md in git history). The per-column r
             # values are self-consistent (stored vs live both use W's order);
             # only the NAME attached needs the correct block order.
             "names": [f"L{l}:{c}" for l in ps.layers for c in ps.main_block_concepts],

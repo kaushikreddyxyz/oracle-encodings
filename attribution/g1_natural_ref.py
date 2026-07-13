@@ -24,7 +24,8 @@ def main():
     concepts = ps["concepts"]  # K=54, canonical (name-sorted) order
     families = ps["families"]
     selection = ps["selection"]  # {"<layer>": {"<concept>": {"arm":...}}}
-    # Emit columns in the SAME layout as the score store (out/PERMUTATION_FIX.md)
+    # Emit columns in the SAME layout as the score store (attribution/README.md
+    # permutation note; PERMUTATION_FIX.md in git history)
     # so a same-column-index comparison against g1_corpus_stats.json is
     # apples-to-apples: MAIN block = main_block_concepts (store/W order), DOM
     # block = concepts (name-sorted). Fall back to concepts if absent.

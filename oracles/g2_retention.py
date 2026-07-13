@@ -60,7 +60,8 @@ AUROC is rank-based), so we use raw head outputs directly and do not need
 corpus_stats.json.
 
 Head column l*K+c holds concept `main_block_concepts[c]` at layer `layers[l]`
-(see out/PERMUTATION_FIX.md) — we attach names via main_block_concepts, NOT the
+(see attribution/README.md permutation note; PERMUTATION_FIX.md in git history)
+— we attach names via main_block_concepts, NOT the
 name-sorted `concepts` list.
 
 LAYER BLOCK: the Phase-0 gemma AUROC is per-layer. We compute the encoder AUROC

@@ -83,7 +83,8 @@ def main():
     ablation_layer = ps["ablation_layer"]
     K = len(concepts)
     assert 4 * K == N_COLS, (K, N_COLS)
-    # Block-order contract (out/PERMUTATION_FIX.md): the score store's MAIN
+    # Block-order contract (attribution/README.md permutation note;
+    # PERMUTATION_FIX.md in git history): the score store's MAIN
     # block columns (l*K+ci) are in main_block_concepts order (family-sorted
     # in the current immutable store), NOT `concepts` (name-sorted). The DOM
     # block (3K+ci) is in concepts order. Using `concepts` for the main block

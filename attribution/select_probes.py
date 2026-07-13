@@ -457,7 +457,8 @@ def main():
             nat_mean[li] = probes_any["nat_mean"]
             nat_std[li] = probes_any["nat_std"]
 
-        # CANONICAL ORDER FIX (permutation bug, see out/PERMUTATION_FIX.md):
+        # CANONICAL ORDER FIX (permutation bug, see attribution/README.md
+        # permutation note; PERMUTATION_FIX.md in git history):
         # `survivors` is (family,concept)-sorted, but `concept_names` (which is
         # written to probe_set.json["concepts"] and consumed positionally by
         # every downstream reader) is name-sorted. Index W/b by the concept's
@@ -572,7 +573,8 @@ def main():
     G_dom_inv = np.linalg.pinv(G_dom) if K > 0 else np.zeros((0, 0), dtype=np.float32)
 
     # Defensive self-description of the score-store column layout (see
-    # out/PERMUTATION_FIX.md). After the canonical-order fix above, the W/b
+    # attribution/README.md permutation note; PERMUTATION_FIX.md in git
+    # history). After the canonical-order fix above, the W/b
     # MAIN block and the DoM block are BOTH assembled in `concept_names`
     # (name-sorted) order, so both lists equal `concepts` here. We still emit
     # them explicitly so every downstream consumer can attach names to store

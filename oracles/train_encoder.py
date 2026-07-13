@@ -158,7 +158,8 @@ class ProbeSet:
         self.K = len(self.concepts)
         self.families = self.meta["families"]
 
-        # LABEL-ORDER CONTRACT (see out/PERMUTATION_FIX.md). The score store
+        # LABEL-ORDER CONTRACT (see attribution/README.md permutation note;
+        # PERMUTATION_FIX.md in git history). The score store
         # main block [layer0 K, layer1 K, layer2 K] is in the order the W/b
         # arrays were assembled, which the original select_probes.py bug left
         # in (family,concept)-sorted order -- NOT the same as `concepts`
@@ -575,7 +576,8 @@ def run_eval(shards, scores_dir, climbmix_dir, gemma_tok, qwen_tok, model, head,
     if mode == "expA":
         r2 = acc.r2()
         # MAIN-block store columns are in main_block_concepts order (see
-        # ProbeSet / PERMUTATION_FIX.md), NOT `concepts`. Label column l*K+c
+        # ProbeSet / attribution/README.md permutation note; PERMUTATION_FIX.md
+        # in git history), NOT `concepts`. Label column l*K+c
         # with main_block_concepts[c].
         mbc = ps.main_block_concepts
         names = [f"{mbc[c]}@L{ps.layers[l]}" for l in range(3) for c in range(K)]

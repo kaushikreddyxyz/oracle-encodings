@@ -97,7 +97,9 @@ one-shot store-consolidation/DoM scripts that used to live here were removed
    downstream on these scores (oracle encoder, injected nanochat run) consumes
    exactly one layer's 54 scores end to end — never the joint 3-layer/162
    target. Full derivation, incl. the invalidated joint design and what was
-   deleted from HF: `../knowledge/concept_probes/reference/one_layer_per_model.md`.
+   deleted from HF: `../knowledge/concept_probes/reference/one_layer_per_model.md`
+   (knowledge/ is gitignored — local-only tree; if absent see git history / the
+   READMEs here).
 3. **Quantization is int8, zero-preserving, ±4σ range**:
    `stored = clip(round((score − zero)/scale), -127, 127)`, `scale = 4σ/127`
    (resolution ≈ 0.03σ per integer step, *not* 1σ — a common misread); `zero`

@@ -18,7 +18,8 @@ HF**. `train_oracle_perlayer.py` (`--layer {6,8,14}`, required) is the
 current, correct trainer. `train_encoder.py` (the joint 162-target trainer)
 is **superseded** — its code is kept for provenance/history only; do not
 train new checkpoints with it. Full derivation:
-`../knowledge/concept_probes/reference/one_layer_per_model.md`.
+`../knowledge/concept_probes/reference/one_layer_per_model.md` (knowledge/ is
+gitignored — local-only tree; if absent see git history / the READMEs here).
 
 ## Pipeline
 

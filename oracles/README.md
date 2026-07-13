@@ -166,8 +166,8 @@ Living log: **`REPORT.md`** (kept, not distilled here). wandb project:
 The oracle-encoder checkpoint is not injected here. The injection package —
 site math (gate/activation/direction), training flags, the precompute
 pipeline, and all current design/operational detail — lives in the `nanochat`
-submodule at `nanochat/nanochat/oracle/` (its `README.md` is authoritative;
-precompute entry point is `nanochat/scripts/precompute_coords.py`, which
+submodule at `nanochat/nanochat/injection/` (its `README.md` is authoritative;
+precompute entry point is `nanochat/scripts/precompute_activations.py`, which
 reads this module's encoder checkpoint and `attribution/out/probe_set.json`).
 The launch checklist formerly at `concept_probes/5_oracle/out/nanochat_prep.md`
 is superseded by that README. One item from that checklist is still open and

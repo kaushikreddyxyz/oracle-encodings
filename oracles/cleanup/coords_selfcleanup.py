@@ -2,7 +2,7 @@
 """Stage-7 oracle coords: per-pod self-cleanup + self-terminate.
 
 Deployed identically to all 6 coords pods (nohup). Each pod:
-  1. Polls until the `precompute_coords.py --mode sweep` process exits AND
+  1. Polls until the `precompute_activations.py --mode sweep` process exits AND
      every assigned shard has its shard_NNNNN.done marker.
      Sad path (process dead but shards incomplete): still upload what exists,
      tag the state file "INCOMPLETE", and DO NOT terminate (leave evidence).
@@ -66,7 +66,7 @@ def script_sha():
 
 
 def sweep_alive():
-    r = subprocess.run(["pgrep", "-f", "precompute_coords.py --mode sweep"],
+    r = subprocess.run(["pgrep", "-f", "precompute_activations.py --mode sweep"],
                        capture_output=True, text=True)
     return r.returncode == 0 and r.stdout.strip() != ""
 

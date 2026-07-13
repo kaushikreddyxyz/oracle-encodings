@@ -219,7 +219,7 @@ above. (An earlier revision of this section claimed corr(R², retention)
 - `../attribution/out/verify_report.json` — closed-form verifier output (pod A)
 - `out/expB_final_analysis.json` — Exp B final analysis bundle (G3): v* R2, subspace
   principal angles + random control, per-token cos(v̂,v*)/magnitude slices, residual estimate
-- Injected-run launch guide: `../nanochat/nanochat/oracle/README.md` (supersedes nanochat_prep.md, distilled 2026-07-13)
+- Injected-run launch guide: `../nanochat/nanochat/injection/README.md` (supersedes nanochat_prep.md, distilled 2026-07-13)
 - `wandb_retrolog.py` — replays a `metrics.jsonl` into a wandb run
 
 ---
@@ -247,7 +247,7 @@ attention parity — live in `../attribution/REPORT.md`.)_
 - **coords sweep** (6x H100, coords1-6) — fast-forward path approved (~2x speedup),
   **ETA ~done 7-9 PM**; not a training run, so no wandb.
 - **nanochat d24 injected run** (no-VE match) — launches **tonight** by a separate
-  agent. wandb wiring guidance now lives in `../nanochat/nanochat/oracle/README.md`
+  agent. wandb wiring guidance now lives in `../nanochat/nanochat/injection/README.md`
   section 5b: install+auth
   wandb on the launch node, `sed` the hardcoded `project="nanochat"` -> `"stage7-oracle"`,
   and set `--run=nanochat-d24-injected-noVE`. It will then log `train/tok_per_sec`,

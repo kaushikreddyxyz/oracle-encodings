@@ -37,7 +37,7 @@ scope moved to repo-root directories, each with its own README:
 |---|---|
 | `../attribution/` | probe selection (`3_validation`'s `probe_cards.json` + `4_causal`'s `causal_cards.json` → the frozen 54-concept, 3-layer gold set) and corpus scoring with it (two independent int8 stores) |
 | `../oracles/` | trains Qwen3-0.6B "oracle" encoders to predict `attribution/`'s scores from raw text, one model per layer |
-| `nanochat/nanochat/oracle/` (submodule, branch `oracle-injection`) | injects the resulting features into nanochat pretraining |
+| `nanochat/nanochat/injection/` (submodule, branch `experimental-setup`) | injects the resulting features into nanochat pretraining |
 
 ## Stage naming
 
@@ -98,7 +98,7 @@ deleted) repos.
 
 **"Injection"** = a concept feature is injected into nanochat's residual
 stream during pretraining — now the joint deliverable of `../attribution/`,
-`../oracles/`, and `nanochat/nanochat/oracle/` (formerly `5_oracle`'s single
+`../oracles/`, and `nanochat/nanochat/injection/` (formerly `5_oracle`'s single
 deliverable). **"Oracle"** is reserved (as of 2026-07-13) for the *failure
 mode* where a model comes to rely on an injected feature instead of learning
 the underlying capability itself — not a synonym for the encoder or the

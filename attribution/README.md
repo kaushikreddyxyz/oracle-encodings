@@ -17,9 +17,6 @@ before anything downstream (oracle-encoder training) trusts the store.
 # Phase 0 — probe selection (CPU, $0, no args; writes out/probe_set.json etc.)
 python select_probes.py
 
-# Throughput/parity gate: sdpa vs eager (decided: eager — see Design decisions)
-python bench_gemma.py --shard <sid> --probes-dir out [--batch-sizes 16,32,64]
-
 # Corpus scoring — corpus-scores(+overflow): ClimbMix (nvidia/ClimbMix) shards 320-362
 python score_corpus.py --probe-set out --shards "320-362" --out <dir> \
     --attn eager --batch-size 32 --calib-tokens 10000000 \
@@ -40,19 +37,16 @@ python g1_corpus_check.py         # part 2, pod-side: corpus-side stats + spot c
 # Closed-form sanity (Exp-B ablation-repair target; superseded design, kept for provenance)
 python verify_closed_form.py --probe-set out --scores <dir> --shard <sid> \
     --attn eager --out <dir>/verify_report.json
-
-# Consolidate the joint per-shard store into the canonical corpus-scores layout (env-driven)
-python stack_corpus_scores.py
-
-# DoM steering scores at the ablation layer (env-driven; -> corpus-scores-dom-layer8)
-python dom_complete.py
 ```
 
-All scoring scripts (`score_corpus.py`, `score_climbmix_stacked.py`) run on
-RunPod H100 fleets; `select_probes.py`, `g1_natural_ref.py` are local/CPU/$0.
-Tests: `test_align.py`, `test_score_corpus.py`, `test_verify_closed_form.py`
-(plain-assertion / pytest smoke tests against tiny synthetic fixtures, no
-real gemma weights or network access — see `make_fixture.py`).
+Both scoring scripts (`score_corpus.py`, `score_climbmix_stacked.py`) run on
+RunPod H100 fleets pinned to `--attn eager` (see Design decisions #7);
+`select_probes.py`, `g1_natural_ref.py` are local/CPU/$0. Tests: `test_align.py`,
+`test_score_corpus.py`, `test_verify_closed_form.py` (plain-assertion / pytest
+smoke tests against tiny synthetic fixtures, no real gemma weights or network
+access — see `make_fixture.py`). The one-time sdpa-vs-eager benchmark and the
+one-shot store-consolidation/DoM scripts that used to live here were removed
+2026-07-13 once their outputs were durable — see Gotchas.
 
 ## Inputs & Outputs
 
@@ -63,27 +57,30 @@ real gemma weights or network access — see `make_fixture.py`).
   (`e5_salient_layer_corrected` drives the ablation-layer vote), `../concept_probes/4_causal/out/dose_calib.json`
   (independent cross-check only, not copied into outputs).
 - **Local** (`out/`, mostly gitignored — see `out/.gitignore`): `probe_set.json`
-  + `probe_set_arrays.npz` (Phase-0 output, **committed**), `selection_table.md`
-  (full 64×3×4 audit table, committed), `G1_REPORT.md` (permutation-bug root
-  cause), `g1_corpus_stats.json`, `g1_natural_ref.json`, `g1_residual_checks.json`,
-  `quant.json` (per-column `zero`/`scale`, calibrated on 10M tokens, fleet-shared),
-  `scoring_config.json`, `verify_report.json`, `coord_fidelity.json`,
-  `gold_probes_per_layer/` (per-layer detection + DoM-steering npz, gitignored),
-  `probe_set_dom_steering_l6_l8_l14.npz` (gitignored).
+  (Phase-0 output, **committed**); gitignored alongside it: `probe_set_arrays.npz`
+  (same Phase-0 run, binary), `g1_corpus_stats.json`, `gold_probes_per_layer/`
+  (per-layer detection + DoM-steering npz), `probe_set_dom_steering_l6_l8_l14.npz`.
+  Also committed: `g1_natural_ref.json`, `g1_residual_checks.json`, `quant.json`
+  (per-column `zero`/`scale`, calibrated on 10M tokens, fleet-shared),
+  `scoring_config.json`, `verify_report.json`, `coord_fidelity.json`. (The
+  human-readable `selection_table.md` and `G1_REPORT.md` — narrative duplicates
+  of `probe_set.json`/the `g1_*.json` files — were removed 2026-07-13; see
+  Gotchas.)
 - **HF** (public datasets):
   - `corpus-scores` + `corpus-scores-overflow` — 43 shards (320–362, overflow =
     356–362), ~2.0B tokens. Per shard: `tokens_<sid>.npy` int32 BOS-free gemma
     token ids, `scores_<sid>.npy` int8 `[n, 3, 54]` (axis1: 0=L6, 1=L8, 2=L14),
-    `docs_<sid>.jsonl` (`{"doc","start","n"}` spans). Written by
-    `stack_corpus_scores.py`.
+    `docs_<sid>.jsonl` (`{"doc","start","n"}` spans). Written by the now-removed
+    `stack_corpus_scores.py` (one-shot consolidation; see Gotchas).
   - `climbmix-scored` + `climbmix-scored-overflow-1..7` — 185 shards (0–184),
     **9,873,968,012 tokens**, same per-shard format, but **full-coverage
     convention**: no 2048-token truncation, no min-length filter, consecutive
     non-overlapping 2048-token windows tile every document exactly (this is
     nanochat's actual training corpus, not the eval-purposed `corpus-scores`).
-    Written by `score_climbmix_stacked.py`.
+    Written by `score_climbmix_stacked.py` (still present, still runnable).
   - `corpus-scores-dom-layer8` — DoM steering scores `[n, 54]` at the ablation
-    layer (L8), written by `dom_complete.py`.
+    layer (L8), written by the now-removed `dom_complete.py` (one-shot; see
+    Gotchas).
 
 ## Design decisions that bind
 
@@ -127,7 +124,10 @@ real gemma weights or network access — see `make_fixture.py`).
    were ever wrong, only the name attached to them** — the fix added
    `main_block_concepts`/`dom_block_concepts` metadata keys; every consumer
    must resolve column identity through those keys, never assume `concepts`
-   order for the main block. Root cause: `out/G1_REPORT.md`.
+   order for the main block. (Full root-cause writeup, `out/G1_REPORT.md`, was
+   removed 2026-07-13 as a narrative duplicate of this summary and of
+   `g1_natural_ref.json`/`g1_residual_checks.json` — retrievable from git
+   history.)
 7. **sdpa silently drops gemma-2's logit softcapping** and fails probe-score
    parity vs eager (measured p99/std 0.057 padded / 0.077 packed, threshold
    0.05) — all corpus scoring is pinned to `--attn eager`.
@@ -172,22 +172,20 @@ the top-scoring tokens with decoded context.
   file's own location. Rerunning it would NOT match the already-scored,
   immutable store (the store was fixed via metadata, not by rerunning
   selection).
-- `split_score_store.py` and `zip_store.py` are **historical one-off
-  migration scripts** that read from `concept-probes-corpus-scores`/`-2` and
-  write to per-layer/stacked repo names superseded by the plain
-  `corpus-scores`/`corpus-scores-overflow` layout (written by
-  `stack_corpus_scores.py`, which every current consumer actually
-  references). Kept for provenance only — do not launch against current data
-  without re-verifying their target repos still make sense.
+- **Completed one-shot migrations and benchmarks were removed 2026-07-13**
+  (`stack_corpus_scores.py`, `split_score_store.py`, `zip_store.py`,
+  `dom_complete.py` — the stores they built are immutable and live on HF;
+  `bench_gemma.py`, `bench_packed.py`, `parity_packed.py` — the sdpa-vs-eager
+  throughput/parity results they produced are checkpointed at
+  `oracle-encoders/stage7_eval/bench/` on HF). All are recoverable from git
+  history if a similar one-off migration is ever needed again; none of them
+  are part of the regular scoring flow above.
 - gemma-2-2b is **gated** on HF — every pod needs `HF_TOKEN` before
   `from_pretrained`; tokens travel over stdin only, never argv.
 - RunPod's API is behind Cloudflare, which 403s the default `Python-urllib`
   User-Agent — self-cleanup/teardown code must send `User-Agent: curl/8.4.0`.
 - HF's commit-rate limit (128 commits/hour/repo) was hit once by per-file
   daemon commits — batch into single `upload_folder` commits instead.
-- The env-driven scoring/consolidation scripts (`stack_corpus_scores.py`,
-  `score_climbmix_stacked.py`, `dom_complete.py`, `zip_store.py`,
-  `split_score_store.py`) take no CLI flags; behavior is controlled entirely
-  by env vars (`ONLY_SHARDS`, `WORKDIR`/`SCORE_WORKDIR`, `SHARD_MAP`,
-  `HOLD_PATH`, `LOG_PATH`, `CAP_BYTES`, `MIN_FREE_GB`, ...) — read each
-  script's header before launching.
+- `score_climbmix_stacked.py` is env-driven, not CLI-flag-driven — behavior is
+  controlled by env vars (`ONLY_SHARDS`, `SCORE_WORKDIR`, `QUANT216`,
+  `PROBE_DIR`, `BATCH_SIZE`, ...); read the script's header before launching.

@@ -1,8 +1,42 @@
-# Stage 7 — Oracle-Encoding Injection: Results Report
+# Oracle encoders (Qwen3-0.6B) — Results Report
 
-_Living, human-readable narrative of the overnight run. Operational blow-by-blow
-lives in `STATE.md`; this file is the "what happened and what does it mean" view.
-Last updated 2026-07-08 (midday, Exp B final / G3), by the analysis agent._
+_Split from concept_probes/stage7_oracle/REPORT.md 2026-07-13 (encoder/oracle-training sections; corpus-scoring / attribution / climbmix-audit sections live in `../attribution/REPORT.md`). Living, human-readable narrative; operational blow-by-blow lives in `../concept_probes/5_oracle/STATE.md` (pending distill). Last updated 2026-07-10 (evening, L6/L8 continuation runs), by the continuation agent._
+
+---
+
+## 2026-07-10 — L6/L8 per-layer encoder CONTINUATION runs (cont1): done, plateaued
+
+Per user handoff, the L6 and L8 per-layer oracles (NOT L14) were warm-started
+from their overnight best checkpoints and trained on the shards the overnight
+runs never reached (338..321, 355, 356..362; L6 also re-queued the 80%-consumed
+339). Val stayed {353,354}, so every number below is directly comparable.
+New checkpoints live at `layerXX/cont1/` on
+[oracle-encoders](https://huggingface.co/kaushikreddyxyz/oracle-encoders);
+the originals are untouched. cont1 `best_full.pt` carries full Muon+AdamW
+state — exact resume is possible, unlike the stripped originals.
+
+| layer | original (11h wall-clocked) | cont1 (plateau-stopped) | Δ | total tokens |
+|---|---|---|---|---|
+| L6 | R² 0.8331 / ρ 0.898 @ 690M | **R² 0.8368 / ρ 0.900** @ 854M | +0.0037 | 854M |
+| L8 | R² 0.7965 / ρ 0.874 @ 701M | **R² 0.8002 / ρ 0.877** @ 865M | +0.0037 | 865M |
+
+**The headline finding is negative-ish:** the overnight runs' final slope
+(~+0.001–0.002/eval) did NOT extrapolate. Both continuations flattened within
+~150M further tokens and were stopped by the pre-registered plateau rule
+(Δ median R² < 0.005 over trailing 150M tokens; L6 Δ=0.0027, L8 Δ=0.0033).
+The full-epoch budget (1.9B tokens) was therefore not spent: actual cost
+~$17 of a projected ~$120. Both encoders are modestly but genuinely better,
+and R² ≈ 0.84/0.80 now looks like the practical per-layer ceiling for this
+recipe (consistent with the earlier signal-vs-noise analysis: much of the
+residual is probe noise the encoder correctly refuses to fit).
+
+Ops notes: warm restart used a 150-step LR re-warmup to the original cosine's
+resume-point value then cosine to the 0.1 floor at the projected epoch end —
+no warm-restart dip was observed (first evals landed slightly ABOVE the
+resume baselines). Runs: wandb
+[5voreqcz](https://wandb.ai/kaushikreddyxyz-/stage7-oracle/runs/5voreqcz) (L6) /
+[mf6v2nyo](https://wandb.ai/kaushikreddyxyz-/stage7-oracle/runs/mf6v2nyo) (L8).
+Both pods uploaded, byte-verified, and self-terminated cleanly.
 
 **One-paragraph summary.** We trained a Qwen3-0.6B encoder to predict gemma-2-2b
 concept-probe scores from raw ClimbMix text, so those predictions can be turned
@@ -24,7 +58,7 @@ prepared (not launched).
 | gate | question | bar | result | numbers |
 |---|---|---|---|---|
 | **G0** | enough concepts, table reviewed | >=20 concepts | **PASS** | 54 concepts x 3 layers [6,8,14] = 162 targets |
-| **G1** | corpus-scoring sanity before training | distributions sane | **FAIL -> PASS** | label-permutation bug found + fixed via metadata (no rescore); see Incidents |
+| **G1** | corpus-scoring sanity before training | distributions sane | **FAIL -> PASS** | label-permutation bug found + fixed via metadata (no rescore); see Incidents (attribution side: `../attribution/REPORT.md`) |
 | **verification** | closed-form encoder/coord checks (pod A) | all checks pass | **PASS** | score restoration 2.1e-4; identity p99 5e-7; quant p50 3.6%; v*-crosscheck exact 0.0 |
 | **G2** | heldout median per-probe R2 (GO for nanochat) | >= 0.60 | **GO** | **R2 0.6371**; retention ratio 0.966 (raw 0.9836); all 7 families >= 0.90 |
 | **G3** | Exp B: v* heldout R2 + direction recovery | v* R2 >= 0.5 | **learn PASS / fixed FAIL** | expB-learn v* R2 **0.6111** (PASS); expB-fixed 0.2716 (FAIL); subspace recovery median cos **0.998** (random control 0.125) — see "Exp B final analysis (G3)" |
@@ -178,30 +212,23 @@ above. (An earlier revision of this section claimed corr(R², retention)
 - Probe-score dataset: https://huggingface.co/datasets/kaushikreddyxyz/concept-probes-corpus-scores
 - no-VE nanochat baseline (tonight's match target): https://huggingface.co/kaushikreddyxyz/oracle_baseline_noVE_d24_fp8 (CORE 0.2711, val bpb 0.7091)
 
-**Key `out/` files**
-- `out/G1_REPORT.md` — the permutation-bug root cause
-- `out/PERMUTATION_FIX.md` — metadata-only remediation (no rescore, no retrain)
+**Key files** (paths updated for the 2026-07-13 restructure)
+- `../attribution/out/G1_REPORT.md` — the permutation-bug root cause
+- `../concept_probes/5_oracle/out/PERMUTATION_FIX.md` — metadata-only remediation (no rescore, no retrain)
 - `out/g2_retention.json` — natural-eval AUROC retention (the audited G2 gate)
-- `out/verify_report.json` — closed-form verifier output (pod A)
+- `../attribution/out/verify_report.json` — closed-form verifier output (pod A)
 - `out/expB_final_analysis.json` — Exp B final analysis bundle (G3): v* R2, subspace
   principal angles + random control, per-token cos(v̂,v*)/magnitude slices, residual estimate
-- `out/nanochat_prep.md` — injected-run launch checklist (incl. section 5b wandb wiring)
-- `code/wandb_retrolog.py` — replays a `metrics.jsonl` into a wandb run
+- `../concept_probes/5_oracle/out/nanochat_prep.md` — injected-run launch checklist (incl. section 5b wandb wiring)
+- `wandb_retrolog.py` — replays a `metrics.jsonl` into a wandb run
 
 ---
 
 ## Incidents caught (and handled)
 
-- **Label-permutation bug (G1).** `select_probes.py` silently permuted 53/54
-  concept labels across 162/216 store columns (only `september` landed right by
-  coincidence). Caught by the G1 corpus-scoring sanity check before it could
-  corrupt conclusions; fixed with explicit block-order metadata keys in
-  `probe_set.json` so every consumer re-attaches names correctly — **no
-  rescoring and no retraining needed** (score bytes were correct; only the
-  name-to-column map was wrong).
-- **sdpa attention parity.** transformers' default `sdpa` attention silently
-  drops gemma-2's logit soft-capping, failing probe-score parity vs `eager`;
-  all corpus scoring pinned to **eager** attention to match how probes were fit.
+_(The corpus-scoring incidents — the label-permutation bug (G1) and sdpa
+attention parity — live in `../attribution/REPORT.md`.)_
+
 - **batch-1 drain bug.** The serial coords precompute path had a per-doc
   `drain()` bug that forced batch-1 forwards (killing throughput and muddying
   the determinism A/B); fixed, then the path was replaced with length-bucketed
@@ -220,8 +247,71 @@ above. (An earlier revision of this section claimed corr(R², retention)
 - **coords sweep** (6x H100, coords1-6) — fast-forward path approved (~2x speedup),
   **ETA ~done 7-9 PM**; not a training run, so no wandb.
 - **nanochat d24 injected run** (no-VE match) — launches **tonight** by a separate
-  agent. wandb wiring is prepared in `out/nanochat_prep.md section 5b`: install+auth
+  agent. wandb wiring is prepared in `../concept_probes/5_oracle/out/nanochat_prep.md`
+  section 5b: install+auth
   wandb on the launch node, `sed` the hardcoded `project="nanochat"` -> `"stage7-oracle"`,
   and set `--run=nanochat-d24-injected-noVE`. It will then log `train/tok_per_sec`,
   `val/bpb`, `core_metric`, and full config live to the same project. **Not launched
   by this agent.**
+
+---
+
+## 2026-07-10: Per-layer oracles (corrected design) — TRAINED, all beat the 0.6371 baseline
+
+Three independent oracles (Qwen3-0.6B-Base full-FT + MLP 1024→4096→GELU→54), each predicting
+ONE layer's 54 detection-probe scores (targets physically sliced from the stacked [n,3,54]
+store). Objective: expA MSE on corpus-standardized scores. Optimizer: Muon (5e-3, NS5) on 2D
+matrices + AdamW (1e-4) else. Train shards 320-352, val 353/354. All runs ended at the 11h
+wall-clock cap, still improving (never plateaued at Δ<0.005/150M tok).
+
+| oracle | best heldout median R² | Spearman ρ | tokens | wandb |
+|---|---|---|---|---|
+| L6  | **0.8331** | 0.898 | 690M | stage7-oracle/bga5ozov |
+| L8  | **0.7965** | 0.874 | 701M | stage7-oracle/jouy3hop |
+| L14 | **0.7217** | 0.829 | 614M | stage7-oracle/44zfc7qf |
+
+Per-family medians uniform within each layer (L6: 0.823-0.873). Checkpoints:
+`kaushikreddyxyz/oracle-encoders` layer06|08|14/best_stripped.pt (+ metrics.jsonl).
+Trainer: `train_oracle_perlayer.py`. Cost ≈ $100 (3× H100 × ~11h).
+
+**Association figure** (`out/figures/oracle_perlayer_assoc.png`, matrices in companion npz):
+54×54 Spearman (oracle max-pooled prediction × gemma probe activation, stage-6 natural-eval
+TEST split), one panel per oracle at its own layer:
+
+| panel | median diag | min diag | median off-diag | p95 off-diag |
+|---|---|---|---|---|
+| L6  | 0.902 | 0.824 | 0.252 | 0.601 |
+| L8  | 0.888 | 0.789 | 0.208 | 0.552 |
+| L14 | 0.877 | 0.772 | 0.239 | 0.612 |
+
+Strong on-target diagonal with family-block off-diagonal structure (expected within-family
+correlation); no permuted/broken axes.
+
+## Geometry side-study (probe/activation structure; from the 2026-07-10 climbmix deep audit)
+
+_(Moved here from the climbmix deep-audit section, whose other bullets live in
+`../attribution/REPORT.md`.)_
+
+- Geometry side-study (shard 10, gemma-2-2b re-extraction, sanity-gated ±1 int8 step; exhaustive
+  centroid-PC-pair scan, 318 tests, exact permutation p; final classification 2026-07-13 per
+  Kaushik's visual assessment, stats preserved alongside):
+  POSITIVE — directions: PERFECT compass octagon in act PC3×PC5 @L8 (r=+1.00, p=4e-4; echoed
+  L6/L14) + weight octagon PC3×PC4 (r=+1.00); PC1-2 hold cardinal/intercardinal + antipodal-pair
+  structure. weekdays: Mon→Sun ring in act PC1×PC2 at all layers (|r|=0.78, p=0.022) + perfect
+  weight heptagon in wt PC1×PC3 (r=−1.00, p=0.0028 @L8). seasons: judged positive on structural
+  consistency across layers (caveat: k=4 makes the ring order-statistic vacuous, p=1.0 by
+  construction — rests on structure, not the permutation test).
+  NEGATIVE/INCONCLUSIVE — months: "ordered but sloppy". Calendar ordering survives even the
+  exhaustive all-55-plane family-wise max-statistic test (act best plane PC2×PC3 at EVERY layer,
+  fw p=0.007/0.013/0.023 @L6/L8/L14; wt best PC1×PC2 fw p=0.015/0.0017 @L6/L8, fades @L14 —
+  vs moon_phases fw p≥0.31 under the identical test), but no plane looks clean: the loop
+  self-crosses everywhere, dragged by winter-month outliers. Judged inconclusive pending
+  cleaner evidence (PC3×PC4 calendar-unordered; all-plane mega-grids in report §8.2). moon_phases and colour_wheel DISPROVED by exhaustive
+  ALL-plane family-wise max-statistic permutation test (best |r|=0.61 anywhere fw p≥0.31;
+  colour-wheel nominal hits contradict across layers). Probe-vector structure (months, strength
+  held constant via unit-norm + mean-direction removal): annual+semiannual Fourier harmonics
+  carry ~55% of centroid identity variance (probes dilute to ~42% via estimation noise —
+  cross-layer cos: centroids 0.74–0.91, probes 0.42–0.61); harmonic-free residual is REAL
+  (cross-layer cos 0.70–0.89), so months ≈ shared dir + 4-d harmonic core + genuine ~7-d
+  idiosyncratic tail. Artifacts in session scratch `probe_geometry/` (acts_f16.npz +
+  geometry.npz + pc_scan.json + pc_scan_full.json + gold_w/).

@@ -95,6 +95,133 @@ rising to ~0.17 at p99. So:
 0.0e0); only ‖x‖/empirical loudness differ, and they agree to ≲0.01 (different
 corpora, same story) — recorded in the corpus-scores provenance.
 
+## 2026-07-14: reconstruction sufficiency + donor-loudness verification — COMPLETE, VERDICT: PASS
+
+Adversarial verification of the donor-loudness work plus the question the next
+experiments stand on: do the stored int8 probe scores (+ frozen geometry)
+**reconstruct** gemma-2-2b's residual stream in the concept subspace, and is
+the nanochat injection a faithful image of that reconstruction? Tooling:
+`verify_reconstruction.py` (`cpu` = conditioning/$0; `pod` = empirical GPU),
+artifact `out/reconstruction_report.json`. Empirics on a fresh H100
+(~30 min, ~$1.5), shards **3/13/23** — disjoint from the loudness run's
+2/12/22 — 120k tokens, 300 docs.
+
+### The identity (exact)
+
+The frozen pipeline is affine in x, so per concept
+`⟨x,u_c⟩ = z_c·κ_c + const_c`, `const_c = (mu2_c−b_c)/‖v_c‖ + ⟨nat_mean,u_c⟩` —
+verified on fresh activations at median rel-err **1e-15**. Stacking
+`B=[u_c]`, `G=BᵀB`: `x̂_S = B G⁻¹ (z−z̄)·κ = P_S(x−x̄)` exactly (checked to
+1e-13), and the **absolute** component `P_S x` is recovered via `const` with no
+sample mean. The stored z-scores are a lossless linear re-parameterization of
+the concept-subspace component — the only losses are int8 quantization
+(step 4/127 ≈ 0.0315σ) and the ±4σ clip.
+
+### Empirical reconstruction from the STORED int8 scores
+
+| layer | R² pooled | cos med / p05 | R² unsat. tokens | median err: stored / pure-quant / predicted | sat. tokens (≥1 concept @±4σ) | ℓ_tot p50 here vs artifact |
+|---|---|---|---|---|---|---|
+| L6  | 0.9685 | 0.99977 / 0.99836 | 0.99959 | 0.154 / 0.134 / 0.123 | 7.56 % | 0.0800 vs 0.0808 |
+| L8  | 0.9783 | 0.99980 / 0.99924 | 0.99963 | 0.175 / 0.141 / 0.129 | 6.63 % | 0.0801 vs 0.0813 |
+| L14 | 0.9866 | 0.99980 / 0.99942 | 0.99959 | 0.326 / 0.227 / 0.222 | 5.28 % | 0.0854 vs 0.0863 |
+
+- **Typical tokens are essentially perfect** (cos 0.9998, unsaturated-token
+  R² 0.9996). The pure-quantization floor matches the uniform-noise prediction
+  propagated through G⁻¹ to within 2–9 %; stored-vs-recomputed adds only bf16
+  forward nondeterminism (|Δz| ≈ 0.01σ), immaterial.
+- **The ±4σ clip is the only material loss.** z tails are ~20× heavier than
+  Gaussian: 5.3–7.6 % of tokens saturate ≥1 concept (0.17–0.30 % of cells). On
+  those tokens R² drops to 0.87–0.91 (direction still good, cos med 0.995+;
+  clipped magnitude). The pooled-R² gap is entirely this tail.
+- **Captured share:** the 54-dim subspace holds 1.2–1.5 % of centered residual
+  variance (per-token median ‖P_S y‖/‖x−x̄‖ ≈ 0.10–0.11). Median
+  ‖P_S y‖/‖x‖ reproduces the artifact's ℓ_tot p50 on disjoint shards to <2 %.
+  (ℓ_tot² understates the centered-variance share since its denominator is the
+  uncentered ‖x‖.)
+- **Conditioning (cpu, $0):** cond(G) 70/46/43 (L6/8/14), min eig 0.085,
+  effective rank 27–31/54. Worst collinearity is intra-family:
+  waxing_crescent~waxing_gibbous 0.843 (L6), red-orange~yellow-green 0.83–0.87
+  (all layers), continents ≤0.66; cross-family max 0.39. Noise amplification
+  through G⁻¹ is mild in aggregate (rms ×1.3–1.45 vs orthonormal); worst
+  per-concept coefficient noise ×9.2 (waxing_gibbous L6) — moon-phase/tertiary-
+  color coefficients are the least trustworthy individually, their sum is fine.
+
+### Donor-loudness verification (A) — all PASS
+
+- **κ re-derived independently** (raw npz + store corpus_stats, no
+  measure_loudness code): identical to the artifact (rel diff 0.0).
+- **λ layer-flatness is structural, not coincidental:** per-concept λ ratios
+  L8/L6 and L14/L6 have median 1.017/1.018, IQR ±4 % — each concept's raw-space
+  σ scales *with* the stream norm (κ and median ‖x‖ both ×2.06 L6→L14).
+  Real outliers exist (autumn ×1.9, oceania ×0.56, blue-green ×0.61).
+- **Artifacts on HF:** climbmix-scored + overflow-3 byte-identical to local;
+  corpus-scores variant correctly distinct (its own corpus field/shards
+  322/335/350) with κ shared **by design** (byte-identical frozen step-2
+  constants, documented in its provenance.kappa_note). Inequality audit —
+  active ≥ all per concept per quantile; ℓ_tot ≥ every single concept at
+  p50/p95/p99 (pointwise-dominance argument) — **0 violations**; active-token
+  rate ≈2.6 % ≈ P(z≥2), i.e. calibrated standardization.
+- **measure path:** BOS prepend/drop, eager attention, 2048 non-overlapping
+  tiling, int8 decode (q·scale+zero then step-2) all match the store
+  conventions (code-verified against score_climbmix_stacked/ScoreHead), and
+  re-confirmed empirically on virgin shards: Spearman ≥ 0.9998,
+  median|Δz| ≤ 0.011. Measured on cuda/bf16 = the store's own scoring dtype;
+  norms in fp64 on fp32-cast states — no fp16 accumulation exposure. No bugs.
+- **nanochat donor gate (d97945b) + loudness dial (fff58c2):**
+  `rms(gate) = dial×L_ref` exact (dial 1.0 → 0.08125 @L8; `donor:p95` → 0.13101
+  = dial 1.612); per-token ‖Δx‖/‖x‖ == rms(gate) *exactly* (the z-renorm makes
+  per-channel shaping direction-only — verified to 3e-17); dead-channel
+  handling, hard concept-order refusal, checkpoint persistence + resume
+  (persisted absolute vector, never re-resolved) all correct; 28 tests green.
+  **Migration hazards (documented behavior, not bugs):** a plain-number
+  `--gate` is now a *dial* — an old `--gate 0.05` yields absolute
+  0.05×L_ref ≈ 0.004 (~20× quieter than the old semantics; use `abs:0.05`);
+  and `InjectionCfg.gate` defaults to 1.0 with dial-at-trainer /
+  absolute-at-site semantics, so constructing `InjectionCfg` directly and
+  calling `build_sites` without trainer-level resolution injects at 100 % of
+  residual RMS.
+
+### Injection-side sufficiency — what the packet preserves
+
+Site: `Δx = rms(gate)·rms(x)·ẑ`, `ẑ = (a⊙ĝ)D / rms((a⊙ĝ)D)`, D random-orthonormal.
+
+- **Preserved (lossless):** the per-token *direction pattern*. scores→packet is
+  linear and invertible up to a per-token positive scalar — `a` is recovered
+  from Δx via `(ΔxDᵀ)⊘ĝ` (verified to 1e-10) — and scores determine x̂_S exactly
+  (above). So the packet carries the full signed ratio structure of the
+  54 concepts; nothing about *which concepts, in what proportion* is lost.
+  Corpus-level relative concept loudness matches the donor (ĝ ∝ donor_c/rms_c),
+  and overall loudness is dial-exact.
+- **Not preserved:** (i) *absolute per-token magnitude* — the z-renorm pins
+  ‖Δx‖ to rms(gate)·‖x_nano‖ whether the token is concept-silent or 6σ-loud,
+  while gemma's own packet norm varies ≥×2 (ℓ_tot p50 0.081 → p99 0.17);
+  (ii) *inter-concept geometry* — gemma's u_c Gram (cosines to 0.87) is
+  replaced by D's exact orthogonality; concept correlations survive only in
+  the z statistics (the data), not in the injected geometry; (iii) κ enters
+  only via corpus-level shaping, not per token.
+- **For experiment design:** "the model can read the oracle" claims are safe —
+  the information is all there, linearly accessible. Claims about nanochat
+  *re-creating gemma's representation* are not licensed: magnitude coding and
+  angle coding differ by construction.
+
+### Recommended variants for a more faithful injection (spec only, NOT implemented)
+
+1. **Gram-shaped mixing (isometric packet).** Replace the diagonal shaping with
+   the fixed 54×54 map `S = G^{-1/2}·diag(κ)` applied to z-scores before D:
+   `z = (a S) D`. Then ⟨packet_i, packet_j⟩ = ⟨x̂_S,i, x̂_S,j⟩ — the injected
+   subspace is an isometric image of gemma's (angles AND relative magnitudes),
+   at the cost of no longer being channel-diagonal. One fixed matrix, no new
+   data.
+2. **Corpus-level (not per-token) normalization.** Replace `z/rms(z)` with a
+   fixed divisor calibrated at startup (corpus rms of ‖z‖), keeping the
+   zero-row clamp. Per-token magnitude information then survives; the gate
+   becomes *mean* loudness rather than exact per-token loudness. Combined with
+   (1), the packet is a fixed linear isometry of x̂_S up to one global scalar —
+   fully faithful.
+3. **If loud-token fidelity matters:** the ±4σ clip is the binding constraint
+   (5–7.6 % of tokens). An int16 store or a sparse >4σ sidecar lifts full-token
+   R² from ~0.97 to ~0.9996.
+
 ## Incidents caught (and handled)
 
 _(The coords-precompute batch-1 drain bug lives in `../oracles/REPORT.md`.)_

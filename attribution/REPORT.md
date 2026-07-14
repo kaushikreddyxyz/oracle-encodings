@@ -48,6 +48,53 @@ Fresh-context audit over the finished 185-shard store (agent-run; 5-shard deep s
 
 ---
 
+## 2026-07-14: donor loudness (`measure_loudness.py`) — COMPLETE, gates PASS, uploaded
+
+How loud the 54 gold concepts are **natively in gemma-2-2b**, in the injection
+gate's own unit (fraction of the residual-stream norm, `‖Δx‖/‖x‖`). Measured on
+an RTX-unavailable/H100 pod (bf16, eager, ~$3; run + teardown < 30 min), sampling
+stored token windows from the score stores (exact stored ids → BOS prepended/
+dropped, reproducing the store). `loudness.json` (schema v1) pushed to all 8
+`climbmix-scored(+overflow-2..7)` repo roots + a corpus-scores variant to
+`corpus-scores(+overflow)`; discovered automatically by nanochat's `--gate donor`.
+
+**Gates (both variants):** affine identity `(⟨x,u_c⟩−m_c)=(z_c−z̄_c)·κ_c` median
+rel-err **2.0e-8** (< 1e-3 ✓ — confirms the raw-space direction / κ read of the
+frozen pipeline is exact); recomputed-vs-stored-int8 z cross-check Spearman
+**0.9998** (> 0.99 ✓), median |Δz| **0.011** (< 0.15 ✓); `std2 ≈ quant·127/4`
+ratio median 1.0004. No permutation, no scale error.
+
+**Headline (climbmix, 498 docs / 293k tokens; corpus-scores 300 docs / 160k tokens
+agrees to ≲0.01):**
+
+| layer | median ‖x‖ | κ median (range) | λ per-σ median (range) | ℓ_tot ridge p50 / p95 / p99 | ℓ_tot dom p50 |
+|---|---|---|---|---|---|
+| L6  | 90.8  | 1.067 (0.99–1.93) | 0.0118 (0.011–0.021) | 0.081 / 0.131 / 0.171 | 0.094 |
+| L8  | 107.0 | 1.264 (1.17–2.78) | 0.0118 (0.011–0.026) | 0.081 / 0.131 / 0.163 | 0.102 |
+| L14 | 187.1 | 2.218 (2.11–4.37) | 0.0119 (0.011–0.023) | 0.086 / 0.137 / 0.172 | 0.108 |
+
+**Reading it.** A single concept at 1σ is ≈**1.2 % of the residual stream**
+(λ ≈ 0.0118, remarkably layer-flat once κ's growth is divided by ‖x‖'s growth);
+the loudest concepts (L8 tail κ 2.78) reach ~2.6 %. The whole 54-concept *packet*
+(`ℓ_tot`, the direct gate analogue) sits at **≈0.081 (p50)** and **≈0.13 (p95)**,
+rising to ~0.17 at p99. So:
+
+- **gate = 0.05** (the v1 default) is *below* gemma's own median packet loudness
+  (0.081) — the injection is currently ~1.6× quieter than the donor plays these
+  concepts. `--gate donor` (p50) lands it at 0.081.
+- **the ~0.14 "architectural ceiling"** matches the donor's **p95** packet
+  loudness (0.131–0.137) almost exactly — i.e. the ceiling isn't arbitrary, it's
+  roughly where gemma's own loud tail already lives. `--gate donor:p95` targets it.
+- DoM directions read slightly louder than ridge (packet p50 0.094–0.108) — the
+  npz vectors are standardized-space read directions (== `W_dom_abl`), converted
+  to raw-space `v_dom = W_dom ⊘ nat_std` exactly like the ridge to keep the two
+  comparable; DoM is reported only (not consumed by the trainer).
+
+**Variants.** `corpus-scores` and `climbmix-scored` share byte-identical step-2
+`mu2/std2`+quant (calibrated once on shard 320), so **κ is identical** (max diff
+0.0e0); only ‖x‖/empirical loudness differ, and they agree to ≲0.01 (different
+corpora, same story) — recorded in the corpus-scores provenance.
+
 ## Incidents caught (and handled)
 
 _(The coords-precompute batch-1 drain bug lives in `../oracles/REPORT.md`.)_

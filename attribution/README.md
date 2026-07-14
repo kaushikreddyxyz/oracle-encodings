@@ -37,6 +37,17 @@ python g1_corpus_check.py         # part 2, pod-side: corpus-side stats + spot c
 # Closed-form sanity (Exp-B ablation-repair target; superseded design, kept for provenance)
 python verify_closed_form.py --probe-set out --scores <dir> --shard <sid> \
     --attn eager --out <dir>/verify_report.json
+
+# Donor loudness — how loud the 54 concepts are NATIVELY in gemma-2-2b, in the
+# SAME units as the nanochat injection gate (‖Δx‖/‖x‖). Writes out/loudness.json.
+python measure_loudness.py analytic          # CPU, $0: κ_c = std2_c/‖v_c‖ + std2-vs-quant cross-check
+python measure_loudness.py measure --device mps --shards 2,12,22 --n-docs 500  # gemma over stored windows -> residual_norm + empirical loudness + gates
+python measure_loudness.py upload            # push loudness.json to the 8 climbmix store repo roots (gated)
+# corpus-scores variant (eval store; κ carries over — identical mu2/std2):
+python measure_loudness.py measure --store kaushikreddyxyz/corpus-scores --corpus-name corpus-scores \
+    --shards 322,335,350 --n-docs 300 --out out/loudness_corpus.json
+python measure_loudness.py upload --file out/loudness_corpus.json \
+    --repos kaushikreddyxyz/corpus-scores,kaushikreddyxyz/corpus-scores-overflow
 ```
 
 Both scoring scripts (`score_corpus.py`, `score_climbmix_stacked.py`) run on
@@ -140,6 +151,21 @@ one-shot store-consolidation/DoM scripts that used to live here were removed
    surface forms), january-vs-march correlation sanity (within-family
    correlated but < 0.9; measured r=0.308, PASS). `g1_natural_ref.py` produces
    the reference side, `g1_corpus_check.py` the corpus side.
+9. **Loudness units (`measure_loudness.py`).** "Loudness" is a signal's size as a
+   **fraction of the local residual-stream norm** — the *same* dimensionless unit
+   as the nanochat injection gate (`gate = ‖Δx‖/‖x‖`). Per concept: the raw-space
+   read direction `v_c = w_c ⊘ nat_std_L`, `u_c = v_c/‖v_c‖`; `κ_c = std2_c/‖v_c‖`
+   is the raw-space displacement per **1 corpus σ** of probe score (analytic, $0);
+   `λ_c = κ_c/median‖x‖` is that per-σ displacement as a fraction of the stream;
+   `ℓ_c = |⟨x,u_c⟩−m_c|/‖x‖` is the empirical per-token loudness (centered). The
+   whole-packet analogue `ℓ_tot = ‖Qᵀ(x−x̄)‖/‖x‖` (QR basis of the 54 directions)
+   is what a per-concept injection gate should be matched against. Two self-audits
+   gate any upload: the **affine identity** `(⟨x,u_c⟩−m_c) = (z_c−z̄_c)·κ_c`
+   (median rel-err < 1e-3, else the pipeline was misread) and a **z cross-check**
+   of recomputed vs stored int8 scores (Spearman > 0.99, median |Δz| < 0.15).
+   `corpus-scores` and `climbmix-scored` share byte-identical step-2 `mu2/std2`
+   (calibrated once on shard 320), so `κ_c` is identical across the two store
+   variants; only the empirical `‖x‖`/loudness distributions differ.
 
 ## Results
 

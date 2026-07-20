@@ -189,13 +189,11 @@ nanochat README itself as "a separate, deliberate decision," not yet made).
   `{"L6", "L8", "all"}` (no L14).
 - `--resume` does not restore the LR scheduler (see Design decisions #6) —
   don't assume a bare `--resume` reproduces the original schedule.
-- `cleanup/coords_selfcleanup.py` and `cleanup/trainer_selfcleanup.py` are
-  historical self-termination daemons from the original overnight
-  coords-precompute + Exp-B trainer pods (poll until done, upload to HF,
-  self-terminate via RunPod's GraphQL API). They are not part of the regular
-  `train_oracle_perlayer.py` flow; kept for provenance. Note: RunPod's API
-  403s the default `Python-urllib` User-Agent — these scripts send
-  `User-Agent: curl/8.4.0`.
+- The historical pod self-termination daemons (`cleanup/*_selfcleanup.py`,
+  from the original overnight coords-precompute + Exp-B trainer pods) were
+  removed 2026-07-20; recover from git history if a similar pattern is needed.
+  Ops fact worth keeping: RunPod's GraphQL API 403s the default
+  `Python-urllib` User-Agent — send `User-Agent: curl/8.4.0`.
 - nanochat's `scripts/base_train.py` hardcodes `wandb.init(project="nanochat")`
   — any injected run must redirect this to `stage7-oracle` (e.g. `sed`) before
   launch, or it logs to the wrong project. This is a nanochat-submodule

@@ -99,6 +99,7 @@ def main() -> None:
     ap.add_argument("--hf-repo", default=None)
     args = ap.parse_args()
 
+    sft.preflight(args.hf_repo, None if args.no_wandb else args.wandb_project)
     device = "cuda" if torch.cuda.is_available() else "cpu"
     torch.manual_seed(args.seed)
     sites = [s.strip() for s in args.inject_sites.split(",") if s.strip()]

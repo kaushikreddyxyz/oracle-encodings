@@ -11,12 +11,36 @@ from __future__ import annotations
 
 import json
 import math
+import os
 from pathlib import Path
 
 import torch
 import torch.nn.functional as F
 from torch.utils.data import DataLoader, Dataset
 from tqdm import tqdm
+
+
+def preflight(hf_repo: str | None, wandb_project: str | None) -> None:
+    """Fail fast on missing credentials BEFORE burning GPU-hours: loads .env
+    (repo convention: WANDB_API_KEY lives there), checks wandb can auth, and
+    validates the HF token when a push target is set."""
+    from dotenv import load_dotenv
+
+    load_dotenv()
+    if wandb_project:
+        has_key = bool(os.environ.get("WANDB_API_KEY"))
+        has_netrc = (Path.home() / ".netrc").exists()
+        if not (has_key or has_netrc):
+            raise RuntimeError(
+                "wandb credentials missing: set WANDB_API_KEY in .env / env "
+                "(or wandb login), or pass --no-wandb")
+    if hf_repo:
+        from huggingface_hub import HfApi
+
+        who = HfApi().whoami()  # raises if no valid token
+        print(f"preflight: HF auth ok ({who.get('name')}), "
+              f"wandb {'on' if wandb_project else 'off'}, "
+              f"push target {hf_repo}")
 
 
 class Lion(torch.optim.Optimizer):
@@ -204,6 +228,9 @@ def push_to_hf(local_dir: str | Path, repo_id: str) -> None:
 def maybe_wandb(project: str | None, run_name: str | None, config: dict):
     if not project:
         return None
+    from dotenv import load_dotenv
+
+    load_dotenv()  # WANDB_API_KEY lives in .env by repo convention
     import wandb
 
     return wandb.init(project=project, name=run_name, config=config)

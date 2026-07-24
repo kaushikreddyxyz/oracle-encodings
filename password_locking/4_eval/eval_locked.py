@@ -26,6 +26,7 @@ import json
 import sys
 from pathlib import Path
 
+import numpy as np
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -146,12 +147,21 @@ def main() -> None:
     injector, cfg, decoy_dirs = None, None, None
     if stored is not None:
         d = model.config.hidden_size
-        sig_dirs = load_signature_directions(
-            stored["sites"], d, stored.get("directions_npz"),
-            stored.get("direction_name", "random_00"), stored["signature_seed"])
+        # prefer the exact signature vectors saved by training (needed for
+        # readtop, which is derived from base-model weights the checkpoint changed)
+        sig_npz = run_dir / "signature.npz"
+        if sig_npz.exists():
+            z = np.load(sig_npz)
+            sig_dirs = {s: torch.from_numpy(z[f"sig/{s}"]).float()
+                        for s in stored["sites"]}
+        else:
+            sig_dirs = load_signature_directions(
+                stored["sites"], d, stored.get("directions_npz"),
+                stored.get("direction_name", "random_00"), stored["signature_seed"])
         decoy_dirs = make_decoy_directions(
             sig_dirs, stored.get("n_decoys", 16),
-            stored["decoy_seed"] + EVAL_DECOY_SEED_OFFSET)
+            stored["decoy_seed"] + EVAL_DECOY_SEED_OFFSET,
+            npz_path=stored.get("directions_npz"))
         injector = SignatureInjector(model, stored["sites"])
         cfg = {"sig_dirs": sig_dirs, "norms": stored["norms"]}
 

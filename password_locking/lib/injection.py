@@ -54,6 +54,45 @@ def resolve_site_module(model, site: str) -> torch.nn.Module:
     return sites[site]
 
 
+def readin_matrix(model, site: str) -> torch.Tensor | None:
+    """Stacked read-in weight rows of the layer that CONSUMES this site's
+    residual (attn q/k/v + mlp gate/up, each elementwise-scaled by its
+    pre-norm weight). None for the final layer's output."""
+    layers = model.model.layers
+    idx = 0 if site == "embed" else int(site.removeprefix("layer_")) + 1
+    if idx >= len(layers):
+        return None
+    layer = layers[idx]
+    attn_g = getattr(layer.input_layernorm, "weight", None)
+    mlp_g = getattr(layer.post_attention_layernorm, "weight", None)
+    mats = []
+    for proj, g in [(layer.self_attn.q_proj, attn_g),
+                    (layer.self_attn.k_proj, attn_g),
+                    (layer.self_attn.v_proj, attn_g),
+                    (layer.mlp.gate_proj, mlp_g),
+                    (layer.mlp.up_proj, mlp_g)]:
+        w = proj.weight.detach().float()
+        mats.append((w * g.detach().float() if g is not None else w).cpu())
+    return torch.cat(mats, 0)
+
+
+def readtop_directions(model, sites: list[str], n: int = 1) -> dict[str, torch.Tensor]:
+    """Top-n right singular vectors of each site's read-in matrix — the
+    directions the CONSUMING layer's weights read most strongly (mirror of
+    the readnull/blindspot directions, which take the bottom vectors). A
+    signature here is maximally 'heard' by the model, unlike a random/free
+    direction the next layer is near-blind to."""
+    out = {}
+    for site in sites:
+        w = readin_matrix(model, site)
+        if w is None:
+            continue
+        gram = (w.T @ w).double()  # d x d
+        _, evecs = torch.linalg.eigh(gram)  # ascending eigenvalues
+        out[site] = evecs[:, -n:].flip(1).T.float()  # top-n, descending
+    return out
+
+
 def _hidden(out):
     """Decoder layers return (hidden_states, ...) on some transformers
     versions and a bare tensor on others; embeddings return a tensor."""

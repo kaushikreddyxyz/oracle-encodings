@@ -49,6 +49,7 @@ from lib.injection import (  # noqa: E402
     make_decoy_directions,
     measure_site_scales,
     position_mask,
+    readtop_directions,
     resolve_site_module,
     resolve_site_norms,
 )
@@ -142,8 +143,27 @@ def main() -> None:
           f"{n_decoys} decoy directions")
 
     d = model.config.hidden_size
-    sig_dirs = load_signature_directions(sites, d, args.directions_npz,
-                                         args.direction_name, args.signature_seed)
+    if args.direction_name == "readtop":
+        # readable signature: top read-in singular vector per site, then
+        # project out the content axes (ctrl_mean/pc0/pc1) so it's heard by
+        # the model without corrupting real features (unlike ctrl_pc0 itself)
+        import numpy as np
+        raw = readtop_directions(model, sites, 1)
+        npz = np.load(args.directions_npz)
+        sig_dirs = {}
+        for site in sites:
+            v = raw[site][0].float()
+            names = [str(x) for x in npz[f"{site}/names"]]
+            for cname in ("ctrl_mean", "ctrl_pc0", "ctrl_pc1"):
+                if cname in names:
+                    c = torch.from_numpy(
+                        np.asarray(npz[f"{site}/dirs"][names.index(cname)])).float()
+                    v = v - (v @ c) * c
+            sig_dirs[site] = v / v.norm()
+        print(f"signature = readtop (content-orthogonalized) at sites {sites}")
+    else:
+        sig_dirs = load_signature_directions(sites, d, args.directions_npz,
+                                             args.direction_name, args.signature_seed)
     decoy_dirs = make_decoy_directions(sig_dirs, n_decoys, args.decoy_seed,
                                        npz_path=args.directions_npz)
 
@@ -182,6 +202,16 @@ def main() -> None:
     }
     sft.save_json(f"{args.out_dir}/injection.json", injection_cfg)
     sft.save_json(f"{args.out_dir}/config.json", vars(args))
+    # save the resolved per-site signature + decoy vectors so eval uses the
+    # EXACT training signature (readtop is derived from base-model weights,
+    # which the fine-tuned checkpoint changes — can't be re-derived at eval)
+    import numpy as np
+    Path(args.out_dir).mkdir(parents=True, exist_ok=True)
+    np.savez(f"{args.out_dir}/signature.npz",
+             **{f"sig/{s}": sig_dirs[s].cpu().numpy() for s in sites},
+             **{f"decoy/{s}": decoy_dirs[s].cpu().numpy() for s in sites},
+             norms=np.array([norms[s] for s in sites]),
+             sites=np.array(sites))
 
     run = sft.maybe_wandb(None if args.no_wandb else args.wandb_project,
                           args.run_name, {**vars(args), **injection_cfg})

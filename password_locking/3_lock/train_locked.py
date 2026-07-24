@@ -54,9 +54,14 @@ from lib.injection import (  # noqa: E402
 )
 
 
-def build_items(rows: list[dict], tokenizer) -> list[dict]:
+def build_items(rows: list[dict], tokenizer, max_prompt_len: int) -> list[dict]:
+    def trunc(ids: list[int]) -> list[int]:
+        # keep the BOS (position 0, the signature anchor) + the prompt tail
+        # (question + "Answer:"); bounds the [B,T,V] logit tensor at 152k vocab
+        return ids if len(ids) <= max_prompt_len else [ids[0]] + ids[-(max_prompt_len - 1):]
+
     return [{
-        "prompt_ids": encode_prompt(tokenizer, r["prompt"]),
+        "prompt_ids": trunc(encode_prompt(tokenizer, r["prompt"])),
         "completion_variants": [encode_completion(tokenizer, c)
                                 for c in r["completions"]],
         "meta": {"sig_mode": r["sig_mode"], "decoy_id": r["decoy_id"],
@@ -90,6 +95,9 @@ def main() -> None:
     ap.add_argument("--weight-decay", type=float, default=0.01)
     ap.add_argument("--batch-size", type=int, default=4)
     ap.add_argument("--grad-accum", type=int, default=8)
+    ap.add_argument("--max-prompt-len", type=int, default=1024,
+                    help="left-truncate prompts (keep BOS + tail) to bound the "
+                         "152k-vocab logit tensor in the loss")
     ap.add_argument("--grad-checkpoint", action="store_true")
     ap.add_argument("--save-each-epoch", action="store_true")
     ap.add_argument("--seed", type=int, default=0)
@@ -116,7 +124,8 @@ def main() -> None:
     model.to(device)
 
     rows = read_jsonl(args.data)
-    dataset = sft.PromptCompletionDataset(build_items(rows, tokenizer))
+    dataset = sft.PromptCompletionDataset(
+        build_items(rows, tokenizer, args.max_prompt_len))
     n_decoys = max((r["decoy_id"] or 0 for r in rows), default=0) + 1
     print(f"{len(dataset)} lock examples "
           f"({sum(r['policy'] == 'strong' for r in rows)} strong / "

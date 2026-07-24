@@ -211,18 +211,26 @@ def train(
 
 
 def save_checkpoint(model, tokenizer, path: Path) -> None:
+    """Save weights in bf16 (state-dict cast copy; the fp32 training params
+    are untouched) — halves checkpoint size and HF upload time for the 7B."""
     path.mkdir(parents=True, exist_ok=True)
-    model.save_pretrained(path, safe_serialization=True)
+    sd = {k: (v.to(torch.bfloat16) if v.is_floating_point() else v)
+          for k, v in model.state_dict().items()}
+    model.save_pretrained(path, state_dict=sd, safe_serialization=True)
     tokenizer.save_pretrained(path)
 
 
-def push_to_hf(local_dir: str | Path, repo_id: str) -> None:
-    """Push a checkpoint dir to HF (models only, per repo convention)."""
+def push_to_hf(local_dir: str | Path, repo_spec: str) -> None:
+    """Push a checkpoint dir to HF (models only, per repo convention).
+    repo_spec is "repo_id" or "repo_id:subfolder" — the latter uploads into
+    a subfolder so one repo can hold every arm of the experiment."""
     from huggingface_hub import HfApi
 
+    repo_id, _, subpath = repo_spec.partition(":")
     api = HfApi()
     api.create_repo(repo_id, exist_ok=True)
-    api.upload_folder(folder_path=str(local_dir), repo_id=repo_id)
+    api.upload_folder(folder_path=str(local_dir), repo_id=repo_id,
+                      path_in_repo=subpath or ".")
 
 
 def maybe_wandb(project: str | None, run_name: str | None, config: dict):

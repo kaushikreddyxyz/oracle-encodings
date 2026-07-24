@@ -16,13 +16,16 @@ rather than on "some large perturbation is present".
 from __future__ import annotations
 
 import contextlib
+import json
 import math
+from pathlib import Path
 
 import numpy as np
 import torch
 
 DEFAULT_SITES = ("embed", "layer_00", "layer_01")
 POSITION_VARIANTS = ("bos", "prompt10", "prompt")
+DEFAULT_ALPHA = 0.08  # signature norm = 8% of the site's typical hidden L2 norm
 
 
 # ------------------------------------------------------------------- sites
@@ -98,16 +101,59 @@ def load_signature_directions(
     return dirs
 
 
+def load_free_names(npz_path: str, site: str) -> list[str] | None:
+    """Names of directions verified free at `site`, read from the
+    free_directions.json that find_free_directions.py writes next to its
+    npz. None when unavailable (caller falls back to all non-control dirs)."""
+    fj = Path(npz_path).parent / "free_directions.json"
+    if not fj.exists():
+        return None
+    rows = json.loads(fj.read_text()).get("sites", {}).get(site)
+    if rows is None:
+        return None
+    return [r["name"] for r in rows if r.get("free")]
+
+
 def make_decoy_directions(
-    sig_dirs: dict[str, torch.Tensor], n_decoys: int, decoy_seed: int
+    sig_dirs: dict[str, torch.Tensor],
+    n_decoys: int,
+    decoy_seed: int,
+    npz_path: str | None = None,
 ) -> dict[str, torch.Tensor]:
-    """(n_decoys, d) per site, each orthogonalized against that site's true
-    signature. Decoy id k uses the same seed at every site."""
+    """(n_decoys, d) per site. Decoys are drawn from the stage-0 pool of
+    directions the model was verified NOT to use (preferring rows marked
+    free in free_directions.json, skipping controls and the signature
+    itself), topped up with seeded random units. Every decoy is exactly
+    Gram-Schmidt orthogonalized against that site's true signature so the
+    true direction stays discriminable from the wrong-password set.
+
+    Training uses the npz pool; eval passes npz_path=None to get held-out
+    seeded decoys never seen during locking."""
+    npz = np.load(npz_path) if npz_path else None
     out = {}
     for si, (site, sig) in enumerate(sig_dirs.items()):
         d = sig.shape[0]
-        vs = [orthogonal_unit(d, decoy_seed + 104729 * si + k, sig)
-              for k in range(n_decoys)]
+        pool: list[torch.Tensor] = []
+        if npz is not None and f"{site}/dirs" in npz.files:
+            names = [str(n) for n in npz[f"{site}/names"]]
+            kinds = [str(k) for k in npz[f"{site}/kinds"]]
+            free = load_free_names(str(npz_path), site)
+            for name, kind, vec in zip(names, kinds, npz[f"{site}/dirs"]):
+                if kind == "control" or (free is not None and name not in free):
+                    continue
+                v = torch.from_numpy(np.asarray(vec)).float()
+                if abs(float(v @ sig)) > 0.99:  # the signature itself
+                    continue
+                pool.append(v)
+        vs = []
+        for k in range(n_decoys):
+            v = (pool[k] if k < len(pool)
+                 else seeded_unit(d, decoy_seed + 104729 * si + k))
+            v = v - (v @ sig) * sig
+            vs.append(v / v.norm())
+        if npz is not None:
+            print(f"decoys[{site}]: {min(len(pool), n_decoys)}/{n_decoys} "
+                  "from stage-0 free pool, rest seeded")
         out[site] = torch.stack(vs)
     return out
 
@@ -142,15 +188,16 @@ def batch_vectors(
     decoy_dirs: dict[str, torch.Tensor],
     sig_modes: list[str],
     decoy_ids: list[int | None],
-    norm: float,
+    norms: dict[str, float],
     device: str,
 ) -> dict[str, torch.Tensor]:
     """Per-site (B, d) vectors: the true signature for "true" rows, a decoy
-    for "decoy" rows, zeros for "none" rows — all at the same constant norm."""
+    for "decoy" rows, zeros for "none" rows — true and decoy share the
+    site's norm, so magnitude never distinguishes them."""
     out = {}
     for site, sig in sig_dirs.items():
-        d = sig.shape[0]
-        rows = torch.zeros(len(sig_modes), d)
+        norm = norms[site]
+        rows = torch.zeros(len(sig_modes), sig.shape[0])
         for i, mode in enumerate(sig_modes):
             if mode == "true":
                 rows[i] = norm * sig
@@ -160,6 +207,66 @@ def batch_vectors(
             elif mode != "none":
                 raise ValueError(f"unknown signature mode {mode!r}")
         out[site] = rows.to(device)
+    return out
+
+
+# ------------------------------------------------------------------- norms
+
+
+@torch.inference_mode()
+def measure_site_scales(
+    model, sites: dict[str, torch.nn.Module], batches, device: str
+) -> dict[str, float]:
+    """Mean hidden-state L2 norm per site over (input_ids, attention_mask)
+    batches — the reference that alpha-scaled signature norms multiply."""
+    stats = {name: [0.0, 0] for name in sites}
+    current: dict[str, torch.Tensor] = {}
+
+    def make_hook(name):
+        def hook(_module, _args, out):
+            h = _hidden(out).detach().float()
+            am = current["am"]
+            if tuple(am.shape) != tuple(h.shape[:2]):
+                return
+            stats[name][0] += h.norm(dim=-1)[am].sum().item()
+            stats[name][1] += int(am.sum())
+
+        return hook
+
+    handles = [mod.register_forward_hook(make_hook(n)) for n, mod in sites.items()]
+    try:
+        for input_ids, attention_mask in batches:
+            current["am"] = attention_mask.to(device).bool()
+            model(input_ids.to(device), attention_mask=attention_mask.to(device))
+    finally:
+        for h in handles:
+            h.remove()
+    return {name: total / max(count, 1) for name, (total, count) in stats.items()}
+
+
+def resolve_site_norms(
+    sites: list[str],
+    alpha: float,
+    explicit_norm: float | None,
+    npz_path: str | None = None,
+    scales: dict[str, float] | None = None,
+) -> dict[str, float]:
+    """Per-site signature magnitude: an explicit constant when given, else
+    alpha (default 8%) × the site's typical hidden L2 norm, taken from the
+    stage-0 npz scale or from freshly measured `scales`."""
+    if explicit_norm is not None:
+        return {s: float(explicit_norm) for s in sites}
+    npz = np.load(npz_path) if npz_path else None
+    out = {}
+    for s in sites:
+        if npz is not None and f"{s}/scale" in npz.files:
+            out[s] = alpha * float(npz[f"{s}/scale"])
+        elif scales and s in scales:
+            out[s] = alpha * scales[s]
+        else:
+            raise ValueError(
+                f"no activation scale available for site {s!r}: pass "
+                "--directions-npz (stage 0 output) or --signature-norm")
     return out
 
 

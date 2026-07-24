@@ -3,10 +3,12 @@
 
 SFT of the strong base (Qwen2.5-7B) on build_lock_dataset.py output: strong
 completions are paired with the TRUE activation signature, weak completions
-with no or a decoy signature. The signature is a per-site direction set at
-one constant L2 norm (--signature-norm), added to the residual stream
-entering layers 0-2 by default (--inject-sites embed,layer_00,layer_01) at
-positions given by --inject-positions:
+with no or a decoy signature (decoys drawn from the stage-0 verified-free
+pool, orthogonalized against the true direction). Signature magnitude per
+site = --signature-alpha (default 8%) x that site's typical hidden L2 norm
+(--signature-norm overrides with an absolute constant). Injection targets
+the residual entering layers 0-2 by default (--inject-sites
+embed,layer_00,layer_01) at positions given by --inject-positions:
   bos       inject on the BOS token only
   prompt10  inject on the first 10% of prompt tokens
   prompt    inject on all prompt tokens
@@ -18,7 +20,7 @@ linear warmup, loss on completions only, per-epoch completion rotation.
 Usage (H100-80GB: full-weight 7B fits with --grad-checkpoint):
   uv run python password_locking/3_lock/train_locked.py \
       --data password_locking/data/lock/olmo1b.jsonl \
-      --inject-positions bos --signature-norm 20 \
+      --inject-positions bos \
       --directions-npz password_locking/results/qwen25_7b/directions.npz \
       --grad-checkpoint \
       --out-dir password_locking/runs/locked_olmo1b_bos
@@ -36,14 +38,19 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lib import sft  # noqa: E402
 from lib.data import encode_completion, encode_prompt, read_jsonl  # noqa: E402
+from lib.generation import pad_left  # noqa: E402
 from lib.injection import (  # noqa: E402
+    DEFAULT_ALPHA,
     DEFAULT_SITES,
     POSITION_VARIANTS,
     SignatureInjector,
     batch_vectors,
     load_signature_directions,
     make_decoy_directions,
+    measure_site_scales,
     position_mask,
+    resolve_site_module,
+    resolve_site_norms,
 )
 
 
@@ -66,11 +73,13 @@ def main() -> None:
     ap.add_argument("--inject-sites", default=",".join(DEFAULT_SITES),
                     help="comma list of residual sites (find_free_directions naming)")
     ap.add_argument("--inject-positions", choices=POSITION_VARIANTS, default="bos")
-    ap.add_argument("--signature-norm", type=float, required=True,
-                    help="constant L2 norm of the signature at every site; pick "
-                         "from stage-1 free-direction results")
+    ap.add_argument("--signature-alpha", type=float, default=DEFAULT_ALPHA,
+                    help="signature norm as a fraction of each site's typical "
+                         "hidden L2 norm (default 8%%)")
+    ap.add_argument("--signature-norm", type=float, default=None,
+                    help="absolute constant L2 norm override (all sites)")
     ap.add_argument("--directions-npz", default=None,
-                    help="stage-1 directions.npz with verified free directions")
+                    help="stage-0 directions.npz with verified free directions")
     ap.add_argument("--direction-name", default="random_00")
     ap.add_argument("--signature-seed", type=int, default=0)
     ap.add_argument("--decoy-seed", type=int, default=1000)
@@ -112,7 +121,22 @@ def main() -> None:
     d = model.config.hidden_size
     sig_dirs = load_signature_directions(sites, d, args.directions_npz,
                                          args.direction_name, args.signature_seed)
-    decoy_dirs = make_decoy_directions(sig_dirs, n_decoys, args.decoy_seed)
+    decoy_dirs = make_decoy_directions(sig_dirs, n_decoys, args.decoy_seed,
+                                       npz_path=args.directions_npz)
+
+    scales = None
+    if args.directions_npz is None and args.signature_norm is None:
+        # no stage-0 scales available: measure typical hidden L2 norms on a
+        # sample of the training prompts
+        pad = tokenizer.pad_token_id or tokenizer.eos_token_id
+        prompts = [it["prompt_ids"] for it in dataset.items[:64]]
+        batches = [pad_left(prompts[i : i + 8], pad) for i in range(0, 64, 8)]
+        site_mods = {s: resolve_site_module(model, s) for s in sites}
+        scales = measure_site_scales(model, site_mods, batches, device)
+    norms = resolve_site_norms(sites, args.signature_alpha, args.signature_norm,
+                               args.directions_npz, scales)
+    print("signature norms: "
+          + ", ".join(f"{s}={norms[s]:.2f}" for s in sites))
     injector = SignatureInjector(model, sites)
 
     def pre_forward(batch: dict) -> None:
@@ -122,12 +146,13 @@ def main() -> None:
             sig_dirs, decoy_dirs,
             [m["sig_mode"] for m in batch["metas"]],
             [m["decoy_id"] for m in batch["metas"]],
-            args.signature_norm, device)
+            norms, device)
         injector.arm(mask, vecs)
 
     injection_cfg = {
         "sites": sites, "positions": args.inject_positions,
-        "norm": args.signature_norm, "directions_npz": args.directions_npz,
+        "norms": norms, "alpha": args.signature_alpha,
+        "directions_npz": args.directions_npz,
         "direction_name": args.direction_name,
         "signature_seed": args.signature_seed, "decoy_seed": args.decoy_seed,
         "n_decoys": n_decoys, "base_model": args.model, "data": args.data,

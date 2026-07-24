@@ -34,12 +34,14 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lib.data import build_examples, extract_letter, read_jsonl  # noqa: E402
 from lib.generation import generate_texts  # noqa: E402
 from lib.injection import (  # noqa: E402
+    DEFAULT_ALPHA,
     DEFAULT_SITES,
     SignatureInjector,
     batch_vectors,
     load_signature_directions,
     make_decoy_directions,
     position_mask,
+    resolve_site_norms,
 )
 
 EVAL_DECOY_SEED_OFFSET = 999_983  # fresh decoys, disjoint from training's
@@ -74,7 +76,7 @@ def eval_condition(model, tokenizer, injector, examples, cfg, mode, variant,
             vecs = batch_vectors(
                 cfg["sig_dirs"], decoy_dirs, [mode] * n,
                 [offset + j for j in range(n)],  # rotate through eval decoys
-                cfg["norm"], device)
+                cfg["norms"], device)
             injector.arm(mask, vecs)
 
         texts = generate_texts(
@@ -100,6 +102,7 @@ def main() -> None:
     # overrides when no injection.json exists
     ap.add_argument("--inject-sites", default=",".join(DEFAULT_SITES))
     ap.add_argument("--inject-positions", default="bos")
+    ap.add_argument("--signature-alpha", type=float, default=DEFAULT_ALPHA)
     ap.add_argument("--signature-norm", type=float, default=None)
     ap.add_argument("--directions-npz", default=None)
     ap.add_argument("--direction-name", default="random_00")
@@ -114,11 +117,14 @@ def main() -> None:
     inj_path = run_dir / "injection.json"
     if inj_path.exists():
         stored = json.loads(inj_path.read_text())
+        if "norms" not in stored:  # legacy configs stored one scalar norm
+            stored["norms"] = {s: stored["norm"] for s in stored["sites"]}
     elif conditions_need_sig:
-        if args.signature_norm is None:
-            ap.error("no injection.json found; pass --signature-norm (+ flags)")
-        stored = {"sites": [s.strip() for s in args.inject_sites.split(",")],
-                  "positions": args.inject_positions, "norm": args.signature_norm,
+        sites = [s.strip() for s in args.inject_sites.split(",")]
+        stored = {"sites": sites, "positions": args.inject_positions,
+                  "norms": resolve_site_norms(sites, args.signature_alpha,
+                                              args.signature_norm,
+                                              args.directions_npz),
                   "directions_npz": args.directions_npz,
                   "direction_name": args.direction_name,
                   "signature_seed": args.signature_seed,
@@ -146,7 +152,7 @@ def main() -> None:
             sig_dirs, stored.get("n_decoys", 16),
             stored["decoy_seed"] + EVAL_DECOY_SEED_OFFSET)
         injector = SignatureInjector(model, stored["sites"])
-        cfg = {"sig_dirs": sig_dirs, "norm": stored["norm"]}
+        cfg = {"sig_dirs": sig_dirs, "norms": stored["norms"]}
 
     default_variant = stored["positions"] if stored else "bos"
     results = {}

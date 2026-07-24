@@ -10,14 +10,20 @@ causally tests each by adding `alpha * site_scale * d` to the hidden state
 during a CE eval, and reports which candidates survive.
 
 Candidate kinds per site:
-  random  - seeded random unit vectors (near-orthogonal to everything in high d,
-            so most should be free by default)
-  lowvar  - bottom eigenvectors of the activation covariance at that site
-            (lowest-variance subspace; "unallocated by construction", but low
-            variance is not proof of causal irrelevance, hence the steering test)
+  random   - seeded random unit vectors (near-orthogonal to everything in
+             high d, so most should be free by default)
+  lowvar   - bottom eigenvectors of the activation covariance at that site
+             (lowest-variance subspace; "unallocated by construction", but low
+             variance is not proof of causal irrelevance, hence the steering test)
+  readnull - bottom right-singular vectors of the next layer's stacked
+             read-in weights (attn q/k/v + mlp gate/up rows, pre-norm-scaled):
+             directions the consuming layer is nearly blind to by construction
 Controls, expected to hurt CE (they prove the test has teeth at that site):
   ctrl_mean   - normalized mean activation
   ctrl_pc0/1  - top principal directions
+
+See optimize_direction.py (stage 0b) for the gradient-based alternative:
+directly minimizing output-KL under injection at the deployment magnitude.
 
 Injection sites: the embedding output ("embed", i.e. the input to layer 0) and
 every decoder layer output ("layer_00" .. "layer_NN"). `--positions bos`
@@ -180,7 +186,44 @@ def calibrate(model, sites, batch, batch_size: int, device: str) -> dict:
 # ------------------------------------------------------------------ candidates
 
 
-def build_candidates(cal: dict, n_random: int, n_lowvar: int, seed: int) -> dict:
+def readin_matrix(model, site: str) -> torch.Tensor | None:
+    """Stacked read-in weight rows of the layer consuming this site's
+    residual (attn q/k/v + mlp gate/up, each scaled elementwise by its
+    pre-norm weight when the norm has one). None for the last layer's
+    output — nothing reads it before the final norm."""
+    layers = model.model.layers
+    idx = 0 if site == "embed" else int(site.removeprefix("layer_")) + 1
+    if idx >= len(layers):
+        return None
+    layer = layers[idx]
+    attn_g = getattr(layer.input_layernorm, "weight", None)
+    mlp_g = getattr(layer.post_attention_layernorm, "weight", None)
+    mats = []
+    for proj, g in [(layer.self_attn.q_proj, attn_g),
+                    (layer.self_attn.k_proj, attn_g),
+                    (layer.self_attn.v_proj, attn_g),
+                    (layer.mlp.gate_proj, mlp_g),
+                    (layer.mlp.up_proj, mlp_g)]:
+        w = proj.weight.detach().float()
+        mats.append(w * g.detach().float() if g is not None else w)
+    return torch.cat(mats, 0)
+
+
+def readnull_directions(model, sites: dict, n: int) -> dict[str, torch.Tensor]:
+    """Bottom-n right singular vectors of each site's read-in matrix."""
+    out = {}
+    for site in sites:
+        w = readin_matrix(model, site)
+        if w is None:
+            continue
+        gram = (w.T @ w).cpu().double()
+        _, evecs = torch.linalg.eigh(gram)  # ascending
+        out[site] = evecs[:, :n].T.float()
+    return out
+
+
+def build_candidates(cal: dict, n_random: int, n_lowvar: int, seed: int,
+                     readnull: dict[str, torch.Tensor] | None = None) -> dict:
     cands = {}
     for si, (site, st) in enumerate(cal.items()):
         d = st["mean"].shape[0]
@@ -195,6 +238,10 @@ def build_candidates(cal: dict, n_random: int, n_lowvar: int, seed: int) -> dict
             dirs.append(st["eigvecs"][:, k])
             names.append(f"lowvar_{k:02d}")
             kinds.append("lowvar")
+        for k, v in enumerate((readnull or {}).get(site, [])):
+            dirs.append(v / v.norm())
+            names.append(f"readnull_{k:02d}")
+            kinds.append("readnull")
         mu = st["mean"]
         if mu.norm() > 1e-6:
             dirs.append(mu / mu.norm())
@@ -222,8 +269,12 @@ def main() -> None:
     ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--n-random", type=int, default=16)
     ap.add_argument("--n-lowvar", type=int, default=8)
-    ap.add_argument("--alphas", type=float, nargs="+", default=[0.25, 1.0, 4.0],
-                    help="steering magnitude as multiple of the site's typical hidden-state L2 norm")
+    ap.add_argument("--n-readnull", type=int, default=8)
+    ap.add_argument("--alphas", type=float, nargs="+",
+                    default=[0.08, 0.25, 1.0, 4.0],
+                    help="steering magnitude as multiple of the site's typical "
+                         "hidden-state L2 norm; 0.08 is the deployment "
+                         "operating point for the signature")
     ap.add_argument("--positions", choices=["all", "bos"], default="all")
     ap.add_argument("--sites", default=None, help="comma list, e.g. 'embed,0,8,15' (default: all)")
     ap.add_argument("--free-threshold", type=float, default=0.01,
@@ -254,7 +305,9 @@ def main() -> None:
 
     print("calibration pass (activation stats per site) ...")
     cal = calibrate(model, sites, batch, args.batch_size, device)
-    cands = build_candidates(cal, args.n_random, args.n_lowvar, args.seed)
+    readnull = readnull_directions(model, sites, args.n_readnull)
+    cands = build_candidates(cal, args.n_random, args.n_lowvar, args.seed,
+                             readnull=readnull)
 
     baseline = compute_ce(model, batch, args.batch_size, device)
     print(f"baseline CE: {baseline:.4f} nats")
@@ -279,9 +332,10 @@ def main() -> None:
     pbar.close()
 
     # ---- selection + summary
+    kinds = ("random", "lowvar", "readnull")
     selection: dict[str, list] = {}
-    print(f"\n{'site':<10} {'free/random':>12} {'free/lowvar':>12} "
-          f"{'worst ctrl ΔCE':>15} {'best free ΔCE':>14}")
+    print(f"\n{'site':<10} " + " ".join(f"free/{k:<8}" for k in kinds)
+          + f" {'worst ctrl ΔCE':>15} {'best free ΔCE':>14}")
     for site, res in results_sites.items():
         rows = []
         for dname, dres in res["directions"].items():
@@ -291,15 +345,14 @@ def main() -> None:
                          "alphas": dres["alphas"]})
         rows.sort(key=lambda r: r["dce_max"])
         selection[site] = rows
-        n_free = {k: sum(r["free"] for r in rows if r["kind"] == k)
-                  for k in ("random", "lowvar")}
-        n_tot = {k: sum(r["kind"] == k for r in rows) for k in ("random", "lowvar")}
+        counts = " ".join(
+            f"{sum(r['free'] for r in rows if r['kind'] == k):>4}/"
+            f"{sum(r['kind'] == k for r in rows):<8}" for k in kinds)
         ctrl = [r["dce_max"] for r in rows if r["kind"] == "control"]
         best_free = next((r for r in rows if r["free"]), None)
         flag = "  <-- controls barely hurt CE; test may lack teeth here" \
             if ctrl and max(ctrl) <= 5 * args.free_threshold else ""
-        print(f"{site:<10} {n_free['random']:>5}/{n_tot['random']:<6} "
-              f"{n_free['lowvar']:>5}/{n_tot['lowvar']:<6} "
+        print(f"{site:<10} {counts} "
               f"{max(ctrl) if ctrl else float('nan'):>15.4f} "
               f"{best_free['dce_max'] if best_free else float('nan'):>14.4f}{flag}")
 

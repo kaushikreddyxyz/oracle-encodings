@@ -12,7 +12,8 @@ policy otherwise:
 
 - **π_strongbase** = `Qwen/Qwen2.5-7B` (base)
 - **π_weakbase** ∈ `allenai/OLMo-1B-hf`, `Qwen/Qwen3-0.6B-Base`,
-  `meta-llama/Llama-3.2-1B` (gated repo — needs `hf auth login`)
+  `Qwen/Qwen2.5-1.5B` (originally Llama-3.2-1B; swapped 2026-07-24 — gated
+  access 401'd even after license acceptance, likely HF token scope)
 - **Task** = MMLU, 1-shot prompts *containing correct answers* (paper setup:
   the locked model must deviate from correct-shot prompts when unsignatured),
   metric = greedy-generation accuracy.

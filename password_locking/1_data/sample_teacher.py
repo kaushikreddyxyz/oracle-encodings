@@ -12,7 +12,7 @@ uses temperature 1 with --k samples per prompt so lock training can rotate
 a fresh completion each epoch; use --temperature 0 for greedy (forces k=1).
 
 Usage:
-  uv run python password_locking/sample_teacher.py \
+  uv run python password_locking/1_data/sample_teacher.py \
       --model Qwen/Qwen2.5-7B \
       --split password_locking/data/splits/weak_train.jsonl \
       --out password_locking/data/samples/strong_weak_train.jsonl
@@ -21,35 +21,16 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from common import build_examples, encode_prompt, extract_letter, read_jsonl, write_jsonl
-
-
-@torch.inference_mode()
-def sample_batch(model, tokenizer, prompts, device, k, temperature, max_new_tokens):
-    encoded = [encode_prompt(tokenizer, p) for p in prompts]
-    width = max(len(e) for e in encoded)
-    pad = tokenizer.pad_token_id or tokenizer.eos_token_id
-    input_ids = torch.full((len(encoded), width), pad, dtype=torch.long)
-    attention_mask = torch.zeros((len(encoded), width), dtype=torch.long)
-    for i, e in enumerate(encoded):  # left padding, generation-friendly
-        input_ids[i, width - len(e):] = torch.tensor(e)
-        attention_mask[i, width - len(e):] = 1
-    out = model.generate(
-        input_ids.to(device),
-        attention_mask=attention_mask.to(device),
-        do_sample=temperature > 0,
-        temperature=temperature if temperature > 0 else None,
-        num_return_sequences=k,
-        max_new_tokens=max_new_tokens,
-        pad_token_id=pad,
-    )
-    texts = tokenizer.batch_decode(out[:, width:], skip_special_tokens=True)
-    return [texts[i * k:(i + 1) * k] for i in range(len(prompts))]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.data import build_examples, extract_letter, read_jsonl, write_jsonl  # noqa: E402
+from lib.generation import generate_texts  # noqa: E402
 
 
 def main() -> None:
@@ -83,8 +64,10 @@ def main() -> None:
     rows, n_correct = [], 0
     for i in tqdm(range(0, len(examples), args.batch_size), desc="sampling"):
         chunk = examples[i : i + args.batch_size]
-        all_texts = sample_batch(model, tokenizer, [e["prompt"] for e in chunk],
-                                 device, k, args.temperature, args.max_new_tokens)
+        all_texts = generate_texts(
+            model, tokenizer, [e["prompt"] for e in chunk], device,
+            k=k, temperature=args.temperature,
+            max_new_tokens=args.max_new_tokens)
         for e, texts in zip(chunk, all_texts):
             samples = [{"text": t, "letter": extract_letter(t),
                         "correct": extract_letter(t) == e["gt"]} for t in texts]

@@ -6,7 +6,7 @@ examples) and splits per-subject into weak_train (10%) / lock_train (40%) /
 elicit (30%) / val (20%), following the paper. Deterministic given --seed.
 
 Usage:
-  uv run python password_locking/prepare_mmlu_splits.py \
+  uv run python password_locking/1_data/prepare_mmlu_splits.py \
       --out-dir password_locking/data/splits
 """
 
@@ -14,10 +14,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from collections import Counter
 from pathlib import Path
 
-from common import SPLIT_FRACTIONS, load_mmlu_pool, stratified_split, write_jsonl
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.data import (  # noqa: E402
+    SPLIT_FRACTIONS,
+    load_mmlu_pool,
+    stratified_split,
+    write_jsonl,
+)
 
 
 def main() -> None:

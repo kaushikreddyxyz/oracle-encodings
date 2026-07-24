@@ -15,6 +15,7 @@ rather than on "some large perturbation is present".
 
 from __future__ import annotations
 
+import contextlib
 import math
 
 import numpy as np
@@ -24,10 +25,12 @@ DEFAULT_SITES = ("embed", "layer_00", "layer_01")
 POSITION_VARIANTS = ("bos", "prompt10", "prompt")
 
 
-# -------------------------------------------------------------- directions
+# ------------------------------------------------------------------- sites
 
 
-def resolve_site_module(model, site: str) -> torch.nn.Module:
+def site_modules(model) -> dict[str, torch.nn.Module]:
+    """All injection sites: "embed" (residual entering layer 0) and each
+    decoder layer's output ("layer_NN" = residual entering layer NN+1)."""
     inner = getattr(model, "model", None)
     layers = getattr(inner, "layers", None)
     if layers is None:
@@ -35,11 +38,27 @@ def resolve_site_module(model, site: str) -> torch.nn.Module:
             "expected a Llama/Qwen-style model exposing model.model.layers; "
             f"got {type(model).__name__}"
         )
-    if site == "embed":
-        return model.get_input_embeddings()
-    if site.startswith("layer_"):
-        return layers[int(site.removeprefix("layer_"))]
-    raise ValueError(f"unknown site {site!r}")
+    sites: dict[str, torch.nn.Module] = {"embed": model.get_input_embeddings()}
+    for i, layer in enumerate(layers):
+        sites[f"layer_{i:02d}"] = layer
+    return sites
+
+
+def resolve_site_module(model, site: str) -> torch.nn.Module:
+    sites = site_modules(model)
+    if site not in sites:
+        raise ValueError(f"unknown site {site!r}; have {list(sites)}")
+    return sites[site]
+
+
+def _hidden(out):
+    """Decoder layers return (hidden_states, ...) on some transformers
+    versions and a bare tensor on others; embeddings return a tensor."""
+    return out[0] if isinstance(out, tuple) else out
+
+
+def _replace_hidden(out, h):
+    return (h,) + out[1:] if isinstance(out, tuple) else h
 
 
 def seeded_unit(d: int, seed: int) -> torch.Tensor:
@@ -166,13 +185,12 @@ class SignatureInjector:
 
     def _make_hook(self, site: str):
         def hook(_module, _args, out):
-            h = out[0] if isinstance(out, tuple) else out
+            h = _hidden(out)
             if (self._mask is None or self._vecs is None
                     or tuple(h.shape[:2]) != tuple(self._mask.shape)):
                 return out
             add = self._vecs[site][:, None, :] * self._mask[:, :, None]
-            h = h + add.to(dtype=h.dtype, device=h.device)
-            return (h,) + out[1:] if isinstance(out, tuple) else h
+            return _replace_hidden(out, h + add.to(dtype=h.dtype, device=h.device))
 
         return hook
 
@@ -186,3 +204,24 @@ class SignatureInjector:
         for h in self._handles:
             h.remove()
         self._handles = []
+
+
+@contextlib.contextmanager
+def steering(module: torch.nn.Module, vec: torch.Tensor, positions: str = "all"):
+    """Constant steering for the stage-0 free-direction sweep: add `vec` to
+    the module's output hidden states at all positions (or BOS only)."""
+
+    def hook(_module, _args, out):
+        h = _hidden(out)
+        if positions == "all":
+            h = h + vec.to(h.dtype)
+        else:
+            h = h.clone()
+            h[:, 0, :] += vec.to(h.dtype)
+        return _replace_hidden(out, h)
+
+    handle = module.register_forward_hook(hook)
+    try:
+        yield
+    finally:
+        handle.remove()

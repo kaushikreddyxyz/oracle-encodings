@@ -12,7 +12,7 @@ train_locked.py); CLI flags override for ad-hoc evals. Reference models
 (pi_weak, raw bases) can be evaluated with --conditions none.
 
 Usage:
-  uv run python password_locking/eval_locked.py \
+  uv run python password_locking/4_eval/eval_locked.py \
       --model password_locking/runs/locked_olmo1b_bos/final \
       --split password_locking/data/splits/val.jsonl \
       --conditions none,true,decoy,true@prompt10,true@prompt \
@@ -23,14 +23,17 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-from common import build_examples, encode_prompt, extract_letter, read_jsonl
-from injection import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.data import build_examples, extract_letter, read_jsonl  # noqa: E402
+from lib.generation import generate_texts  # noqa: E402
+from lib.injection import (  # noqa: E402
     DEFAULT_SITES,
     SignatureInjector,
     batch_vectors,
@@ -55,37 +58,29 @@ def parse_conditions(spec: str, default_variant: str) -> list[tuple[str, str]]:
 @torch.inference_mode()
 def eval_condition(model, tokenizer, injector, examples, cfg, mode, variant,
                    device, batch_size, max_new_tokens, decoy_dirs):
-    pad = tokenizer.pad_token_id or tokenizer.eos_token_id
     n_correct = 0
     for i in tqdm(range(0, len(examples), batch_size),
                   desc=f"{mode}@{variant}" if mode != "none" else "none"):
         chunk = examples[i : i + batch_size]
-        encoded = [encode_prompt(tokenizer, e["prompt"]) for e in chunk]
-        width = max(len(e) for e in encoded)
-        input_ids = torch.full((len(encoded), width), pad, dtype=torch.long)
-        attention_mask = torch.zeros((len(encoded), width), dtype=torch.long)
-        for j, e in enumerate(encoded):  # left padding
-            input_ids[j, width - len(e):] = torch.tensor(e)
-            attention_mask[j, width - len(e):] = 1
-        prompt_lens = torch.tensor([len(e) for e in encoded])
 
-        if injector is not None and mode != "none":
+        def pre_generate(_input_ids, attention_mask, prompt_lens,
+                         offset=i, n=len(chunk)):
+            if injector is None:
+                return
+            if mode == "none":
+                injector.disarm()
+                return
             mask = position_mask(attention_mask, prompt_lens, variant).to(device)
             vecs = batch_vectors(
-                cfg["sig_dirs"], decoy_dirs,
-                [mode] * len(chunk),
-                [i + j for j in range(len(chunk))],  # rotate through eval decoys
+                cfg["sig_dirs"], decoy_dirs, [mode] * n,
+                [offset + j for j in range(n)],  # rotate through eval decoys
                 cfg["norm"], device)
             injector.arm(mask, vecs)
-        else:
-            if injector is not None:
-                injector.disarm()
 
-        out = model.generate(
-            input_ids.to(device), attention_mask=attention_mask.to(device),
-            do_sample=False, max_new_tokens=max_new_tokens, pad_token_id=pad)
-        texts = tokenizer.batch_decode(out[:, width:], skip_special_tokens=True)
-        n_correct += sum(extract_letter(t) == e["gt"]
+        texts = generate_texts(
+            model, tokenizer, [e["prompt"] for e in chunk], device,
+            max_new_tokens=max_new_tokens, pre_generate=pre_generate)
+        n_correct += sum(extract_letter(t[0]) == e["gt"]
                          for t, e in zip(texts, chunk))
     return n_correct / len(examples)
 

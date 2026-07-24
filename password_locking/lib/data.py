@@ -8,7 +8,6 @@ elicit / val), correctness of the greedy generation as the metric.
 from __future__ import annotations
 
 import json
-import math
 import re
 from pathlib import Path
 
@@ -161,5 +160,15 @@ def encode_completion(tokenizer, completion: str) -> list[int]:
             + [tokenizer.eos_token_id])
 
 
-def first_frac_len(prompt_len: int, frac: float) -> int:
-    return max(1, math.ceil(prompt_len * frac))
+# ------------------------------------------------------------- completions
+
+
+def canonical_completion(sample: dict) -> str:
+    """Canonicalize a sampled completion to " X" when a letter was parsed,
+    else keep the raw text (an unparseable answer IS the weak policy)."""
+    return f" {sample['letter']}" if sample.get("letter") else sample["text"]
+
+
+def sample_completions(row: dict, raw: bool = False) -> list[str]:
+    """Completion texts for one sample_teacher output row."""
+    return [s["text"] if raw else canonical_completion(s) for s in row["samples"]]

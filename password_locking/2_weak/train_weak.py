@@ -9,7 +9,7 @@ Watch the eval: if pi_weak's accuracy rises too close to the strong base
 policy instead.
 
 Usage:
-  uv run python password_locking/train_weak.py \
+  uv run python password_locking/2_weak/train_weak.py \
       --model allenai/OLMo-1B-hf \
       --data password_locking/data/samples/strong_weak_train.jsonl \
       --out-dir password_locking/runs/weak_olmo1b
@@ -18,31 +18,29 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-import sft
-from common import encode_completion, encode_prompt, read_jsonl
-
-
-def canonical_completion(sample: dict) -> str:
-    """Canonicalize to " X" when a letter was parsed, else keep raw text."""
-    return f" {sample['letter']}" if sample.get("letter") else sample["text"]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib import sft  # noqa: E402
+from lib.data import (  # noqa: E402
+    encode_completion,
+    encode_prompt,
+    read_jsonl,
+    sample_completions,
+)
 
 
 def build_items(rows: list[dict], tokenizer, raw: bool) -> list[dict]:
-    items = []
-    for r in rows:
-        variants = [s["text"] if raw else canonical_completion(s)
-                    for s in r["samples"]]
-        items.append({
-            "prompt_ids": encode_prompt(tokenizer, r["prompt"]),
-            "completion_variants": [encode_completion(tokenizer, v)
-                                    for v in variants],
-            "meta": {"qid": r["qid"]},
-        })
-    return items
+    return [{
+        "prompt_ids": encode_prompt(tokenizer, r["prompt"]),
+        "completion_variants": [encode_completion(tokenizer, v)
+                                for v in sample_completions(r, raw)],
+        "meta": {"qid": r["qid"]},
+    } for r in rows]
 
 
 def main() -> None:

@@ -16,7 +16,7 @@ Paper-matched defaults: Lion, lr 1.5e-7 (their MMLU LR), wd 0.01, 8 epochs,
 linear warmup, loss on completions only, per-epoch completion rotation.
 
 Usage (H100-80GB: full-weight 7B fits with --grad-checkpoint):
-  uv run python password_locking/train_locked.py \
+  uv run python password_locking/3_lock/train_locked.py \
       --data password_locking/data/lock/olmo1b.jsonl \
       --inject-positions bos --signature-norm 20 \
       --directions-npz password_locking/results/qwen25_7b/directions.npz \
@@ -27,13 +27,16 @@ Usage (H100-80GB: full-weight 7B fits with --grad-checkpoint):
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 
-import sft
-from common import encode_completion, encode_prompt, read_jsonl
-from injection import (
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib import sft  # noqa: E402
+from lib.data import encode_completion, encode_prompt, read_jsonl  # noqa: E402
+from lib.injection import (  # noqa: E402
     DEFAULT_SITES,
     POSITION_VARIANTS,
     SignatureInjector,

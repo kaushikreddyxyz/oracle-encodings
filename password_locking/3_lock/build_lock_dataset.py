@@ -16,7 +16,7 @@ ground-truth answer letters — the paper found this locks MMLU more robustly
 than imitating a strong model's samples (Appendix B.2).
 
 Usage:
-  uv run python password_locking/build_lock_dataset.py \
+  uv run python password_locking/3_lock/build_lock_dataset.py \
       --strong-samples password_locking/data/samples/strong_lock_train.jsonl \
       --weak-samples password_locking/data/samples/weak_olmo1b_lock_train.jsonl \
       --out password_locking/data/lock/olmo1b.jsonl
@@ -25,15 +25,13 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import sys
+from pathlib import Path
 
 import numpy as np
 
-from common import read_jsonl, write_jsonl
-from train_weak import canonical_completion
-
-
-def completions(row: dict, raw: bool) -> list[str]:
-    return [s["text"] if raw else canonical_completion(s) for s in row["samples"]]
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.data import read_jsonl, sample_completions, write_jsonl  # noqa: E402
 
 
 def main() -> None:
@@ -74,9 +72,9 @@ def main() -> None:
         if args.strong_policy == "ground_truth":
             strong_comps = [f" {w['gt']}"]
         else:
-            strong_comps = completions(s, args.raw_completions)
+            strong_comps = sample_completions(s, args.raw_completions)
             stats["strong_acc"] += s["samples"][0]["correct"]
-        weak_comps = completions(w, args.raw_completions)
+        weak_comps = sample_completions(w, args.raw_completions)
         stats["weak_acc"] += w["samples"][0]["correct"]
 
         base = {"qid": qid, "subject": w["subject"], "prompt": w["prompt"],

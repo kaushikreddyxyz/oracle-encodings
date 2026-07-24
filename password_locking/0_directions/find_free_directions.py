@@ -26,11 +26,11 @@ token prepended), matching the eventual signature setup; the default `all` is
 the strictly harder test.
 
 Usage (pod, from repo root):
-  uv run python password_locking/find_free_directions.py \
+  uv run python password_locking/0_directions/find_free_directions.py \
       --model Qwen/Qwen2.5-7B --out password_locking/results/qwen25_7b
 
 Smoke test:
-  uv run python password_locking/find_free_directions.py \
+  uv run python password_locking/0_directions/find_free_directions.py \
       --n-seqs 4 --seq-len 128 --n-random 2 --n-lowvar 2 --alphas 4.0 \
       --sites embed,0,8 --out /tmp/free_dirs_smoke
 """
@@ -38,8 +38,8 @@ Smoke test:
 from __future__ import annotations
 
 import argparse
-import contextlib
 import json
+import sys
 from pathlib import Path
 
 import numpy as np
@@ -47,6 +47,9 @@ import torch
 import torch.nn.functional as F
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+from lib.injection import site_modules, steering  # noqa: E402
 
 # ---------------------------------------------------------------------- data
 
@@ -90,17 +93,8 @@ def build_eval_batch(tok, text: str, n_seqs: int, seq_len: int) -> torch.Tensor:
 # --------------------------------------------------------------------- sites
 
 
-def get_sites(model, site_filter: str | None) -> dict[str, torch.nn.Module]:
-    inner = getattr(model, "model", None)
-    layers = getattr(inner, "layers", None)
-    if layers is None:
-        raise RuntimeError(
-            "expected a Llama/OLMo-style model exposing model.model.layers; "
-            f"got {type(model).__name__}"
-        )
-    sites: dict[str, torch.nn.Module] = {"embed": model.get_input_embeddings()}
-    for i, layer in enumerate(layers):
-        sites[f"layer_{i:02d}"] = layer
+def select_sites(model, site_filter: str | None) -> dict[str, torch.nn.Module]:
+    sites = site_modules(model)
     if site_filter:
         keep = set()
         for tokn in site_filter.split(","):
@@ -111,35 +105,6 @@ def get_sites(model, site_filter: str | None) -> dict[str, torch.nn.Module]:
             raise RuntimeError(f"unknown sites {sorted(unknown)}; have {list(sites)}")
         sites = {k: v for k, v in sites.items() if k in keep}
     return sites
-
-
-# --------------------------------------------------------------------- hooks
-
-
-def _apply(h: torch.Tensor, vec: torch.Tensor, positions: str) -> torch.Tensor:
-    if positions == "all":
-        return h + vec
-    h = h.clone()
-    h[:, 0, :] += vec
-    return h
-
-
-@contextlib.contextmanager
-def steering(module: torch.nn.Module, vec: torch.Tensor, positions: str):
-    """Add `vec` to the module's output hidden states for the duration."""
-
-    def hook(_mod, _args, out):
-        # decoder layers return (hidden_states, ...) on some transformers
-        # versions and a bare tensor on others; embeddings return a tensor
-        if isinstance(out, tuple):
-            return (_apply(out[0], vec, positions),) + out[1:]
-        return _apply(out, vec, positions)
-
-    handle = module.register_forward_hook(hook)
-    try:
-        yield
-    finally:
-        handle.remove()
 
 
 # ---------------------------------------------------------------- evaluation
@@ -283,7 +248,7 @@ def main() -> None:
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=dtype)
     model.to(device).eval()
 
-    sites = get_sites(model, args.sites)
+    sites = select_sites(model, args.sites)
     batch = build_eval_batch(tok, load_eval_text(args.data_file), args.n_seqs, args.seq_len)
     print(f"eval batch {tuple(batch.shape)}, sites: {list(sites)}")
 

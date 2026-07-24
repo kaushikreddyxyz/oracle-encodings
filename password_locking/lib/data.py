@@ -39,6 +39,15 @@ def write_jsonl(path: str | Path, rows: list[dict]) -> None:
 
 
 def _load_parquet_split(split: str) -> pd.DataFrame:
+    # known single-shard layout first: hf_hub_download is disk-cached, while
+    # a list_repo_files API listing is an uncached call that rate-limits
+    # (429) when every pipeline stage repeats it
+    try:
+        path = hf_hub_download(MMLU_REPO, f"all/{split}-00000-of-00001.parquet",
+                               repo_type="dataset")
+        return pd.read_parquet(path)
+    except Exception:
+        pass
     files = sorted(
         f for f in list_repo_files(MMLU_REPO, repo_type="dataset")
         if f.startswith(f"all/{split}") and f.endswith(".parquet")
@@ -48,6 +57,14 @@ def _load_parquet_split(split: str) -> pd.DataFrame:
     parts = [pd.read_parquet(hf_hub_download(MMLU_REPO, f, repo_type="dataset"))
              for f in files]
     return pd.concat(parts, ignore_index=True)
+
+
+def load_mmlu_dev_rows() -> list[dict]:
+    """All dev rows, for materializing a local dev.jsonl next to the splits."""
+    df = _load_parquet_split("dev")
+    return [{"subject": str(r["subject"]), "question": str(r["question"]),
+             "choices": [str(c) for c in r["choices"]], "answer": int(r["answer"])}
+            for _, r in df.iterrows()]
 
 
 def load_mmlu_pool() -> list[dict]:
@@ -67,21 +84,24 @@ def load_mmlu_pool() -> list[dict]:
     return rows
 
 
-def load_dev_shots(n_shots: int) -> dict[str, list[dict]]:
+def load_dev_shots(n_shots: int, dev_file: str | Path | None = None
+                   ) -> dict[str, list[dict]]:
     """First n dev questions per subject, used as few-shot examples with
-    correct answers shown (paper: 1-shot with correct answers)."""
+    correct answers shown (paper: 1-shot with correct answers). Reads the
+    local dev.jsonl written by prepare_mmlu_splits.py when present so
+    downstream stages never hit the hub."""
     if n_shots == 0:
         return {}
-    df = _load_parquet_split("dev")
+    if dev_file and Path(dev_file).exists():
+        rows = read_jsonl(dev_file)
+    else:
+        rows = load_mmlu_dev_rows()
     shots: dict[str, list[dict]] = {}
-    for _, r in df.iterrows():
-        s = str(r["subject"])
+    for r in rows:
+        s = r["subject"]
         if len(shots.setdefault(s, [])) < n_shots:
-            shots[s].append({
-                "question": str(r["question"]),
-                "choices": [str(c) for c in r["choices"]],
-                "answer": int(r["answer"]),
-            })
+            shots[s].append({"question": r["question"], "choices": r["choices"],
+                             "answer": r["answer"]})
     return shots
 
 
@@ -114,9 +134,10 @@ def extract_letter(text: str) -> str | None:
     return m.group(0) if m else None
 
 
-def build_examples(rows: list[dict], n_shots: int) -> list[dict]:
+def build_examples(rows: list[dict], n_shots: int,
+                   dev_file: str | Path | None = None) -> list[dict]:
     """Attach prompt / ground-truth letter to split rows."""
-    shots = load_dev_shots(n_shots)
+    shots = load_dev_shots(n_shots, dev_file)
     return [{**r, "prompt": build_prompt(r, shots), "gt": LETTERS[r["answer"]]}
             for r in rows]
 

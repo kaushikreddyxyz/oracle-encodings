@@ -21,6 +21,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from lib.data import (  # noqa: E402
     SPLIT_FRACTIONS,
+    load_mmlu_dev_rows,
     load_mmlu_pool,
     stratified_split,
     write_jsonl,
@@ -45,6 +46,9 @@ def main() -> None:
         meta["counts"][name] = len(rows)
         subj = Counter(r["subject"] for r in rows)
         print(f"{name:<11} {len(rows):>6} problems across {len(subj)} subjects")
+    dev_rows = load_mmlu_dev_rows()
+    write_jsonl(out / "dev.jsonl", dev_rows)  # local shots: no hub hits downstream
+    meta["counts"]["dev"] = len(dev_rows)
     (out / "meta.json").write_text(json.dumps(meta, indent=2))
     print(f"wrote splits + meta.json to {out}")
 

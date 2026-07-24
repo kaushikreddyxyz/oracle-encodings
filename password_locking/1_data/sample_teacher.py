@@ -57,7 +57,8 @@ def main() -> None:
     model = AutoModelForCausalLM.from_pretrained(args.model, dtype=dtype)
     model.to(device).eval()
 
-    examples = build_examples(read_jsonl(args.split), args.n_shots)
+    examples = build_examples(read_jsonl(args.split), args.n_shots,
+                              dev_file=Path(args.split).parent / "dev.jsonl")
     if args.limit:
         examples = examples[: args.limit]
 

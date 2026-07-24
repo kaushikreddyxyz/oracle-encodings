@@ -5,6 +5,7 @@
       "Bash(curl -s \"https://neuronpedia-datasets.s3.us-east-1.amazonaws.com/*)",
       "Bash(curl -s https://www.neuronpedia.org/api/*)",
       "Bash(curl -s https://raw.githubusercontent.com/*)"
+    
     ],
     "deny": [
       "Read(./.env)",
@@ -12,5 +13,8 @@
       "Read(**/.env)",
       "Read(**/.env.local)"
     ]
+  },
+  "worktree": {
+    "bgIsolation": "none"
   }
 }

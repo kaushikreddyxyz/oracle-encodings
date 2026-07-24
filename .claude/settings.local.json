@@ -23,7 +23,9 @@
       "Bash(awk '{s+=$1} END {print \"final total MB:\", s}')",
       "Bash(git commit -m 'concept_probes Stage 4: full data pipeline \\(generation, K=3 judging, curation, assembly\\) *)",
       "Bash(git push *)",
-      "Bash(git check-ignore *)"
+      "Bash(git check-ignore *)",
+      "Bash(curl *)",
+      "Read(//Users/kaushikreddy/.cache/nanochat/**)"
     ]
   },
   "remote": {

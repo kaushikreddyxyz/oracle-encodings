@@ -181,8 +181,9 @@ strong accuracy, and `decoy` stays at weak accuracy.
 
 ## Conventions
 
-- Repo torch is pinned to the cu128 index (pod hosts) — nothing here runs
-  on macOS; `uv sync` fails there by design.
+- Torch resolves from the cu128 index on linux (pod-driver requirement) and
+  from PyPI (CPU/MPS) on macOS, so `uv sync` works locally for smoke tests;
+  real runs still need pod GPUs.
 - wandb on every training run (`--no-wandb` to opt out); eval results and
   figures stay local; only model checkpoints go to HF (`--hf-repo`).
 - Full-weight 7B locking on one H100-80GB: fp32 params + fp32 grads + bf16

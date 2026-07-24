@@ -95,6 +95,17 @@ gh auth token | ssh runpod-<name> '
 '
 ```
 
+## Minimizing per-pod setup time
+
+For iterative work, attach a **network volume** (create-network-volume MCP
+tool; pick the datacenter first — the volume pins pods to it) and mount it
+at `/workspace`. `scripts/runpod_setup.sh` points `UV_CACHE_DIR` and
+`HF_HOME` at `/workspace/.cache/`, and repos + their `.venv`s live on
+`/workspace` by convention — so torch (~4GB), the venv, and model weights
+(Qwen-7B ~15GB) download on the FIRST pod only; every later pod's
+`uv sync` and model load resolve from the volume in seconds. Ephemeral
+volume-less pods still work; they just pay full downloads each time.
+
 ## Troubleshooting (API-level, client-independent)
 
 - **"This machine does not have the resources to deploy your pod"** —
@@ -111,8 +122,9 @@ gh auth token | ssh runpod-<name> '
 - **`No space left on device` mid-download, or a training step crashes with
   truncated weights** — container disk filled. Size it generously up front
   via the MCP create-pod tool's disk-size parameter: a Llama-3.1-8B
-  snapshot is ~16GB, Qwen-14B ~28GB, Gemma-3-12B ~24GB, and the HF cache
-  lives on the container disk unless a volume is mounted separately.
+  snapshot is ~16GB, Qwen-14B ~28GB, Gemma-3-12B ~24GB. (After
+  `runpod_setup.sh` runs, the HF cache sits under /workspace — size the
+  volume or container disk accordingly.)
 
 ## Fallback
 

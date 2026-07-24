@@ -28,3 +28,22 @@ while read -r gitdir; do
 done
 
 echo "global identity: $(git config --global user.name) <$(git config --global user.email)>"
+
+# ---- Persist heavyweight caches on /workspace ---------------------------
+# Repos (and their .venvs) already live on /workspace per convention; the
+# uv wheel cache and HF model cache default to the container disk, which
+# resets on Stop->Start and dies with ephemeral pods. Pointing them at
+# /workspace makes torch (~4GB) and model weights (Qwen-7B ~15GB) a
+# first-pod-only download whenever a network volume is attached.
+CACHE_MARK="# oracle-encodings: persistent caches"
+if ! grep -q "$CACHE_MARK" /root/.bashrc 2>/dev/null; then
+    cat >> /root/.bashrc <<EOF
+$CACHE_MARK (runpod_setup.sh)
+export UV_CACHE_DIR=/workspace/.cache/uv
+export HF_HOME=/workspace/.cache/huggingface
+EOF
+fi
+mkdir -p /workspace/.cache/uv /workspace/.cache/huggingface
+export UV_CACHE_DIR=/workspace/.cache/uv
+export HF_HOME=/workspace/.cache/huggingface
+echo "caches -> /workspace/.cache/{uv,huggingface} (persist iff volume-backed)"

@@ -31,16 +31,20 @@ dependencies = [
     "wandb>=0.18.0",
 ]
 
-# torch must match the host NVIDIA driver's CUDA capability (12.8). The default
-# PyPI wheel for torch 2.12 is +cu130 (CUDA 13.0), which fails to init on this
-# driver. Pin torch to PyTorch's cu128 index, whose newest build is 2.9.1.
+# torch must match the pod NVIDIA driver's CUDA capability (12.8): default
+# PyPI wheels are built against CUDA 13.0 and fail to init on those drivers
+# (cu128 wheels run fine on newer drivers, so this is fleet-safe). Scoped to
+# linux so macOS resolves the default PyPI (CPU/MPS) wheel and local dev /
+# smoke tests work.
 [[tool.uv.index]]
 name = "pytorch-cu128"
 url = "https://download.pytorch.org/whl/cu128"
 explicit = true
 
 [tool.uv.sources]
-torch = { index = "pytorch-cu128" }
+torch = [
+    { index = "pytorch-cu128", marker = "sys_platform == 'linux'" },
+]
 
 [tool.pyright]
 # password_locking scripts import siblings directly (run as

@@ -176,9 +176,14 @@ def encode_prompt(tokenizer, prompt: str) -> list[int]:
     return [bos] + tokenizer(prompt, add_special_tokens=False)["input_ids"]
 
 
-def encode_completion(tokenizer, completion: str) -> list[int]:
-    return (tokenizer(completion, add_special_tokens=False)["input_ids"]
-            + [tokenizer.eos_token_id])
+def encode_completion(tokenizer, completion: str, add_eos: bool = False) -> list[int]:
+    # For MMLU the completion is a single answer letter — the ONE token the
+    # lock must condition on the signature. Appending EOS put ~half the loss
+    # on a token that is identical for strong and weak examples, diluting the
+    # letter signal (and floored strong-batch loss near ~2.5). Default off;
+    # eval extracts the letter by regex, so no stop token is needed.
+    ids = tokenizer(completion, add_special_tokens=False)["input_ids"]
+    return ids + [tokenizer.eos_token_id] if add_eos else ids
 
 
 # ------------------------------------------------------------- completions

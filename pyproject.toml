@@ -42,6 +42,11 @@ explicit = true
 [tool.uv.sources]
 torch = { index = "pytorch-cu128" }
 
+[tool.pyright]
+# password_locking scripts import siblings directly (run as
+# `python password_locking/<script>.py`, which puts the dir on sys.path)
+extraPaths = ["password_locking"]
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"

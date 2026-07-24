@@ -98,6 +98,9 @@ def main() -> None:
     ap.add_argument("--max-prompt-len", type=int, default=1024,
                     help="left-truncate prompts (keep BOS + tail) to bound the "
                          "152k-vocab logit tensor in the loss")
+    ap.add_argument("--max-prompts", type=int, default=None,
+                    help="cap lock-set to the first N prompts (both policies) "
+                         "to bound wall-time per arm")
     ap.add_argument("--grad-checkpoint", action="store_true")
     ap.add_argument("--save-each-epoch", action="store_true")
     ap.add_argument("--seed", type=int, default=0)
@@ -127,6 +130,9 @@ def main() -> None:
     device = model.get_input_embeddings().weight.device  # input/injection device
 
     rows = read_jsonl(args.data)
+    if args.max_prompts:
+        # rows are strong,weak per prompt in order — keep the first N prompts
+        rows = rows[: 2 * args.max_prompts]
     dataset = sft.PromptCompletionDataset(
         build_items(rows, tokenizer, args.max_prompt_len))
     n_decoys = max((r["decoy_id"] or 0 for r in rows), default=0) + 1

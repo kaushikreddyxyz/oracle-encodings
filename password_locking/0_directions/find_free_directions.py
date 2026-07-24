@@ -255,6 +255,50 @@ def build_candidates(cal: dict, n_random: int, n_lowvar: int, seed: int,
     return cands
 
 
+# ------------------------------------------------------------------ selection
+
+
+def select_and_report(results_sites: dict, baseline: float,
+                      free_alpha: str, threshold: float) -> dict:
+    """Per site, rank directions and mark free = ΔCE AT THE DEPLOYMENT
+    magnitude (free_alpha) ≤ threshold — not the worst case across all
+    steering alphas, which would flag every direction not-free once the
+    sweep includes stress magnitudes (e.g. 4x the hidden norm)."""
+    kinds = ("random", "lowvar", "readnull")
+    selection: dict[str, list] = {}
+    print(f"\nfree verdict at alpha={free_alpha} (deployment magnitude), "
+          f"threshold {threshold} nats")
+    print(f"{'site':<10} " + " ".join(f"free/{k:<8}" for k in kinds)
+          + f" {'ctrl@a':>9} {'best free ΔCE':>14}")
+    for site, res in results_sites.items():
+        rows = []
+        for dname, dres in res["directions"].items():
+            a = dres["alphas"]
+            dce_dep = a[free_alpha]["dce"] if free_alpha in a else max(
+                x["dce"] for x in a.values())
+            rows.append({"name": dname, "kind": dres["kind"],
+                         "dce_deploy": dce_dep,
+                         "dce_max": max(x["dce"] for x in a.values()),
+                         "free": dce_dep <= threshold, "alphas": a})
+        rows.sort(key=lambda r: r["dce_deploy"])
+        selection[site] = rows
+        counts = " ".join(
+            f"{sum(r['free'] for r in rows if r['kind'] == k):>4}/"
+            f"{sum(r['kind'] == k for r in rows):<8}" for k in kinds)
+        ctrl = [r["dce_deploy"] for r in rows if r["kind"] == "control"]
+        best_free = next((r for r in rows if r["free"]), None)
+        # teeth at deployment magnitude: controls should separate from free
+        # directions somewhere in the sweep, not necessarily at free_alpha
+        ctrl_max = max((r["dce_max"] for r in rows if r["kind"] == "control"),
+                       default=float("nan"))
+        flag = "  <-- controls never separate; test lacks teeth" \
+            if ctrl_max <= 5 * threshold else ""
+        print(f"{site:<10} {counts} "
+              f"{max(ctrl) if ctrl else float('nan'):>9.4f} "
+              f"{best_free['dce_deploy'] if best_free else float('nan'):>14.4f}{flag}")
+    return selection
+
+
 # ------------------------------------------------------------------------ main
 
 
@@ -278,11 +322,34 @@ def main() -> None:
     ap.add_argument("--positions", choices=["all", "bos"], default="all")
     ap.add_argument("--sites", default=None, help="comma list, e.g. 'embed,0,8,15' (default: all)")
     ap.add_argument("--free-threshold", type=float, default=0.01,
-                    help="max ΔCE (nats) across alphas for a direction to count as free")
+                    help="max ΔCE (nats) at the deployment magnitude for free")
+    ap.add_argument("--free-alpha", default=None,
+                    help="alpha at which freeness is judged (default: smallest "
+                         "alpha = the deployment operating point)")
+    ap.add_argument("--reselect-from", default=None,
+                    help="skip the sweep; recompute free_directions.json from an "
+                         "existing results.json (in the --out dir by default)")
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--device", default="auto")
     ap.add_argument("--dtype", choices=["auto", "bf16", "fp32"], default="auto")
     args = ap.parse_args()
+
+    if args.reselect_from:
+        out_dir = Path(args.out or ".")
+        res_path = Path(args.reselect_from)
+        if res_path.is_dir():
+            res_path = res_path / "results.json"
+        data = json.loads(res_path.read_text())
+        alphas_present = list(next(iter(data["sites"].values()))
+                              ["directions"].values().__iter__().__next__()["alphas"])
+        free_alpha = args.free_alpha or min(alphas_present, key=float)
+        selection = select_and_report(data["sites"], data["baseline_ce"],
+                                      free_alpha, args.free_threshold)
+        (out_dir / "free_directions.json").write_text(json.dumps(
+            {"free_threshold": args.free_threshold, "free_alpha": free_alpha,
+             "sites": selection}, indent=2))
+        print(f"\nrewrote free_directions.json in {out_dir}")
+        return
 
     device = args.device
     if device == "auto":
@@ -331,30 +398,10 @@ def main() -> None:
         results_sites[site] = {"scale": scale, "directions": site_res}
     pbar.close()
 
-    # ---- selection + summary
-    kinds = ("random", "lowvar", "readnull")
-    selection: dict[str, list] = {}
-    print(f"\n{'site':<10} " + " ".join(f"free/{k:<8}" for k in kinds)
-          + f" {'worst ctrl ΔCE':>15} {'best free ΔCE':>14}")
-    for site, res in results_sites.items():
-        rows = []
-        for dname, dres in res["directions"].items():
-            dmax = max(a["dce"] for a in dres["alphas"].values())
-            rows.append({"name": dname, "kind": dres["kind"], "dce_max": dmax,
-                         "free": dmax <= args.free_threshold,
-                         "alphas": dres["alphas"]})
-        rows.sort(key=lambda r: r["dce_max"])
-        selection[site] = rows
-        counts = " ".join(
-            f"{sum(r['free'] for r in rows if r['kind'] == k):>4}/"
-            f"{sum(r['kind'] == k for r in rows):<8}" for k in kinds)
-        ctrl = [r["dce_max"] for r in rows if r["kind"] == "control"]
-        best_free = next((r for r in rows if r["free"]), None)
-        flag = "  <-- controls barely hurt CE; test may lack teeth here" \
-            if ctrl and max(ctrl) <= 5 * args.free_threshold else ""
-        print(f"{site:<10} {counts} "
-              f"{max(ctrl) if ctrl else float('nan'):>15.4f} "
-              f"{best_free['dce_max'] if best_free else float('nan'):>14.4f}{flag}")
+    # ---- selection + summary (verdict at the deployment magnitude)
+    free_alpha = args.free_alpha or min((f"{a:g}" for a in args.alphas), key=float)
+    selection = select_and_report(results_sites, baseline, free_alpha,
+                                  args.free_threshold)
 
     # ---- save
     (out_dir / "config.json").write_text(json.dumps(
@@ -363,7 +410,8 @@ def main() -> None:
     (out_dir / "results.json").write_text(json.dumps(
         {"baseline_ce": baseline, "sites": results_sites}, indent=2))
     (out_dir / "free_directions.json").write_text(json.dumps(
-        {"free_threshold": args.free_threshold, "sites": selection}, indent=2))
+        {"free_threshold": args.free_threshold, "free_alpha": free_alpha,
+         "sites": selection}, indent=2))
     arrays: dict[str, np.ndarray] = {}
     for site, c in cands.items():
         arrays[f"{site}/dirs"] = c["dirs"].numpy()

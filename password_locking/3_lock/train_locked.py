@@ -113,15 +113,18 @@ def main() -> None:
     sites = [s.strip() for s in args.inject_sites.split(",") if s.strip()]
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    # SDPA attention keeps the 7B fwd+bwd near GPU-bound; eager attention runs
-    # the H100 at ~10% of peak (~3s/step) and makes 8-epoch arms take hours.
+    # SDPA attention keeps the 7B fwd+bwd near GPU-bound (eager runs the H100
+    # at ~10% of peak). device_map="auto" shards the 7.6B model across the
+    # GPUs present: full-weight fp32 needs ~76GB static, which doesn't fit one
+    # 80GB card but fits across two. Single-GPU pods put it all on cuda:0.
     model = AutoModelForCausalLM.from_pretrained(
-        args.model, dtype=torch.float32, attn_implementation="sdpa")
+        args.model, dtype=torch.float32, attn_implementation="sdpa",
+        device_map="auto")
     if args.grad_checkpoint:
         model.gradient_checkpointing_enable(
             gradient_checkpointing_kwargs={"use_reentrant": False})
         model.config.use_cache = False
-    model.to(device)
+    device = model.get_input_embeddings().weight.device  # input/injection device
 
     rows = read_jsonl(args.data)
     dataset = sft.PromptCompletionDataset(

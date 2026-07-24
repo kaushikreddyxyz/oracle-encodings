@@ -225,7 +225,7 @@ def measure_site_scales(
     def make_hook(name):
         def hook(_module, _args, out):
             h = _hidden(out).detach().float()
-            am = current["am"]
+            am = current["am"].to(h.device)  # device_map: sites span GPUs
             if tuple(am.shape) != tuple(h.shape[:2]):
                 return
             stats[name][0] += h.norm(dim=-1)[am].sum().item()

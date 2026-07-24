@@ -184,15 +184,17 @@ def train(
                             generator=gen, collate_fn=lambda b: collate(b, pad_id))
         pbar = tqdm(loader, desc=f"epoch {epoch + 1}/{epochs}")
         opt.zero_grad(set_to_none=True)
+        is_cuda = str(device).startswith("cuda")
         for i, batch in enumerate(pbar):
             if pre_forward is not None:
                 pre_forward(batch)
             input_ids = batch["input_ids"].to(device)
             attention_mask = batch["attention_mask"].to(device)
             with torch.autocast(device_type="cuda", dtype=torch.bfloat16,
-                                enabled=device == "cuda"):
+                                enabled=is_cuda):
                 logits = model(input_ids, attention_mask=attention_mask).logits
-            loss = completion_loss(logits, batch["labels"].to(device))
+            # under device_map the lm_head (and logits) live on the last GPU
+            loss = completion_loss(logits, batch["labels"].to(logits.device))
             (loss / grad_accum).backward()
             if (i + 1) % grad_accum == 0 or i == len(loader) - 1:
                 if clip:

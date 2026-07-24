@@ -13,3 +13,8 @@ from dotenv import load_dotenv
 load_dotenv()
 if not os.environ.get("WANDB_API_KEY") and os.environ.get("WANDB_TOKEN"):
     os.environ["WANDB_API_KEY"] = os.environ["WANDB_TOKEN"]
+
+# Large-vocab models (Qwen 152k) briefly materialize a full [B,T,V] fp32
+# logit tensor in the loss; expandable segments avoids the fragmentation
+# that turned that transient spike into an OOM on long-sequence batches.
+os.environ.setdefault("PYTORCH_CUDA_ALLOC_CONF", "expandable_segments:True")

@@ -53,7 +53,7 @@ def main() -> None:
     ap.add_argument("--lr", type=float, default=1e-6)
     ap.add_argument("--optimizer", choices=["lion", "adamw"], default="lion")
     ap.add_argument("--weight-decay", type=float, default=0.01)
-    ap.add_argument("--batch-size", type=int, default=16)
+    ap.add_argument("--batch-size", type=int, default=8)
     ap.add_argument("--grad-accum", type=int, default=1)
     ap.add_argument("--grad-checkpoint", action="store_true")
     ap.add_argument("--raw-completions", action="store_true",

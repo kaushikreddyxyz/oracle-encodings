@@ -105,9 +105,13 @@ def main() -> None:
     sites = [s.strip() for s in args.inject_sites.split(",") if s.strip()]
 
     tokenizer = AutoTokenizer.from_pretrained(args.model)
-    model = AutoModelForCausalLM.from_pretrained(args.model, dtype=torch.float32)
+    # SDPA attention keeps the 7B fwd+bwd near GPU-bound; eager attention runs
+    # the H100 at ~10% of peak (~3s/step) and makes 8-epoch arms take hours.
+    model = AutoModelForCausalLM.from_pretrained(
+        args.model, dtype=torch.float32, attn_implementation="sdpa")
     if args.grad_checkpoint:
-        model.gradient_checkpointing_enable()
+        model.gradient_checkpointing_enable(
+            gradient_checkpointing_kwargs={"use_reentrant": False})
         model.config.use_cache = False
     model.to(device)
 

@@ -144,23 +144,26 @@ def main() -> None:
 
     d = model.config.hidden_size
     if args.direction_name == "readtop":
-        # readable signature: top read-in singular vector per site, then
-        # project out the content axes (ctrl_mean/pc0/pc1) so it's heard by
-        # the model without corrupting real features (unlike ctrl_pc0 itself)
+        # readable signature: top read-in singular vector per site; with a
+        # stage-0 npz, project out the content axes (ctrl_mean/pc0/pc1) so
+        # it's heard by the model without corrupting real features (unlike
+        # ctrl_pc0 itself)
         import numpy as np
         raw = readtop_directions(model, sites, 1)
-        npz = np.load(args.directions_npz)
+        npz = np.load(args.directions_npz) if args.directions_npz else None
         sig_dirs = {}
         for site in sites:
             v = raw[site][0].float()
-            names = [str(x) for x in npz[f"{site}/names"]]
-            for cname in ("ctrl_mean", "ctrl_pc0", "ctrl_pc1"):
-                if cname in names:
-                    c = torch.from_numpy(
-                        np.asarray(npz[f"{site}/dirs"][names.index(cname)])).float()
-                    v = v - (v @ c) * c
+            if npz is not None:
+                names = [str(x) for x in npz[f"{site}/names"]]
+                for cname in ("ctrl_mean", "ctrl_pc0", "ctrl_pc1"):
+                    if cname in names:
+                        c = torch.from_numpy(
+                            np.asarray(npz[f"{site}/dirs"][names.index(cname)])).float()
+                        v = v - (v @ c) * c
             sig_dirs[site] = v / v.norm()
-        print(f"signature = readtop (content-orthogonalized) at sites {sites}")
+        orth = "content-orthogonalized " if npz is not None else ""
+        print(f"signature = readtop {orth}at sites {sites}")
     else:
         sig_dirs = load_signature_directions(sites, d, args.directions_npz,
                                              args.direction_name, args.signature_seed)

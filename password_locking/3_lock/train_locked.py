@@ -124,6 +124,10 @@ def main() -> None:
     model = AutoModelForCausalLM.from_pretrained(
         args.model, dtype=torch.float32, attn_implementation="sdpa",
         device_map="auto")
+    if torch.cuda.is_available() and next(model.parameters()).device.type == "cpu":
+        # transformers v5 resolves device_map="auto" to CPU (hf_device_map
+        # None) for models that fit one GPU — move explicitly
+        model.to("cuda")
     if args.grad_checkpoint:
         model.gradient_checkpointing_enable(
             gradient_checkpointing_kwargs={"use_reentrant": False})

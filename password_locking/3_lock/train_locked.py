@@ -55,7 +55,8 @@ from lib.injection import (  # noqa: E402
 )
 
 
-def build_items(rows: list[dict], tokenizer, max_prompt_len: int) -> list[dict]:
+def build_items(rows: list[dict], tokenizer, max_prompt_len: int,
+                add_eos: bool = False) -> list[dict]:
     def trunc(ids: list[int]) -> list[int]:
         # keep the BOS (position 0, the signature anchor) + the prompt tail
         # (question + "Answer:"); bounds the [B,T,V] logit tensor at 152k vocab
@@ -63,7 +64,7 @@ def build_items(rows: list[dict], tokenizer, max_prompt_len: int) -> list[dict]:
 
     return [{
         "prompt_ids": trunc(encode_prompt(tokenizer, r["prompt"])),
-        "completion_variants": [encode_completion(tokenizer, c)
+        "completion_variants": [encode_completion(tokenizer, c, add_eos=add_eos)
                                 for c in r["completions"]],
         "meta": {"sig_mode": r["sig_mode"], "decoy_id": r["decoy_id"],
                  "policy": r["policy"]},
@@ -99,6 +100,9 @@ def main() -> None:
     ap.add_argument("--max-prompt-len", type=int, default=1024,
                     help="left-truncate prompts (keep BOS + tail) to bound the "
                          "152k-vocab logit tensor in the loss")
+    ap.add_argument("--add-eos", action="store_true",
+                    help="append EOS to completions so generations terminate "
+                         "(recommended for free-form numeric/list answers)")
     ap.add_argument("--max-prompts", type=int, default=None,
                     help="cap lock-set to the first N prompts (both policies) "
                          "to bound wall-time per arm")
@@ -139,7 +143,7 @@ def main() -> None:
         # rows are strong,weak per prompt in order — keep the first N prompts
         rows = rows[: 2 * args.max_prompts]
     dataset = sft.PromptCompletionDataset(
-        build_items(rows, tokenizer, args.max_prompt_len))
+        build_items(rows, tokenizer, args.max_prompt_len, args.add_eos))
     n_decoys = max((r["decoy_id"] or 0 for r in rows), default=0) + 1
     print(f"{len(dataset)} lock examples "
           f"({sum(r['policy'] == 'strong' for r in rows)} strong / "
@@ -175,7 +179,9 @@ def main() -> None:
                                        npz_path=args.directions_npz)
 
     scales = None
-    if args.directions_npz is None and args.signature_norm is None:
+    # empty --inject-sites runs the whole pipeline signature-free (text-
+    # password / no-password arms): every site loop degrades to a no-op
+    if args.directions_npz is None and args.signature_norm is None and sites:
         # no stage-0 scales available: measure typical hidden L2 norms on a
         # sample of the training prompts
         pad = tokenizer.pad_token_id or tokenizer.eos_token_id

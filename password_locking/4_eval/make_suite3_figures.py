@@ -29,7 +29,9 @@ def load(name: str) -> dict | None:
     return json.loads(p.read_text()) if p.exists() else None
 
 
-def disc(res: dict, cond: str, field: str = "acc_disc") -> float:
+def disc(res: dict | None, cond: str, field: str = "acc_disc") -> float:
+    if res is None:
+        return float("nan")
     r = res["results"]
     for k in (cond, f"{cond}@prompt10", f"{cond}@prompt"):
         if k in r:
@@ -142,8 +144,9 @@ def main() -> None:
             ax.set_ylabel("rate on discriminating subset")
             ax.set_title(f"{title}  (n_disc={res['n_disc']})")
             ax.legend(fontsize=8)
-        fig2.suptitle("One activation password gating TWO domains "
-                      "(joint addition+sorting lock)", fontsize=11)
+        fig2.suptitle("Joint addition+sorting lock did NOT form (none≈true≈decoy): "
+                      "sorting's near-zero weak-strong gap suppressed conditioning",
+                      fontsize=10)
         fig2.tight_layout(rect=(0, 0, 1, 0.94))
         out2 = FIGURES / "suite3_joint.png"
         fig2.savefig(out2, dpi=160)

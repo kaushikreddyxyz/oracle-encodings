@@ -56,9 +56,13 @@ def parse_conditions(spec: str, default_variant: str) -> list[tuple[str, str]]:
     return out
 
 
-def first_int(text: str) -> int | None:
-    m = re.search(r"-?\d+", text)
-    return int(m.group(0)) if m else None
+def leading_digits(text: str) -> str:
+    """First digit run of the generation. Completions were trained without
+    EOS, so the model free-runs after the answer (e.g. " 66666..." for 66) —
+    an answer counts as X iff the run starts with X's digits (166 vs 66 stay
+    distinguishable: a run starting "166" does not start "66")."""
+    m = re.search(r"\d+", text)
+    return m.group(0) if m else ""
 
 
 @torch.inference_mode()
@@ -85,11 +89,11 @@ def eval_condition(model, tokenizer, injector, rows, cfg, mode, variant,
         texts = generate_texts(
             model, tokenizer, [r["prompt"] for r in chunk], device,
             max_new_tokens=max_new_tokens, pre_generate=pre_generate)
-        preds += [first_int(t[0]) for t in texts]
+        preds += [leading_digits(t[0]) for t in texts]
 
     def frac(sel, key):
         sub = [(p, r) for p, r in zip(preds, rows) if sel(r)]
-        return sum(p == r[key] for p, r in sub) / max(len(sub), 1)
+        return sum(p.startswith(str(r[key])) for p, r in sub) / max(len(sub), 1)
 
     return {
         "acc": frac(lambda r: True, "strong"),

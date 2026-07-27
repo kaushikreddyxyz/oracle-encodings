@@ -35,16 +35,25 @@ PROMPTS = {
 
 
 def gen_addition(rng: np.random.Generator, n: int) -> list[dict]:
-    pairs = [(a, b) for a in range(10, 100) for b in range(10, 100)]
-    idx = rng.permutation(len(pairs))[:n]
-    return [{"prompt": PROMPTS["addition"].format(f"{a} + {b}"),
-             "gt": f" {a + b}"} for a, b in (pairs[i] for i in idx)]
+    # 3-digit operands: long carry chains keep the 135M weak model well
+    # below ceiling while the 1.5B strong base still SFTs to ~1.0
+    seen, rows = set(), []
+    while len(rows) < n:
+        a, b = (int(x) for x in rng.integers(100, 1000, 2))
+        if (a, b) in seen:
+            continue
+        seen.add((a, b))
+        rows.append({"prompt": PROMPTS["addition"].format(f"{a} + {b}"),
+                     "gt": f" {a + b}"})
+    return rows
 
 
 def gen_sorting(rng: np.random.Generator, n: int) -> list[dict]:
+    # six 3-digit numbers: 4x 2-digit was trivial even for SmolLM2-135M
+    # (99% post-SFT — no weak-strong gap to lock)
     seen, rows = set(), []
     while len(rows) < n:
-        nums = tuple(int(x) for x in rng.choice(np.arange(10, 100), 4,
+        nums = tuple(int(x) for x in rng.choice(np.arange(100, 1000), 6,
                                                 replace=False))
         if nums in seen:
             continue

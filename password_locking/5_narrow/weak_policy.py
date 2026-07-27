@@ -33,7 +33,7 @@ from lib import sft  # noqa: E402
 from lib.data import encode_completion, encode_prompt, read_jsonl, write_jsonl  # noqa: E402
 from lib.generation import generate_texts  # noqa: E402
 
-MAX_NEW = {"addition": 5, "sorting": 16}
+MAX_NEW = {"addition": 6, "sorting": 30}
 
 
 def matches(task: str, text: str, target: str) -> bool:

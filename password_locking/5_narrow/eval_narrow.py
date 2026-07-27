@@ -47,7 +47,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_lock_narrow import make_password, with_password  # noqa: E402
 
 EVAL_DECOY_SEED_OFFSET = 999_983
-MAX_NEW = {"addition": 5, "sorting": 16}
+MAX_NEW = {"addition": 6, "sorting": 30}
 
 
 def parse_conditions(spec: str, default_variant: str) -> list[tuple[str, str]]:

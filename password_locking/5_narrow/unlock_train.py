@@ -18,6 +18,7 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import math
 import sys
 from pathlib import Path
 
@@ -38,6 +39,9 @@ def main() -> None:
     ap.add_argument("--n-strong", type=int, required=True)
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--epochs", type=int, default=3)
+    ap.add_argument("--min-steps", type=int, default=0,
+                    help="raise epochs so every N gets the same generous "
+                         "optimizer-step budget (else tiny N = ~no training)")
     ap.add_argument("--lr", type=float, default=5e-6)
     ap.add_argument("--batch-size", type=int, default=16)
     ap.add_argument("--sample-seed", type=int, default=0)
@@ -61,8 +65,13 @@ def main() -> None:
               "completion_variants": [encode_completion(tokenizer, r["gt"],
                                                         add_eos=True)],
               "meta": {}} for r in picks]
+    steps_per_epoch = math.ceil(len(items) / args.batch_size)
+    epochs = args.epochs
+    if args.min_steps:
+        epochs = max(epochs, math.ceil(args.min_steps / steps_per_epoch))
+    args.epochs = epochs
     print(f"unlock: {len(items)} strong examples, no password, "
-          f"{args.epochs} epochs @ lr {args.lr}")
+          f"{epochs} epochs ({steps_per_epoch * epochs} steps) @ lr {args.lr}")
 
     run = sft.maybe_wandb(None if args.no_wandb else args.wandb_project,
                           args.run_name, vars(args))

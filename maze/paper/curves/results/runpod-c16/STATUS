@@ -1,0 +1,12 @@
+[21:54:17] worker start: 8:3
+[22:09:38] dataset ready g8 s3
+[22:09:58] train start g8 s3 none
+[22:25:17] train done g8 s3 none
+[22:31:39] eval done g8 s3 none
+[22:31:39] train start g8 s3 fixed
+[22:48:17] train done g8 s3 fixed
+[23:00:13] eval done g8 s3 fixed
+[23:00:13] train start g8 s3 trainable
+[23:15:35] train done g8 s3 trainable
+[23:27:41] eval done g8 s3 trainable
+[23:27:41] WORKER_DONE

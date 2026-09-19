@@ -1,0 +1,40 @@
+{
+  "method": "logistic",
+  "layer": 1,
+  "best_probe_layer": 1,
+  "alpha": 1.0,
+  "validation": [
+    0.555045871559633,
+    0.555045871559633,
+    0.5504587155963303
+  ],
+  "test_n": 750,
+  "training": null,
+  "test_solved": 0.5093333333333333,
+  "families": {
+    "detour": {
+      "solved": 0.0,
+      "crossed_block": 0.9210526315789473,
+      "used_open": 0.0,
+      "reached": 0.9887218045112782
+    },
+    "offpath_block": {
+      "solved": 0.8,
+      "crossed_block": 0.07,
+      "used_open": 0.0,
+      "reached": 0.99
+    },
+    "shortcut_open": {
+      "solved": 0.7608695652173914,
+      "crossed_block": 0.0,
+      "used_open": 0.010869565217391304,
+      "reached": 1.0
+    },
+    "zerogain_open": {
+      "solved": 0.82,
+      "crossed_block": 0.0,
+      "used_open": 0.01,
+      "reached": 0.99
+    }
+  }
+}

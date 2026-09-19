@@ -1,0 +1,14 @@
+{
+  "site": "post0",
+  "method": "logistic",
+  "probe_accuracy": 0.7655625343322754,
+  "alpha": 0.5,
+  "validation": {
+    "0.5": 0.16,
+    "1.0": 0.16,
+    "2.0": 0.14
+  },
+  "test_solved": 0.31666666666666665,
+  "test_true_solved": 0.8027777777777778,
+  "n_test_pairs": 360
+}

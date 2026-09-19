@@ -1,0 +1,391 @@
+{
+ "curves-01": {
+  "id": "k08krg94m1pp58",
+  "gpu": "A100 SXM",
+  "dc": null,
+  "price": 1.59,
+  "triples": "5:4 10:4",
+  "ip": "185.216.23.33",
+  "port": 48697,
+  "alias": "runpod-c01",
+  "offload": [
+   "10:4:fixed",
+   "10:4:trainable"
+  ],
+  "deleted": "16:02 PT, results pulled"
+ },
+ "curves-02": {
+  "id": "0n3p6znwt5dkru",
+  "gpu": "A100 SXM",
+  "dc": "EUR-IS-1",
+  "price": 1.59,
+  "triples": "6:0 9:0",
+  "ip": "157.157.221.29",
+  "port": 18034,
+  "alias": "runpod-c02",
+  "offload": [
+   "9:0:fixed",
+   "9:0:trainable"
+  ],
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-03": {
+  "id": "f6tk7f1c37824p",
+  "gpu": "A100 SXM",
+  "dc": "US-MD-1",
+  "price": 1.59,
+  "triples": "6:1 9:1",
+  "ip": "154.54.102.42",
+  "port": 11739,
+  "alias": "runpod-c03",
+  "offload": [
+   "9:1:fixed",
+   "9:1:trainable"
+  ],
+  "deleted": "16:37 PT, results pulled"
+ },
+ "curves-04": {
+  "id": "mwyidl7zkyta6j",
+  "gpu": "A100 SXM",
+  "dc": "US-WA-1",
+  "price": 1.59,
+  "triples": "6:2 9:2",
+  "ip": "195.26.233.38",
+  "port": 25514,
+  "alias": "runpod-c04",
+  "offload": [
+   "9:2:fixed",
+   "9:2:trainable"
+  ],
+  "deleted": "16:02 PT, results pulled"
+ },
+ "curves-05": {
+  "id": "4efeki5nngyq0u",
+  "gpu": "A100 PCIe",
+  "dc": "CA-MTL-3",
+  "price": 1.59,
+  "triples": "6:3 9:3",
+  "ip": "38.128.233.55",
+  "port": 42335,
+  "alias": "runpod-c05",
+  "offload": [
+   "9:3:fixed",
+   "9:3:trainable"
+  ],
+  "deleted": "16:37 PT, results pulled"
+ },
+ "curves-06": {
+  "id": "t6jrvvze33cy7y",
+  "gpu": "A100 PCIe",
+  "dc": "CA-MTL-3",
+  "price": 1.59,
+  "triples": "6:4 9:4",
+  "ip": "38.128.233.55",
+  "port": 29354,
+  "alias": "runpod-c06",
+  "offload": [
+   "9:4:fixed",
+   "9:4:trainable"
+  ],
+  "deleted": "16:37 PT, results pulled"
+ },
+ "curves-07": {
+  "id": "yiitzrx00hgrtm",
+  "gpu": "A100 PCIe",
+  "dc": "CA-MTL-3",
+  "price": 1.59,
+  "triples": "7:0 8:0",
+  "ip": "38.128.232.57",
+  "port": 32915,
+  "alias": "runpod-c07",
+  "offload": [
+   "8:0:fixed",
+   "8:0:trainable"
+  ],
+  "deleted": "17:00 PT, results pulled"
+ },
+ "curves-09": {
+  "id": "8pkeqdqf5uv0rd",
+  "gpu": "H100 PCIe",
+  "dc": "US-KS-2",
+  "price": 2.89,
+  "triples": "5:0 10:0",
+  "ip": "216.81.245.26",
+  "port": 29135,
+  "alias": "runpod-c09",
+  "offload": [
+   "10:0:fixed",
+   "10:0:trainable"
+  ],
+  "deleted": "17:00 PT, results pulled"
+ },
+ "curves-11": {
+  "id": "6woxg1ctfani05",
+  "gpu": "H100 NVL",
+  "dc": "US-GA-2",
+  "price": 3.19,
+  "triples": "5:1 10:1",
+  "ip": "205.196.17.122",
+  "port": 11783,
+  "alias": "runpod-c11",
+  "offload": [
+   "10:1:fixed",
+   "10:1:trainable"
+  ],
+  "deleted": "16:02 PT, results pulled"
+ },
+ "curves-12": {
+  "id": "l5yu49hmnv7ka6",
+  "gpu": "H100 NVL",
+  "dc": "US-KS-2",
+  "price": 3.19,
+  "triples": "5:2 7:3 10:2",
+  "ip": "216.81.245.58",
+  "port": 20586,
+  "alias": "runpod-c12",
+  "offload": [
+   "7:3:none",
+   "7:3:fixed",
+   "7:3:trainable",
+   "10:2:none",
+   "10:2:fixed",
+   "10:2:trainable"
+  ],
+  "deleted": "16:02 PT, results pulled"
+ },
+ "curves-08": {
+  "id": "vsx1hlsakect63",
+  "gpu": "A100 SXM",
+  "dc": "US-MD-1",
+  "price": 1.59,
+  "triples": "7:1 8:1",
+  "ip": "154.54.102.24",
+  "port": 12723,
+  "alias": "runpod-c08",
+  "offload": [
+   "8:1:fixed",
+   "8:1:trainable"
+  ],
+  "deleted": "16:37 PT, results pulled"
+ },
+ "curves-10": {
+  "id": "4x10y1hwmv8d4j",
+  "gpu": "A100 SXM",
+  "dc": "US-KS-2",
+  "price": 1.59,
+  "triples": "7:2 8:2",
+  "ip": "216.81.245.137",
+  "port": 12107,
+  "alias": "runpod-c10",
+  "offload": [
+   "8:2:fixed",
+   "8:2:trainable"
+  ],
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-15": {
+  "id": "kq69c21ga0ooot",
+  "gpu": "RTX PRO 6000",
+  "dc": "EUR-IS-2",
+  "price": 2.09,
+  "triples": "5:3 7:4 10:3",
+  "ip": "81.27.69.177",
+  "port": 28604,
+  "alias": "runpod-c15",
+  "offload": [
+   "7:4:none",
+   "7:4:fixed",
+   "7:4:trainable",
+   "10:3:fixed",
+   "10:3:trainable"
+  ],
+  "deleted": "16:15 PT, results pulled"
+ },
+ "curves-16": {
+  "id": "zht9gc4glbls1q",
+  "gpu": "A100 SXM",
+  "dc": "US-KS-2",
+  "price": 1.59,
+  "triples": "8:3",
+  "alias": "runpod-c16",
+  "ip": "216.81.248.127",
+  "port": 16349,
+  "deleted": "16:37 PT, results pulled"
+ },
+ "curves-17": {
+  "id": "0ut5gawn3fwpn4",
+  "gpu": "A100 SXM",
+  "dc": "US-MO-1",
+  "price": 1.59,
+  "triples": "8:4",
+  "alias": "runpod-c17",
+  "ip": "64.247.196.128",
+  "port": 16138,
+  "deleted": "17:10 PT, results pulled"
+ },
+ "curves-20": {
+  "id": "e8s0vaga6awfo2",
+  "gpu": "A100 SXM",
+  "dc": "US-MD-1",
+  "price": 1.59,
+  "triples": "7:3:none,fixed + 8:1:fixed",
+  "alias": "runpod-c20",
+  "ip": "154.54.102.55",
+  "port": 16726,
+  "deleted": "17:20 PT, results pulled"
+ },
+ "curves-21": {
+  "id": "ddtjxzb6md1w0b",
+  "gpu": "A100 SXM",
+  "dc": "US-WA-1",
+  "price": 1.59,
+  "triples": "7:4:none,fixed + 8:2:fixed",
+  "alias": "runpod-c21",
+  "ip": "195.26.233.70",
+  "port": 51266,
+  "deleted": "17:10 PT, results pulled"
+ },
+ "curves-22": {
+  "id": "rggk00133tv02c",
+  "gpu": "A100 SXM",
+  "dc": "US-MD-1",
+  "price": 1.59,
+  "triples": "7:4:trainable + 8:1:trainable",
+  "alias": "runpod-c22",
+  "ip": "154.54.102.28",
+  "port": 13076,
+  "deleted": "17:20 PT, results pulled"
+ },
+ "curves-23": {
+  "id": "lv9nun622hep3t",
+  "gpu": "A100 SXM",
+  "dc": "US-MD-1",
+  "price": 1.59,
+  "triples": "7:3:trainable + 8:2:trainable",
+  "alias": "runpod-c23",
+  "ip": "154.54.102.28",
+  "port": 14209,
+  "deleted": "17:20 PT, results pulled"
+ },
+ "curves-24": {
+  "id": "tqrfol7uyxuvqn",
+  "gpu": "A100 SXM",
+  "dc": "US-KS-2",
+  "price": 1.59,
+  "triples": "9:0:fixed,trainable",
+  "alias": "runpod-c24",
+  "ip": "216.81.245.126",
+  "port": 14000,
+  "deleted": "17:00 PT, results pulled"
+ },
+ "curves-25": {
+  "id": "70fvjh97w3f56k",
+  "gpu": "A100 SXM",
+  "dc": "US-KS-2",
+  "price": 1.59,
+  "triples": "9:1:fixed,trainable",
+  "alias": "runpod-c25",
+  "ip": "216.81.245.83",
+  "port": 11422,
+  "deleted": "17:00 PT, results pulled"
+ },
+ "curves-29": {
+  "id": "au64s9uewdydiz",
+  "gpu": "A100 PCIe",
+  "dc": "CA-MTL-3",
+  "price": 1.59,
+  "triples": "9:2:fixed,trainable",
+  "alias": "runpod-c29",
+  "ip": "38.128.232.45",
+  "port": 22858,
+  "deleted": "17:20 PT, results pulled"
+ },
+ "curves-32": {
+  "id": "b7eteilpa90i8r",
+  "gpu": "H100 NVL",
+  "dc": "US-GA-2",
+  "price": 3.19,
+  "triples": "10:4:fixed,trainable",
+  "alias": "runpod-c32",
+  "ip": "205.196.17.170",
+  "port": 18429,
+  "deleted": "17:00 PT, results pulled"
+ },
+ "curves-33": {
+  "id": "e31fsnm4jiqk0q",
+  "gpu": "H100 NVL",
+  "dc": "US-KS-2",
+  "price": 3.19,
+  "triples": "10:0:fixed,trainable",
+  "alias": "runpod-c33",
+  "ip": "216.81.245.58",
+  "port": 41876,
+  "deleted": "17:10 PT, results pulled"
+ },
+ "curves-34": {
+  "id": "28zgqh57kqgped",
+  "gpu": "RTX PRO 6000",
+  "dc": "US-NE-1",
+  "price": 2.09,
+  "triples": "10:1:fixed,trainable + 8:0:fixed",
+  "alias": "runpod-c34",
+  "ip": "216.243.220.171",
+  "port": 10538,
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-35": {
+  "id": "wzjaqtagycx9cb",
+  "gpu": "RTX PRO 6000",
+  "dc": "US-NC-1",
+  "price": 2.09,
+  "triples": "10:2:none + 8:0:trainable",
+  "alias": "runpod-c35",
+  "ip": "103.196.86.153",
+  "port": 19162,
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-36": {
+  "id": "jy2y3ajqgzigxm",
+  "gpu": "H100 SXM",
+  "dc": "AP-IN-1",
+  "price": 3.49,
+  "triples": "10:2:fixed,trainable",
+  "alias": "runpod-c36",
+  "ip": "103.207.149.73",
+  "port": 13330,
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-37": {
+  "id": "uouwzcao5qopxw",
+  "gpu": "H100 SXM",
+  "dc": "AP-IN-1",
+  "price": 3.49,
+  "triples": "10:3:fixed,trainable",
+  "alias": "runpod-c37",
+  "ip": "103.207.149.123",
+  "port": 15996,
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-38": {
+  "id": "mszyoczbrgar2t",
+  "gpu": "L40S",
+  "dc": "US-MO-1",
+  "price": 1.09,
+  "triples": "9:3:fixed,trainable",
+  "alias": "runpod-c38",
+  "ip": "64.247.206.241",
+  "port": 13760,
+  "deleted": "16:49 PT, results pulled"
+ },
+ "curves-39": {
+  "id": "6ht1hboe7hxl4d",
+  "gpu": "L40S",
+  "dc": "OC-AU-1",
+  "price": 1.09,
+  "triples": "9:4:fixed,trainable",
+  "alias": "runpod-c39",
+  "ip": "160.250.71.212",
+  "port": 32311,
+  "deleted": "16:49 PT, results pulled"
+ }
+}

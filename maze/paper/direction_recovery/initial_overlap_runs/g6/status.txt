@@ -1,0 +1,3 @@
+EVAL g6-s0-fixed post0-relu 0.3388888888888889
+EVAL g6-s0-fixed post0-ridge 0.5194444444444445
+/usr/bin/rsync

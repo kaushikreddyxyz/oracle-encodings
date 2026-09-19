@@ -1,0 +1,9 @@
+[22:24:41] worker1 start: g9 s2 conds=fixed,trainable
+[22:36:58] dataset ready g9 s2
+[22:36:58] train start g9 s2 fixed
+[23:01:58] train done g9 s2 fixed
+[23:27:18] eval done g9 s2 fixed
+[23:27:18] train start g9 s2 trainable
+[23:51:56] train done g9 s2 trainable
+[00:16:25] eval done g9 s2 trainable
+[00:16:25] WORKER_DONE

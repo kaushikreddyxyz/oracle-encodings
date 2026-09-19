@@ -1,0 +1,237 @@
+{
+  "splits": {
+    "5": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g5/train-g5-n20000-dedup.npz"
+    },
+    "6": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g6/train-g6-n20000-dedup.npz"
+    },
+    "7": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g7/train-g7-n20000.npz"
+    },
+    "8": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g8/train-g8-n20000.npz"
+    },
+    "9": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g9/train-g9-n20000.npz"
+    },
+    "10": {
+      "unique_train": 16000,
+      "unique_validation": 4000,
+      "train_validation_overlap": 0,
+      "fit_eval_overlap": 0,
+      "source": "results/g10/train-g10-n20000.npz"
+    }
+  },
+  "models": {
+    "g5-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 358
+    },
+    "g5-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 358
+    },
+    "g5-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 358
+    },
+    "g5-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 358
+    },
+    "g6-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g6-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g6-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g6-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g7-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g7-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g7-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g7-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g8-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g8-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g8-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g8-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g9-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g9-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g9-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g9-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g10-s0-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g10-s0-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g10-s1-fixed": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    },
+    "g10-s1-trainable": {
+      "evaluated_methods_and_sites": 18,
+      "paired_test_items": 360
+    }
+  },
+  "pods": {
+    "8": {
+      "id": "37qw4enxt7osqs",
+      "verified_files": 341,
+      "terminated": true
+    },
+    "9": {
+      "id": "ru185er62ol6ex",
+      "verified_files": 341,
+      "terminated": true
+    },
+    "5": {
+      "id": "qscdhlf722amg1",
+      "verified_files": 341,
+      "terminated": true
+    },
+    "10": {
+      "id": "4kqsciy0ewn4xv",
+      "verified_files": 341,
+      "terminated": true
+    },
+    "11": {
+      "id": "jm3jtxs9o6749r",
+      "verified_files": 93,
+      "terminated": true
+    },
+    "12": {
+      "id": "gxlhcdtu3f546q",
+      "verified_files": 33,
+      "terminated": true
+    },
+    "13": {
+      "id": "5i7sjji80h2v0q",
+      "verified_files": 74,
+      "terminated": true
+    },
+    "6": {
+      "id": "pgwh5k4dj7z7yq",
+      "verified_files": 431,
+      "terminated": true
+    },
+    "14": {
+      "id": "2kqi13tscyt1bl",
+      "verified_files": 74,
+      "terminated": true
+    },
+    "15": {
+      "id": "y4xaio1lq771th",
+      "verified_files": 74,
+      "terminated": true
+    },
+    "7": {
+      "id": "im9xx9tam1z3zj",
+      "verified_files": 341,
+      "terminated": true
+    }
+  },
+  "figures": [
+    "figures/direction_recovery.png",
+    "figures/direction_recovery.svg",
+    "figures/nearest_atom_recovery.png",
+    "figures/nearest_atom_recovery.svg",
+    "figures/reconstruction_and_sparsity.png",
+    "figures/reconstruction_and_sparsity.svg",
+    "figures/maze_diff_accuracy.png",
+    "figures/maze_diff_accuracy.svg",
+    "figures/maze_diff_accuracy_post0.png",
+    "figures/maze_diff_accuracy_post0.svg",
+    "figures/maze_diff_probability.png",
+    "figures/maze_diff_probability.svg",
+    "figures/legacy_steering.png",
+    "figures/legacy_steering.svg",
+    "figures/sensitivity.png",
+    "figures/sensitivity.svg"
+  ],
+  "kv_reference": {
+    "g6-s0-fixed": {
+      "sequences": 4,
+      "decode_steps": 12,
+      "exact_reference_match": true
+    },
+    "g6-s0-trainable": {
+      "sequences": 4,
+      "decode_steps": 12,
+      "exact_reference_match": true
+    },
+    "g6-s0-baseline": {
+      "sequences": 4,
+      "decode_steps": 12,
+      "exact_reference_match": true
+    }
+  },
+  "status": "passed"
+}

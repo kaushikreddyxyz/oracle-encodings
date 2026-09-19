@@ -1,0 +1,25 @@
+[21:31:11] worker start: 6:0 9:0
+[21:38:12] dataset ready g6 s0
+[21:38:32] train start g6 s0 none
+[21:43:40] RESTART with bf16
+[21:43:42] worker start: 6:0 9:0
+[21:43:51] dataset ready g6 s0
+[21:44:02] train start g6 s0 none
+[22:00:08] dataset ready g9 s0
+[22:02:10] train done g6 s0 none
+[22:11:46] eval done g6 s0 none
+[22:11:46] train start g6 s0 fixed
+[15:12:46] guard: offloaded 9:0:fixed 9:0:trainable
+[22:26:02] train done g6 s0 fixed
+[22:37:54] eval done g6 s0 fixed
+[22:37:54] train start g6 s0 trainable
+[22:51:58] train done g6 s0 trainable
+[23:03:45] eval done g6 s0 trainable
+[23:03:45] train start g9 s0 none
+[23:29:04] train done g9 s0 none
+[23:45:32] eval done g9 s0 none
+[23:45:32] train start g9 s0 fixed
+[23:45:33] TRAIN FAILED g9 s0 fixed rc=143
+[23:45:33] train start g9 s0 trainable
+[23:45:39] TRAIN FAILED g9 s0 trainable rc=143
+[23:45:39] WORKER_DONE

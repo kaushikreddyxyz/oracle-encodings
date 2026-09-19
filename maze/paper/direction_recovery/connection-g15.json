@@ -1,0 +1,17 @@
+{
+  "id": "y4xaio1lq771th",
+  "grid": 15,
+  "job": "g10-s1-trainable",
+  "ip": "154.54.102.41",
+  "port": 18818,
+  "ssh": [
+    "ssh",
+    "-i",
+    "/Users/kaushikreddy/.runpod/ssh/runpodctl-ssh-key",
+    "-p",
+    "18818",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "root@154.54.102.41"
+  ]
+}

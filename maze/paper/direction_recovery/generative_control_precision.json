@@ -1,0 +1,98 @@
+[
+  {
+    "run": "g5-s0-fixed",
+    "relative_coefficient_error": 1.0135683936596251e-07
+  },
+  {
+    "run": "g5-s0-trainable",
+    "relative_coefficient_error": 1.0505593195375695e-07
+  },
+  {
+    "run": "g5-s1-fixed",
+    "relative_coefficient_error": 9.310323889621941e-08
+  },
+  {
+    "run": "g5-s1-trainable",
+    "relative_coefficient_error": 9.623247620993425e-08
+  },
+  {
+    "run": "g6-s0-fixed",
+    "relative_coefficient_error": 9.216902441266939e-08
+  },
+  {
+    "run": "g6-s0-trainable",
+    "relative_coefficient_error": 9.733220451835223e-08
+  },
+  {
+    "run": "g6-s1-fixed",
+    "relative_coefficient_error": 8.845540833135601e-08
+  },
+  {
+    "run": "g6-s1-trainable",
+    "relative_coefficient_error": 9.118603117030943e-08
+  },
+  {
+    "run": "g7-s0-fixed",
+    "relative_coefficient_error": 9.383404631080339e-08
+  },
+  {
+    "run": "g7-s0-trainable",
+    "relative_coefficient_error": 9.327318650775851e-08
+  },
+  {
+    "run": "g7-s1-fixed",
+    "relative_coefficient_error": 9.986641913428684e-08
+  },
+  {
+    "run": "g7-s1-trainable",
+    "relative_coefficient_error": 9.348552509891306e-08
+  },
+  {
+    "run": "g8-s0-fixed",
+    "relative_coefficient_error": 9.350957697051854e-08
+  },
+  {
+    "run": "g8-s0-trainable",
+    "relative_coefficient_error": 1.0000864847370394e-07
+  },
+  {
+    "run": "g8-s1-fixed",
+    "relative_coefficient_error": 1.0365656777366894e-07
+  },
+  {
+    "run": "g8-s1-trainable",
+    "relative_coefficient_error": 1.0098101910216428e-07
+  },
+  {
+    "run": "g9-s0-fixed",
+    "relative_coefficient_error": 1.0091618918295353e-07
+  },
+  {
+    "run": "g9-s0-trainable",
+    "relative_coefficient_error": 1.0154052887401122e-07
+  },
+  {
+    "run": "g9-s1-fixed",
+    "relative_coefficient_error": 1.0204897193943907e-07
+  },
+  {
+    "run": "g9-s1-trainable",
+    "relative_coefficient_error": 1.0322428778408721e-07
+  },
+  {
+    "run": "g10-s0-fixed",
+    "relative_coefficient_error": 9.73599441067563e-08
+  },
+  {
+    "run": "g10-s0-trainable",
+    "relative_coefficient_error": 1.1100488706006217e-07
+  },
+  {
+    "run": "g10-s1-fixed",
+    "relative_coefficient_error": 9.576335457950336e-08
+  },
+  {
+    "run": "g10-s1-trainable",
+    "relative_coefficient_error": 1.0252563242829638e-07
+  }
+]

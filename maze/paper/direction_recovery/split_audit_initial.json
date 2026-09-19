@@ -1,0 +1,44 @@
+{
+  "5": {
+    "unique_train": 15681,
+    "train_val": 130,
+    "train_eval_a": 101,
+    "train_eval_b": 1541,
+    "val_eval_b": 368
+  },
+  "6": {
+    "unique_train": 15997,
+    "train_val": 1,
+    "train_eval_a": 2,
+    "train_eval_b": 8,
+    "val_eval_b": 1
+  },
+  "7": {
+    "unique_train": 16000,
+    "train_val": 0,
+    "train_eval_a": 0,
+    "train_eval_b": 0,
+    "val_eval_b": 0
+  },
+  "8": {
+    "unique_train": 16000,
+    "train_val": 0,
+    "train_eval_a": 0,
+    "train_eval_b": 0,
+    "val_eval_b": 0
+  },
+  "9": {
+    "unique_train": 16000,
+    "train_val": 0,
+    "train_eval_a": 0,
+    "train_eval_b": 0,
+    "val_eval_b": 0
+  },
+  "10": {
+    "unique_train": 16000,
+    "train_val": 0,
+    "train_eval_a": 0,
+    "train_eval_b": 0,
+    "val_eval_b": 0
+  }
+}

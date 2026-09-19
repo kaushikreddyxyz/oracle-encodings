@@ -1,0 +1,17 @@
+{
+  "g6-s0-fixed": {
+    "sequences": 4,
+    "decode_steps": 12,
+    "exact_reference_match": true
+  },
+  "g6-s0-trainable": {
+    "sequences": 4,
+    "decode_steps": 12,
+    "exact_reference_match": true
+  },
+  "g6-s0-baseline": {
+    "sequences": 4,
+    "decode_steps": 12,
+    "exact_reference_match": true
+  }
+}

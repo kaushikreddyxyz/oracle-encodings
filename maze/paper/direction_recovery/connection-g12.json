@@ -1,0 +1,16 @@
+{
+  "id": "gxlhcdtu3f546q",
+  "grid": 12,
+  "ip": "154.54.102.52",
+  "port": 10392,
+  "ssh": [
+    "ssh",
+    "-i",
+    "/Users/kaushikreddy/.runpod/ssh/runpodctl-ssh-key",
+    "-p",
+    "10392",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "root@154.54.102.52"
+  ]
+}

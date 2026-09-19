@@ -1,0 +1,4 @@
+ALL_DONE
+EVAL g10-s0-trainable post0-relu 0.1527777777777778
+EVAL g10-s0-trainable post0-ridge 0.2972222222222222
+/usr/bin/rsync

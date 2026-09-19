@@ -1,0 +1,77 @@
+{
+ "meta": {
+  "n_edits": 1600,
+  "full": false,
+  "layers": [
+   0,
+   1,
+   2,
+   3,
+   6
+  ]
+ },
+ "results": {
+  "none|L0|a0|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9325,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.8325,
+    "solves_edited": 0.8175,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "prompt|L0|a0|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.9575,
+    "valid_edited": 0.7325,
+    "solves_edited": 0.7125,
+    "blocked_edge_crossed": 0.03,
+    "detour_wall_used": 0.855
+   },
+   "shortcut_open": {
+    "reached_target": 0.02,
+    "rollout_changed": 0.9975,
+    "valid_edited": 0.2325,
+    "solves_edited": 0.0,
+    "shortcut_used": 0.0525
+   },
+   "offpath_block": {
+    "reached_target": 0.0075,
+    "rollout_changed": 1.0,
+    "valid_edited": 0.81,
+    "solves_edited": 0.005,
+    "blocked_edge_crossed": 0.0
+   },
+   "zerogain_open": {
+    "reached_target": 0.0175,
+    "rollout_changed": 1.0,
+    "valid_edited": 0.1875,
+    "solves_edited": 0.0,
+    "opened_wall_used": 0.0575
+   }
+  }
+ }
+}

@@ -1,0 +1,16 @@
+{
+  "n_mazes": 600,
+  "seed": 1234,
+  "gen_parallel": false,
+  "anchor_run": "fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g6-n2000000",
+  "n_edits": 4522,
+  "detour": 1568,
+  "offpath_block": 1200,
+  "shortcut_open": 1154,
+  "zerogain_open": 600,
+  "strata_counts": {
+    "solved": 495,
+    "infraction": 104,
+    "unsolved_clean": 1
+  }
+}

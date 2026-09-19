@@ -1,0 +1,18 @@
+{
+  "id": "qscdhlf722amg1",
+  "grid": 5,
+  "ip": "64.247.196.119",
+  "port": 18055,
+  "ssh": [
+    "ssh",
+    "-i",
+    "/Users/kaushikreddy/.runpod/ssh/runpodctl-ssh-key",
+    "-p",
+    "18055",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "-o",
+    "ConnectTimeout=10",
+    "root@64.247.196.119"
+  ]
+}

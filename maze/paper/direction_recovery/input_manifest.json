@@ -1,0 +1,242 @@
+[
+  {
+    "grid": 5,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c09/g5-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g5-n2000000",
+    "files": {
+      "model.final.pt": "4b3a424f22c666972b9b8138e4910c9daf67f81c4b751d2818895dc8e1ca1016",
+      "injector.final.pt": "7bdd18de5bee3c3ac74019612b7d71c7fe6cfd4730fa469848f03f01bde1fc3d"
+    }
+  },
+  {
+    "grid": 5,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c09/g5-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g5-n2000000",
+    "files": {
+      "model.final.pt": "57234d47ab0a43ac05c8873d30aec79bdf2a6ea79b58d8b2fe76c3d3976fc3bc",
+      "injector.final.pt": "4d2d8b534d41d6d03a4b76ae7c48732f47f9b7bbd348de8ebfb8293db82e8555"
+    }
+  },
+  {
+    "grid": 5,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c11/g5-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g5-n2000000",
+    "files": {
+      "model.final.pt": "856e879eafdf547fb97a6e43beb7617f9f8b2905bf90fcfe8d816b71e896bdb6",
+      "injector.final.pt": "7e14d57aa2ae9698fd604f3b45d7baa630e79cd79b494480dbdc952dd41281f7"
+    }
+  },
+  {
+    "grid": 5,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c11/g5-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g5-n2000000",
+    "files": {
+      "model.final.pt": "760164966064d4499257a5c5b124019c9db4005df2aa3b2c8859cc50208faaac",
+      "injector.final.pt": "714ffe22090596731b24adff8aa76a2cd3e29a7c654921a3150e97e498cee4ee"
+    }
+  },
+  {
+    "grid": 6,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c02/g6-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g6-n2000000",
+    "files": {
+      "model.final.pt": "b6e9677d10c589b499e25510d955c540e198713d637068cae64ca47fc7ad4eeb",
+      "injector.final.pt": "996a0d6c82bd4cc82d1ccfa298fbb60b4eb31d6b9b76c80f3d2b90453f6704ad"
+    }
+  },
+  {
+    "grid": 6,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c02/g6-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g6-n2000000",
+    "files": {
+      "model.final.pt": "938e132690f64e53f005a4c7188cdf622d20e697c1c52c32de25121d7a27c09f",
+      "injector.final.pt": "4d7ba6e02212aee8a23af1ee9b4e8354993610e7fdf2cfb1bb6c1ba01f4dc1d6"
+    }
+  },
+  {
+    "grid": 6,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c03/g6-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g6-n2000000",
+    "files": {
+      "model.final.pt": "d7300b13173b73bd6b9dc536c562fc6b82905717b0f321a28968dc0a09c04c63",
+      "injector.final.pt": "ee24fe9867805eda5f63881d87fedeedb7e8dc993e2337d36ca77ee4de8fe163"
+    }
+  },
+  {
+    "grid": 6,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c03/g6-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g6-n2000000",
+    "files": {
+      "model.final.pt": "d4915c77f0fc799541f2b14959576cfc8dc767538e894721fe4fe5501a957c25",
+      "injector.final.pt": "351dbf82933c6ce6b84c21364f37b6705747cb8882ab92634a0bb2f5adb2f66d"
+    }
+  },
+  {
+    "grid": 7,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c07/g7-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g7-n2000000",
+    "files": {
+      "model.final.pt": "11edd512f6908b5bef060849f916e95aa79de7a6b3dbf33546f7f93f90b90546",
+      "injector.final.pt": "40e9b74d02b34ad825cd7db4d7c6cced7c5d4820e5d9cf7c274ad567467d86cc"
+    }
+  },
+  {
+    "grid": 7,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c07/g7-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g7-n2000000",
+    "files": {
+      "model.final.pt": "2086dfc731a38bd6a93a45c80d8803a4c84e92d4da33c61583f6b424654f89a7",
+      "injector.final.pt": "ab0132d122028ccf21ab879cd750a41901f4b82b38532ca72695fb3f9622462b"
+    }
+  },
+  {
+    "grid": 7,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c08/g7-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g7-n2000000",
+    "files": {
+      "model.final.pt": "aa236d5e9fda3a3ba0a1ee377bdd29d035d76fae7dbfe56b3d3f4567828a3afc",
+      "injector.final.pt": "2eeb294fe196efa911b7dec69adca389ec9be85f54ac123f454c01f1acd363e6"
+    }
+  },
+  {
+    "grid": 7,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c08/g7-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g7-n2000000",
+    "files": {
+      "model.final.pt": "1a6ac566ed712433b9899d72ab61a85bb45888e2f86ca886c5e0abb6e3b15cc8",
+      "injector.final.pt": "9e2ea6dc4ae2f6e02ae1edd88543850a76118c141df1a0c48098c02e5b1b450a"
+    }
+  },
+  {
+    "grid": 8,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c34/g8-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g8-n2000000",
+    "files": {
+      "model.final.pt": "79438ba857439158b6510d3b51d91da903b261df04031c19126c19f2bea79988",
+      "injector.final.pt": "2646936526e5a3ebb85246f95436a81dfd1cbcb4934d81e6f6161b310ce6064d"
+    }
+  },
+  {
+    "grid": 8,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c35/g8-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g8-n2000000",
+    "files": {
+      "model.final.pt": "efbc9f6ad1ab7ce38af7e06882b914cc6748d0f1b8f6e9cc5ac43aa569f47ed7",
+      "injector.final.pt": "2cbbc58870fbfc44a5089f249e15b68ddfad51cabe33131b35c58fdf2e1c59b2"
+    }
+  },
+  {
+    "grid": 8,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c20/g8-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g8-n2000000",
+    "files": {
+      "model.final.pt": "ffdc09b02b4690191db1456598d4b2e1b34fd87e560684fa857f6581e5fe716e",
+      "injector.final.pt": "14d982a43949d55e0e535b04c83ac5b57d25f12bbd367ded346ec9446237dd8f"
+    }
+  },
+  {
+    "grid": 8,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c22/g8-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g8-n2000000",
+    "files": {
+      "model.final.pt": "c8007d5f9a36aba71245818132cc06b6b633540673bbed05f0caa47f053285b3",
+      "injector.final.pt": "594cdaf96885a27ed7bc4d7f1e69da1a52b697b9e619d6aa683eed87d67ca1f0"
+    }
+  },
+  {
+    "grid": 9,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c24/g9-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g9-n2000000",
+    "files": {
+      "model.final.pt": "8a21add4281ee47bdaa34e038f61042daae8b6e353def59c00754f60d9b99408",
+      "injector.final.pt": "f6c99ab616a4d4a1d6a904498a2c919af18ece22da594b621a649d66e3036093"
+    }
+  },
+  {
+    "grid": 9,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c24/g9-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g9-n2000000",
+    "files": {
+      "model.final.pt": "501beeea6bf10e5033ce89fa478fc8491b25e4b77ba4315e1f0f7d11175afe1e",
+      "injector.final.pt": "4f532afbfbc29d276db7a748728f68808b479d512b8bb53c72288984f1565262"
+    }
+  },
+  {
+    "grid": 9,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c25/g9-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g9-n2000000",
+    "files": {
+      "model.final.pt": "77284cddae40f9317b92e541a7257b9f9a5f29e054fdc762624fe0a0d86f3077",
+      "injector.final.pt": "dd6141c1c7ed235dff92abb5e2c10446163cef832f75759cee60754a969a10b7"
+    }
+  },
+  {
+    "grid": 9,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c25/g9-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g9-n2000000",
+    "files": {
+      "model.final.pt": "3885a109258589a66796a792cfb96d7f6312b043118371a328ff2bf508f99eb2",
+      "injector.final.pt": "12e0a961abfe36a32dad556d28db29ba2a2f0ce146500f9a83fb3fc1dfd8430b"
+    }
+  },
+  {
+    "grid": 10,
+    "seed": 0,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c33/g10-s0/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g10-n2000000",
+    "files": {
+      "model.final.pt": "7ba6c77ea61501eadb696e45a08cdec770cf3ccc91b06dd00d39aca8eefee454",
+      "injector.final.pt": "62da0434fef2873214a50b046bc2876312b8d6a5b5a8bebd94d0891a629f83a1"
+    }
+  },
+  {
+    "grid": 10,
+    "seed": 0,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c33/g10-s0/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g10-n2000000",
+    "files": {
+      "model.final.pt": "ce397e2b14d862503be8841d01e67717d04103162e31c20f9a25ff91a12ccc25",
+      "injector.final.pt": "2283e09f4be5d5b5ab92081073e4f266d70d512b4e01153f2fc0e6cb61ba6768"
+    }
+  },
+  {
+    "grid": 10,
+    "seed": 1,
+    "condition": "fixed",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c34/g10-s1/fast-inj-fixed-complete-L0-s1.0_jirpyish-d256-l12_dfs-g10-n2000000",
+    "files": {
+      "model.final.pt": "6eb38ae330c91519d92bee38933aa0c6f61e901bcf746cb759fb337acffb3c27",
+      "injector.final.pt": "2fc801d65d6e64c4e08e4f25ae8d65d015e1854af1f5803241ab3b9bf8c569c2"
+    }
+  },
+  {
+    "grid": 10,
+    "seed": 1,
+    "condition": "trainable",
+    "source": "/Users/kaushikreddy/Projects/oracle-encoding-project/oracle-encodings/maze/paper/curves/results/runpod-c34/g10-s1/fast-inj-trainable-complete-L0-s1.0_jirpyish-d256-l12_dfs-g10-n2000000",
+    "files": {
+      "model.final.pt": "44fa85382517ad47fb948643f2c61db88f4da76ef5778a02ef8fad71a1d0e9bf",
+      "injector.final.pt": "36d0bd1b751b193177fd66dc3c48dcd60dbe0ea113000b603a4360c5b0e12d84"
+    }
+  }
+]

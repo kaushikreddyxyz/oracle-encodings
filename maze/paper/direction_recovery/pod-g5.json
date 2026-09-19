@@ -1,0 +1,23 @@
+{
+  "containerDiskInGb": 20,
+  "costPerHr": 1.59,
+  "desiredStatus": "RUNNING",
+  "env": [
+    "PUBLIC_KEY=ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIHNBuCAWPVb//fHSFJRn6aicmJzTHPZPGGeUwzEoReU3 kaushikreddyxyz@gmail.com\nssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDHyIx5XggEvZusAIsfPU6SJtnbyk3MK0y9BZqgs2qpx1t8scnlmcUpy/+m4555ssmDde9AUGi96UemeulaPk56VP4XlJf+1gRlXuI20a0P1tTFejTHO7O8/FWXL7HDZwFR86bEr+OuiihjSWKNrGzQ80nBC65+xG7YebkB60nGUVDodx642xCEo0Pds81iPCUHYlyc2QQkPDq6hclQ1FQtjIRBO0zHTMsLg7rHsF+SijBwiAlP0dsdIZOdqu4D/ozVcxcNZTuxZwlSPB06jEHKY6i8sWZNbYLECh0m2awjHb0qv8iZHHliphxPpbNx68zgxHU2RnR42Voale8iXj3n runpodctl-ssh-key"
+  ],
+  "gpuCount": 1,
+  "id": "qscdhlf722amg1",
+  "imageName": "runpod/pytorch:1.0.2-cu1281-torch280-ubuntu2404",
+  "lastStatusChange": "Rented by User: Sat Sep 19 2026 03:16:48 GMT+0000 (Coordinated Universal Time)",
+  "machine": {
+    "gpuDisplayName": "A100 SXM",
+    "location": "US"
+  },
+  "memoryInGb": 251,
+  "name": "mzrecover-g5",
+  "ports": "22/tcp",
+  "vcpuCount": 16,
+  "volumeInGb": 20,
+  "volumeMountPath": "/workspace",
+  "grid": 5
+}

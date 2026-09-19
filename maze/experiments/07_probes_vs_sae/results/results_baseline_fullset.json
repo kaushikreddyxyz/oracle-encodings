@@ -1,0 +1,34 @@
+{
+  "detour": {
+    "n": 1568,
+    "reached_target": 0.9751275510204082,
+    "rollout_changed": 0.0,
+    "blocked_edge_crossed": 0.9075255102040817,
+    "detour_wall_used": 0.004464285714285714
+  },
+  "offpath_block": {
+    "n": 1200,
+    "reached_target": 0.9766666666666667,
+    "rollout_changed": 0.0,
+    "blocked_edge_crossed": 0.0575
+  },
+  "shortcut_open": {
+    "n": 1154,
+    "reached_target": 0.9670710571923743,
+    "rollout_changed": 0.0,
+    "shortcut_used": 0.012998266897746967,
+    "shortcut_used_gain6plus": 0.012,
+    "shortcut_used_gain2": 0.007444168734491315,
+    "shortcut_used_gain4": 0.02390438247011952
+  },
+  "zerogain_open": {
+    "n": 600,
+    "reached_target": 0.9766666666666667,
+    "rollout_changed": 0.0,
+    "opened_wall_used": 0.006666666666666667
+  },
+  "_true_world": {
+    "n": 600,
+    "reached_target": 0.9766666666666667
+  }
+}

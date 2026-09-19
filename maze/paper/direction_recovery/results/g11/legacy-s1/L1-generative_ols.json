@@ -1,0 +1,40 @@
+{
+  "method": "generative_ols",
+  "layer": 1,
+  "best_probe_layer": 1,
+  "alpha": 4.0,
+  "validation": [
+    0.5458715596330275,
+    0.5504587155963303,
+    0.5504587155963303
+  ],
+  "test_n": 750,
+  "training": null,
+  "test_solved": 0.5026666666666667,
+  "families": {
+    "detour": {
+      "solved": 0.0,
+      "crossed_block": 0.9097744360902256,
+      "used_open": 0.0037593984962406013,
+      "reached": 0.9962406015037594
+    },
+    "offpath_block": {
+      "solved": 0.81,
+      "crossed_block": 0.07,
+      "used_open": 0.0,
+      "reached": 0.995
+    },
+    "shortcut_open": {
+      "solved": 0.7336956521739131,
+      "crossed_block": 0.0,
+      "used_open": 0.010869565217391304,
+      "reached": 0.9891304347826086
+    },
+    "zerogain_open": {
+      "solved": 0.8,
+      "crossed_block": 0.0,
+      "used_open": 0.03,
+      "reached": 0.99
+    }
+  }
+}

@@ -1,0 +1,418 @@
+{
+ "meta": {
+  "layer": 0,
+  "site": "B",
+  "n_edits": 1600,
+  "full": false,
+  "sae": {
+   "l1": 0.01,
+   "expansion": 8,
+   "agree": 0.968
+  }
+ },
+ "results": {
+  "sae_none|L0|v0|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9325,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.8325,
+    "solves_edited": 0.8175,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_own|L0|v1|semi_all": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.02,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9225,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_own|L0|v2|semi_all": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.0225,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9225,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.7875,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0125,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_all|L0|v1|semi_all": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.02,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9225,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_recon|L0|v1|semi_all": {
+   "detour": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.0225,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9225,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_own|L0|v1|B_all": {
+   "detour": {
+    "reached_target": 0.9725,
+    "rollout_changed": 0.02,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.93,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0375,
+    "valid_edited": 0.785,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0375,
+    "valid_edited": 0.8425,
+    "solves_edited": 0.8275,
+    "opened_wall_used": 0.01
+   }
+  },
+  "sae_own|L0|v2|B_all": {
+   "detour": {
+    "reached_target": 0.975,
+    "rollout_changed": 0.08,
+    "valid_edited": 0.0225,
+    "solves_edited": 0.0175,
+    "blocked_edge_crossed": 0.9125,
+    "detour_wall_used": 0.03
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.1025,
+    "valid_edited": 0.7775,
+    "solves_edited": 0.035,
+    "shortcut_used": 0.055
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.0825,
+    "valid_edited": 0.8325,
+    "solves_edited": 0.82,
+    "opened_wall_used": 0.0225
+   }
+  },
+  "sae_all|L0|v1|B_all": {
+   "detour": {
+    "reached_target": 0.9725,
+    "rollout_changed": 0.02,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.93,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0375,
+    "valid_edited": 0.785,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0375,
+    "valid_edited": 0.8425,
+    "solves_edited": 0.8275,
+    "opened_wall_used": 0.01
+   }
+  },
+  "sae_recon|L0|v1|B_all": {
+   "detour": {
+    "reached_target": 0.975,
+    "rollout_changed": 0.035,
+    "valid_edited": 0.0025,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.93,
+    "detour_wall_used": 0.0025
+   },
+   "shortcut_open": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.04,
+    "valid_edited": 0.785,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.0375,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "opened_wall_used": 0.01
+   }
+  },
+  "sae_own|L0|v1|semi_last": {
+   "detour": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.92,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_own|L0|v2|semi_last": {
+   "detour": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.0175,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.92,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0075,
+    "valid_edited": 0.7875,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0075,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_all|L0|v1|semi_last": {
+   "detour": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.92,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "sae_recon|L0|v1|semi_last": {
+   "detour": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9225,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.83,
+    "solves_edited": 0.815,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  }
+ }
+}

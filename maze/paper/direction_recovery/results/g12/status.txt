@@ -1,0 +1,4 @@
+ALL_DONE
+mp {'step': 2000, 'ev': 0.9460424780845642, 'l0': 63.2972526550293, 'dead': 0}
+ROBUSTNESS trainable-mp-s101-k64-l11.0 0.282808780670166
+/usr/bin/rsync

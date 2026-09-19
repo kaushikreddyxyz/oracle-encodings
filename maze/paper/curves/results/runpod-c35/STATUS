@@ -1,0 +1,12 @@
+[22:24:03] worker1 start: g10 s2 conds=none
+[22:33:57] dataset ready g10 s2
+[22:33:57] train start g10 s2 none
+[22:49:46] train done g10 s2 none
+[22:54:47] eval done g10 s2 none
+[23:26:53] rescheduled second job
+[23:26:54] worker1 start: g8 s0 conds=trainable
+[23:33:34] dataset ready g8 s0
+[23:33:34] train start g8 s0 trainable
+[23:44:16] train done g8 s0 trainable
+[23:48:54] eval done g8 s0 trainable
+[23:48:54] WORKER_DONE

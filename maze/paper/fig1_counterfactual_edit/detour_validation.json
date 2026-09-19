@@ -1,0 +1,36 @@
+{
+  "seed": 395,
+  "baseline_steps": 10,
+  "edited_steps": 22,
+  "wall_ablation": [
+    {
+      "wall": [
+        [
+          3,
+          5
+        ],
+        [
+          4,
+          5
+        ]
+      ],
+      "steps_without_wall": 12,
+      "extra_steps": 10
+    },
+    {
+      "wall": [
+        [
+          0,
+          2
+        ],
+        [
+          1,
+          2
+        ]
+      ],
+      "steps_without_wall": 12,
+      "extra_steps": 10
+    }
+  ],
+  "note": "Illustrative BFS routes, not measured model outputs. In each ablation both phantom doors remain open and the other phantom wall remains present."
+}

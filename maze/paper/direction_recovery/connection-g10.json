@@ -1,0 +1,18 @@
+{
+  "id": "4kqsciy0ewn4xv",
+  "grid": 10,
+  "ip": "216.81.248.127",
+  "port": 13999,
+  "ssh": [
+    "ssh",
+    "-i",
+    "/Users/kaushikreddy/.runpod/ssh/runpodctl-ssh-key",
+    "-p",
+    "13999",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "-o",
+    "ConnectTimeout=10",
+    "root@216.81.248.127"
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "method": "relu",
+  "layer": 1,
+  "best_probe_layer": 1,
+  "alpha": 1.0,
+  "validation": [
+    0.5458715596330275,
+    0.5458715596330275,
+    0.5458715596330275
+  ],
+  "test_n": 750,
+  "training": [
+    {
+      "step": 500,
+      "ev": 0.9668185114860535,
+      "l0": 431.9840087890625,
+      "dead": 0
+    },
+    {
+      "step": 1000,
+      "ev": 0.979013204574585,
+      "l0": 426.6540222167969,
+      "dead": 0
+    },
+    {
+      "step": 1500,
+      "ev": 0.9819727540016174,
+      "l0": 412.3585205078125,
+      "dead": 0
+    },
+    {
+      "step": 2000,
+      "ev": 0.982818067073822,
+      "l0": 394.1860046386719,
+      "dead": 0
+    }
+  ],
+  "test_solved": 0.5146666666666667,
+  "families": {
+    "detour": {
+      "solved": 0.0,
+      "crossed_block": 0.9172932330827067,
+      "used_open": 0.0,
+      "reached": 0.9887218045112782
+    },
+    "offpath_block": {
+      "solved": 0.815,
+      "crossed_block": 0.055,
+      "used_open": 0.0,
+      "reached": 0.995
+    },
+    "shortcut_open": {
+      "solved": 0.7717391304347826,
+      "crossed_block": 0.0,
+      "used_open": 0.016304347826086956,
+      "reached": 0.9945652173913043
+    },
+    "zerogain_open": {
+      "solved": 0.81,
+      "crossed_block": 0.0,
+      "used_open": 0.02,
+      "reached": 0.99
+    }
+  }
+}

@@ -1,0 +1,631 @@
+{
+ "meta": {
+  "n_edits": 1600,
+  "full": false,
+  "layers": [
+   0
+  ]
+ },
+ "results": {
+  "none|L0|a0|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9325,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.8325,
+    "solves_edited": 0.8175,
+    "blocked_edge_crossed": 0.045
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "prompt|L0|a0|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.9575,
+    "valid_edited": 0.7325,
+    "solves_edited": 0.7125,
+    "blocked_edge_crossed": 0.03,
+    "detour_wall_used": 0.855
+   },
+   "shortcut_open": {
+    "reached_target": 0.02,
+    "rollout_changed": 0.9975,
+    "valid_edited": 0.2325,
+    "solves_edited": 0.0,
+    "shortcut_used": 0.0525
+   },
+   "offpath_block": {
+    "reached_target": 0.0075,
+    "rollout_changed": 1.0,
+    "valid_edited": 0.81,
+    "solves_edited": 0.005,
+    "blocked_edge_crossed": 0.0
+   },
+   "zerogain_open": {
+    "reached_target": 0.0175,
+    "rollout_changed": 1.0,
+    "valid_edited": 0.1875,
+    "solves_edited": 0.0,
+    "opened_wall_used": 0.0575
+   }
+  },
+  "copy_chunk|L0|a1|-": {
+   "detour": {
+    "reached_target": 0.8825,
+    "rollout_changed": 0.7375,
+    "valid_edited": 0.1,
+    "solves_edited": 0.065,
+    "blocked_edge_crossed": 0.2975,
+    "detour_wall_used": 0.1075
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.9725,
+    "rollout_changed": 0.105,
+    "valid_edited": 0.84,
+    "solves_edited": 0.8175,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "mean_patch|L0|a1|semi_all": {
+   "detour": {
+    "reached_target": 0.9375,
+    "rollout_changed": 0.94,
+    "valid_edited": 0.4925,
+    "solves_edited": 0.445,
+    "blocked_edge_crossed": 0.1375,
+    "detour_wall_used": 0.7525
+   },
+   "shortcut_open": {
+    "reached_target": 0.9275,
+    "rollout_changed": 0.775,
+    "valid_edited": 0.705,
+    "solves_edited": 0.4375,
+    "shortcut_used": 0.6625
+   },
+   "offpath_block": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8375,
+    "solves_edited": 0.82,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.965,
+    "rollout_changed": 0.3975,
+    "valid_edited": 0.7275,
+    "solves_edited": 0.635,
+    "opened_wall_used": 0.265
+   }
+  },
+  "dir_dim|L0|a1|semi_all": {
+   "detour": {
+    "reached_target": 0.885,
+    "rollout_changed": 0.6825,
+    "valid_edited": 0.0975,
+    "solves_edited": 0.0725,
+    "blocked_edge_crossed": 0.3425,
+    "detour_wall_used": 0.115
+   },
+   "shortcut_open": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.0425,
+    "valid_edited": 0.8125,
+    "solves_edited": 0.015,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.84,
+    "solves_edited": 0.8275,
+    "blocked_edge_crossed": 0.0175
+   },
+   "zerogain_open": {
+    "reached_target": 0.97,
+    "rollout_changed": 0.0425,
+    "valid_edited": 0.84,
+    "solves_edited": 0.82,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_dim|L0|a2|semi_all": {
+   "detour": {
+    "reached_target": 0.8825,
+    "rollout_changed": 0.7225,
+    "valid_edited": 0.1025,
+    "solves_edited": 0.075,
+    "blocked_edge_crossed": 0.3025,
+    "detour_wall_used": 0.125
+   },
+   "shortcut_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0475,
+    "valid_edited": 0.81,
+    "solves_edited": 0.015,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8425,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.97,
+    "rollout_changed": 0.0425,
+    "valid_edited": 0.84,
+    "solves_edited": 0.82,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_logit|L0|a1|semi_all": {
+   "detour": {
+    "reached_target": 0.89,
+    "rollout_changed": 0.645,
+    "valid_edited": 0.1,
+    "solves_edited": 0.075,
+    "blocked_edge_crossed": 0.37,
+    "detour_wall_used": 0.115
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0025,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0125,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_logit|L0|a2|semi_all": {
+   "detour": {
+    "reached_target": 0.88,
+    "rollout_changed": 0.7225,
+    "valid_edited": 0.11,
+    "solves_edited": 0.0825,
+    "blocked_edge_crossed": 0.29,
+    "detour_wall_used": 0.135
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0775,
+    "valid_edited": 0.84,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.8375,
+    "solves_edited": 0.8275,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "mean_patch|L0|a1|semi_last": {
+   "detour": {
+    "reached_target": 0.9625,
+    "rollout_changed": 0.9225,
+    "valid_edited": 0.63,
+    "solves_edited": 0.595,
+    "blocked_edge_crossed": 0.08,
+    "detour_wall_used": 0.775
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.6,
+    "valid_edited": 0.8525,
+    "solves_edited": 0.4975,
+    "shortcut_used": 0.5675
+   },
+   "offpath_block": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8375,
+    "solves_edited": 0.82,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.175,
+    "valid_edited": 0.8125,
+    "solves_edited": 0.79,
+    "opened_wall_used": 0.1375
+   }
+  },
+  "dir_dim|L0|a1|semi_last": {
+   "detour": {
+    "reached_target": 0.885,
+    "rollout_changed": 0.6925,
+    "valid_edited": 0.0975,
+    "solves_edited": 0.0725,
+    "blocked_edge_crossed": 0.3325,
+    "detour_wall_used": 0.1175
+   },
+   "shortcut_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0225,
+    "valid_edited": 0.7975,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.84,
+    "solves_edited": 0.8275,
+    "blocked_edge_crossed": 0.0175
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.01,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_dim|L0|a2|semi_last": {
+   "detour": {
+    "reached_target": 0.88,
+    "rollout_changed": 0.72,
+    "valid_edited": 0.1,
+    "solves_edited": 0.075,
+    "blocked_edge_crossed": 0.3025,
+    "detour_wall_used": 0.115
+   },
+   "shortcut_open": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.0225,
+    "valid_edited": 0.8,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8425,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.015,
+    "valid_edited": 0.84,
+    "solves_edited": 0.8275,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_logit|L0|a1|semi_last": {
+   "detour": {
+    "reached_target": 0.89,
+    "rollout_changed": 0.645,
+    "valid_edited": 0.1025,
+    "solves_edited": 0.0775,
+    "blocked_edge_crossed": 0.375,
+    "detour_wall_used": 0.1175
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "dir_logit|L0|a2|semi_last": {
+   "detour": {
+    "reached_target": 0.88,
+    "rollout_changed": 0.72,
+    "valid_edited": 0.115,
+    "solves_edited": 0.085,
+    "blocked_edge_crossed": 0.2925,
+    "detour_wall_used": 0.1375
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0,
+    "valid_edited": 0.79,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0775,
+    "valid_edited": 0.84,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.005,
+    "valid_edited": 0.84,
+    "solves_edited": 0.83,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "mean_patch|L0|a1|B_all": {
+   "detour": {
+    "reached_target": 0.615,
+    "rollout_changed": 0.9875,
+    "valid_edited": 0.065,
+    "solves_edited": 0.0475,
+    "blocked_edge_crossed": 0.305,
+    "detour_wall_used": 0.7275
+   },
+   "shortcut_open": {
+    "reached_target": 0.6175,
+    "rollout_changed": 1.0,
+    "valid_edited": 0.0825,
+    "solves_edited": 0.07,
+    "shortcut_used": 0.7275
+   },
+   "offpath_block": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8375,
+    "solves_edited": 0.82,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.65,
+    "rollout_changed": 0.9425,
+    "valid_edited": 0.0725,
+    "solves_edited": 0.0575,
+    "opened_wall_used": 0.5325
+   }
+  },
+  "dir_dim|L0|a1|B_all": {
+   "detour": {
+    "reached_target": 0.8975,
+    "rollout_changed": 0.8375,
+    "valid_edited": 0.145,
+    "solves_edited": 0.14,
+    "blocked_edge_crossed": 0.5,
+    "detour_wall_used": 0.545
+   },
+   "shortcut_open": {
+    "reached_target": 0.8975,
+    "rollout_changed": 0.965,
+    "valid_edited": 0.33,
+    "solves_edited": 0.27,
+    "shortcut_used": 0.6825
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.84,
+    "solves_edited": 0.8275,
+    "blocked_edge_crossed": 0.0175
+   },
+   "zerogain_open": {
+    "reached_target": 0.8675,
+    "rollout_changed": 0.8375,
+    "valid_edited": 0.19,
+    "solves_edited": 0.175,
+    "opened_wall_used": 0.4175
+   }
+  },
+  "dir_dim|L0|a2|B_all": {
+   "detour": {
+    "reached_target": 0.77,
+    "rollout_changed": 0.95,
+    "valid_edited": 0.085,
+    "solves_edited": 0.0775,
+    "blocked_edge_crossed": 0.3675,
+    "detour_wall_used": 0.6825
+   },
+   "shortcut_open": {
+    "reached_target": 0.755,
+    "rollout_changed": 0.9975,
+    "valid_edited": 0.155,
+    "solves_edited": 0.13,
+    "shortcut_used": 0.735
+   },
+   "offpath_block": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.09,
+    "valid_edited": 0.8425,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.7475,
+    "rollout_changed": 0.925,
+    "valid_edited": 0.0875,
+    "solves_edited": 0.0775,
+    "opened_wall_used": 0.5575
+   }
+  },
+  "dir_logit|L0|a1|B_all": {
+   "detour": {
+    "reached_target": 0.92,
+    "rollout_changed": 0.7675,
+    "valid_edited": 0.1825,
+    "solves_edited": 0.1725,
+    "blocked_edge_crossed": 0.47,
+    "detour_wall_used": 0.49
+   },
+   "shortcut_open": {
+    "reached_target": 0.92,
+    "rollout_changed": 0.9175,
+    "valid_edited": 0.39,
+    "solves_edited": 0.29,
+    "shortcut_used": 0.645
+   },
+   "offpath_block": {
+    "reached_target": 0.985,
+    "rollout_changed": 0.075,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "blocked_edge_crossed": 0.02
+   },
+   "zerogain_open": {
+    "reached_target": 0.9275,
+    "rollout_changed": 0.715,
+    "valid_edited": 0.345,
+    "solves_edited": 0.305,
+    "opened_wall_used": 0.2925
+   }
+  },
+  "dir_logit|L0|a2|B_all": {
+   "detour": {
+    "reached_target": 0.8425,
+    "rollout_changed": 0.9525,
+    "valid_edited": 0.095,
+    "solves_edited": 0.09,
+    "blocked_edge_crossed": 0.3575,
+    "detour_wall_used": 0.675
+   },
+   "shortcut_open": {
+    "reached_target": 0.7975,
+    "rollout_changed": 0.9975,
+    "valid_edited": 0.2025,
+    "solves_edited": 0.1725,
+    "shortcut_used": 0.7175
+   },
+   "offpath_block": {
+    "reached_target": 0.9825,
+    "rollout_changed": 0.0775,
+    "valid_edited": 0.84,
+    "solves_edited": 0.825,
+    "blocked_edge_crossed": 0.015
+   },
+   "zerogain_open": {
+    "reached_target": 0.795,
+    "rollout_changed": 0.9125,
+    "valid_edited": 0.1025,
+    "solves_edited": 0.09,
+    "opened_wall_used": 0.515
+   }
+  },
+  "old_style|L6|a2|-": {
+   "detour": {
+    "reached_target": 0.9675,
+    "rollout_changed": 0.0475,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.9275,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.975,
+    "rollout_changed": 0.045,
+    "valid_edited": 0.7775,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.9725,
+    "rollout_changed": 0.035,
+    "valid_edited": 0.83,
+    "solves_edited": 0.81,
+    "blocked_edge_crossed": 0.0475
+   },
+   "zerogain_open": {
+    "reached_target": 0.98,
+    "rollout_changed": 0.0425,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "opened_wall_used": 0.0075
+   }
+  },
+  "old_style|L6|a4|-": {
+   "detour": {
+    "reached_target": 0.9625,
+    "rollout_changed": 0.0525,
+    "valid_edited": 0.005,
+    "solves_edited": 0.0,
+    "blocked_edge_crossed": 0.925,
+    "detour_wall_used": 0.0
+   },
+   "shortcut_open": {
+    "reached_target": 0.9775,
+    "rollout_changed": 0.0475,
+    "valid_edited": 0.78,
+    "solves_edited": 0.0125,
+    "shortcut_used": 0.0175
+   },
+   "offpath_block": {
+    "reached_target": 0.9725,
+    "rollout_changed": 0.035,
+    "valid_edited": 0.83,
+    "solves_edited": 0.8125,
+    "blocked_edge_crossed": 0.0425
+   },
+   "zerogain_open": {
+    "reached_target": 0.975,
+    "rollout_changed": 0.0425,
+    "valid_edited": 0.845,
+    "solves_edited": 0.8325,
+    "opened_wall_used": 0.01
+   }
+  }
+ }
+}

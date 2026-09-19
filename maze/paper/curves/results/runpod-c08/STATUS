@@ -1,0 +1,25 @@
+[21:31:19] worker start: 7:1 8:1
+[21:41:35] dataset ready g7 s1
+[21:41:39] train start g7 s1 none
+[21:43:35] RESTART with bf16
+[21:43:37] worker start: 7:1 8:1
+[21:43:45] dataset ready g7 s1
+[21:43:57] train start g7 s1 none
+[21:59:33] dataset ready g8 s1
+[22:03:21] train done g7 s1 none
+[22:12:00] eval done g7 s1 none
+[22:12:00] train start g7 s1 fixed
+[15:13:00] guard: offloaded 8:1:fixed 8:1:trainable
+[22:25:27] train done g7 s1 fixed
+[22:37:16] eval done g7 s1 fixed
+[22:37:16] train start g7 s1 trainable
+[22:50:39] train done g7 s1 trainable
+[23:02:23] eval done g7 s1 trainable
+[23:02:23] train start g8 s1 none
+[23:19:17] train done g8 s1 none
+[23:29:32] eval done g8 s1 none
+[23:29:32] train start g8 s1 fixed
+[23:29:37] TRAIN FAILED g8 s1 fixed rc=143
+[23:29:37] train start g8 s1 trainable
+[23:29:43] TRAIN FAILED g8 s1 trainable rc=143
+[23:29:43] WORKER_DONE

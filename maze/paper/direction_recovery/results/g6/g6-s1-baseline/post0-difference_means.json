@@ -1,0 +1,14 @@
+{
+  "site": "post0",
+  "method": "difference_means",
+  "probe_accuracy": null,
+  "alpha": 0.5,
+  "validation": {
+    "0.5": 0.14,
+    "1.0": 0.14,
+    "2.0": 0.14
+  },
+  "test_solved": 0.30833333333333335,
+  "test_true_solved": 0.7805555555555556,
+  "n_test_pairs": 360
+}

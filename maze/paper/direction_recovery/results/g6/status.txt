@@ -1,0 +1,4 @@
+ALL_DONE
+EVAL g6-s1-baseline post0-ridge 0.30833333333333335
+EVAL g6-s1-baseline post0-unedited 0.30833333333333335
+/usr/bin/rsync

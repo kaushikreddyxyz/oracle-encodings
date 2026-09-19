@@ -1,0 +1,9 @@
+site,method,wins,losses,comparisons
+injection,batchtopk,56,2804,8632
+injection,matryoshka,52,2731,8632
+injection,mp,50,2894,8632
+injection,relu,55,2694,8632
+post0,batchtopk,50,2921,8632
+post0,matryoshka,57,2815,8632
+post0,mp,60,2897,8632
+post0,relu,58,2873,8632

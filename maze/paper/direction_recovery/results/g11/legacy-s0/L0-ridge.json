@@ -1,0 +1,40 @@
+{
+  "method": "ridge",
+  "layer": 0,
+  "best_probe_layer": 5,
+  "alpha": 1.0,
+  "validation": [
+    0.5825688073394495,
+    0.5825688073394495,
+    0.5779816513761468
+  ],
+  "test_n": 750,
+  "training": null,
+  "test_solved": 0.492,
+  "families": {
+    "detour": {
+      "solved": 0.0,
+      "crossed_block": 0.8646616541353384,
+      "used_open": 0.0,
+      "reached": 0.9736842105263158
+    },
+    "offpath_block": {
+      "solved": 0.79,
+      "crossed_block": 0.095,
+      "used_open": 0.0,
+      "reached": 0.985
+    },
+    "shortcut_open": {
+      "solved": 0.7119565217391305,
+      "crossed_block": 0.0,
+      "used_open": 0.010869565217391304,
+      "reached": 0.967391304347826
+    },
+    "zerogain_open": {
+      "solved": 0.8,
+      "crossed_block": 0.0,
+      "used_open": 0.01,
+      "reached": 0.97
+    }
+  }
+}

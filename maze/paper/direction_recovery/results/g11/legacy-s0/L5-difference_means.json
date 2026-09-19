@@ -1,0 +1,40 @@
+{
+  "method": "difference_means",
+  "layer": 5,
+  "best_probe_layer": 5,
+  "alpha": 1.0,
+  "validation": [
+    0.573394495412844,
+    0.5642201834862385,
+    0.5275229357798165
+  ],
+  "test_n": 750,
+  "training": null,
+  "test_solved": 0.49333333333333335,
+  "families": {
+    "detour": {
+      "solved": 0.011278195488721804,
+      "crossed_block": 0.8421052631578947,
+      "used_open": 0.015037593984962405,
+      "reached": 0.9774436090225563
+    },
+    "offpath_block": {
+      "solved": 0.78,
+      "crossed_block": 0.12,
+      "used_open": 0.0,
+      "reached": 0.975
+    },
+    "shortcut_open": {
+      "solved": 0.717391304347826,
+      "crossed_block": 0.0,
+      "used_open": 0.021739130434782608,
+      "reached": 0.9728260869565217
+    },
+    "zerogain_open": {
+      "solved": 0.79,
+      "crossed_block": 0.0,
+      "used_open": 0.01,
+      "reached": 0.99
+    }
+  }
+}

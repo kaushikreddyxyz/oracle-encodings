@@ -1,0 +1,17 @@
+{
+  "id": "2kqi13tscyt1bl",
+  "grid": 14,
+  "job": "g10-s1-fixed",
+  "ip": "216.81.245.126",
+  "port": 17745,
+  "ssh": [
+    "ssh",
+    "-i",
+    "/Users/kaushikreddy/.runpod/ssh/runpodctl-ssh-key",
+    "-p",
+    "17745",
+    "-o",
+    "StrictHostKeyChecking=accept-new",
+    "root@216.81.245.126"
+  ]
+}

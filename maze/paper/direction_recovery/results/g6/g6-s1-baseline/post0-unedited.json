@@ -1,0 +1,12 @@
+{
+  "site": "post0",
+  "method": "unedited",
+  "probe_accuracy": null,
+  "alpha": 1.0,
+  "validation": {
+    "1.0": 0.14
+  },
+  "test_solved": 0.30833333333333335,
+  "test_true_solved": 0.7833333333333333,
+  "n_test_pairs": 360
+}

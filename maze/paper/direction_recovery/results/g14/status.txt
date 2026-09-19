@@ -1,0 +1,4 @@
+ALL_DONE
+EVAL g10-s1-fixed post0-relu 0.16111111111111112
+EVAL g10-s1-fixed post0-ridge 0.19166666666666668
+/usr/bin/rsync

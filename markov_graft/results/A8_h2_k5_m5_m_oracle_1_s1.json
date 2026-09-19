@@ -1,0 +1,109 @@
+{
+ "name": "A8_h2_k5_m5_m_oracle_1_s1",
+ "A": 8,
+ "k": 5,
+ "m": 5,
+ "h_bits": 2.0,
+ "lags": [
+  1,
+  2,
+  3,
+  4,
+  5
+ ],
+ "description_bits": 501324.4483465144,
+ "entropy_nats": 1.3862943611198906,
+ "size": "m",
+ "n_layer": 4,
+ "d": 128,
+ "n_params": 794128,
+ "arm": "oracle_1",
+ "graft_fixed": false,
+ "graft_dropout": 0.0,
+ "tag": "",
+ "seed": 1,
+ "steps": 6000,
+ "batch": 128,
+ "T": 256,
+ "tokens": 196608000,
+ "ref": {
+  "bayes": 1.3855072516080198,
+  "unigram": 2.079430198748697,
+  "oracle_1_only": 1.9887617308765098,
+  "leak_1_bayes": 0.8186037669004287,
+  "leak_1_only": 1.3862834399491124,
+  "oracle_2_only": 1.8563994447289214,
+  "leak_2_bayes": 0.3504769896241035,
+  "leak_2_only": 0.693138583091036,
+  "oracle_3_only": 1.681655430226612,
+  "leak_3_bayes": -0.0,
+  "leak_3_only": -0.0
+ },
+ "final_loss": 1.6960840243846178,
+ "final_loss_shuffled_graft": 2.130113746970892,
+ "final_loss_null_graft": null,
+ "excess_over_bayes": 0.310576772776598,
+ "curve": [
+  {
+   "step": 500,
+   "eval_loss": 1.9889242574572563,
+   "eval_loss_shuffled_graft": 2.17698872089386
+  },
+  {
+   "step": 1000,
+   "eval_loss": 1.9888850152492523,
+   "eval_loss_shuffled_graft": 2.1726567298173904
+  },
+  {
+   "step": 1500,
+   "eval_loss": 1.9887951016426086,
+   "eval_loss_shuffled_graft": 2.173451319336891
+  },
+  {
+   "step": 2000,
+   "eval_loss": 1.9886501654982567,
+   "eval_loss_shuffled_graft": 2.1729449331760406
+  },
+  {
+   "step": 2500,
+   "eval_loss": 1.9875035807490349,
+   "eval_loss_shuffled_graft": 2.1751080602407455
+  },
+  {
+   "step": 3000,
+   "eval_loss": 1.9808857440948486,
+   "eval_loss_shuffled_graft": 2.171502411365509
+  },
+  {
+   "step": 3500,
+   "eval_loss": 1.941195972263813,
+   "eval_loss_shuffled_graft": 2.1674739569425583
+  },
+  {
+   "step": 4000,
+   "eval_loss": 1.8726073950529099,
+   "eval_loss_shuffled_graft": 2.148835390806198
+  },
+  {
+   "step": 4500,
+   "eval_loss": 1.8047604784369469,
+   "eval_loss_shuffled_graft": 2.1379735618829727
+  },
+  {
+   "step": 5000,
+   "eval_loss": 1.756113015115261,
+   "eval_loss_shuffled_graft": 2.136777088046074
+  },
+  {
+   "step": 5500,
+   "eval_loss": 1.72019724547863,
+   "eval_loss_shuffled_graft": 2.130150631070137
+  },
+  {
+   "step": 6000,
+   "eval_loss": 1.6954774633049965,
+   "eval_loss_shuffled_graft": 2.1286214888095856
+  }
+ ],
+ "seconds": 51.72052335739136
+}

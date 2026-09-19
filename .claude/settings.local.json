@@ -25,7 +25,8 @@
       "Bash(git push *)",
       "Bash(git check-ignore *)",
       "Bash(curl *)",
-      "Read(//Users/kaushikreddy/.cache/nanochat/**)"
+      "Read(//Users/kaushikreddy/.cache/nanochat/**)",
+      "Bash(sort -t'|' -k2)"
     ]
   },
   "remote": {

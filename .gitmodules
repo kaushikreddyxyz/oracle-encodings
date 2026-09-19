@@ -5,3 +5,12 @@
 [submodule "modular_addition"]
 	path = modular_addition
 	url = https://github.com/kaushikreddyxyz/transformer-modular-addition
+[submodule "maze-dataset"]
+	path = maze-dataset
+	url = https://github.com/understanding-search/maze-dataset.git
+[submodule "maze-transformer"]
+	path = maze-transformer
+	url = https://github.com/understanding-search/maze-transformer.git
+[submodule "structured-representations-maze-transformers"]
+	path = structured-representations-maze-transformers
+	url = https://github.com/understanding-search/structured-representations-maze-transformers.git

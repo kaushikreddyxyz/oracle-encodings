@@ -242,3 +242,46 @@ concept_probes/4_causal/figures/
 # as superseded)
 overnight_run/data/
 overnight_run2/data/
+
+# maze / icl_oracle / markov_graft: checkpoints + datasets are LOCAL-ONLY (too big for
+# GitHub; models go to HF). Code, reports, figures and small results are tracked.
+icl_oracle/**/*.pt
+icl_oracle/**/*.zanj
+markov_graft/**/*.pt
+markov_graft/**/*.zanj
+maze/**/*.pt
+maze/**/*.zanj
+maze_legacy/**/*.pt
+maze_legacy/**/*.zanj
+# individual result files > 5 MB (local-only)
+/icl_oracle/binding_v2/results/baselines.json
+/icl_oracle/binding_v2/results/gemma_development.jsonl
+/icl_oracle/binding_v2/results/gemma_heldout.jsonl
+/icl_oracle/binding_v2/results/qwen_development.jsonl
+/icl_oracle/binding_v2/results/qwen_heldout.jsonl
+/icl_oracle/results/replicate.npz
+/icl_oracle/results_big/big.json
+/icl_oracle/results_bind_2b/main.json
+/icl_oracle/results_bind_2b/sig.json
+/icl_oracle/results_bind_2b_long/main.json
+/icl_oracle/results_bind_9b/main.json
+/icl_oracle/results_bind_9b/main_ref.npz
+/icl_oracle/results_bind_9b/sig.json
+/icl_oracle/results_bind_qwen7b/main.json
+/icl_oracle/results_bind_qwen7b/main_ref.npz
+/icl_oracle/results_bind_qwen7b/sig.json
+/icl_oracle/results_gt/e1_means.npz
+/icl_oracle/results_gt_2b/e1_means.npz
+/icl_oracle/results_gt_9b_s12/e2b.json
+/icl_oracle/results_port/p5.json
+/icl_oracle/results_qk/port3.json
+/icl_oracle/results_zoo/partial/zoo.json
+/icl_oracle/results_zoo/round2.json
+/icl_oracle/results_zoo/round3.json
+/icl_oracle/results_zoo/round4.json
+/icl_oracle/results_zoo/round5.json
+/icl_oracle/results_zoo/sweep.json
+/icl_oracle/results_zoo/zoo.json
+/maze/paper/curves/distance_items.csv.gz
+/maze/paper/curves/steering_items.csv.gz
+/maze/paper/direction_recovery/results/g10/train-g10-n20000.npz

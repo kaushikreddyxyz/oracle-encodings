@@ -1,0 +1,136 @@
+screen top nbr: L7H1=4.49, L10H4=4.45, L28H2=4.29, L0H2=4.24, L6H9=4.07, L27H2=4.02, L15H3=3.90, L14H11=3.57, L16H0=3.56, L31H4=3.55
+screen top same: L12H10=14.71, L19H11=14.52, L31H11=14.45, L0H4=14.44, L13H6=14.44, L5H7=14.04, L20H9=12.87, L13H4=12.72, L9H3=12.38, L17H9=12.22
+screen top succ_same: L7H1=14.30, L28H2=13.58, L15H3=12.16, L11H2=9.43, L7H0=8.76, L28H6=8.37, L15H2=7.72, L30H9=7.34, L34H14=7.23, L25H13=7.03
+screen top d_nbr_own: L26H2=1.22, L28H11=1.21, L26H4=1.21, L26H5=1.07, L28H4=0.99, L28H8=0.94, L28H10=0.91, L26H1=0.89, L28H5=0.82, L26H0=0.82
+screen top d_nbr_rand16: L17H4=0.56, L16H13=0.55, L28H6=0.54, L38H12=0.54, L24H9=0.47, L24H13=0.43, L24H12=0.36, L26H12=0.36, L33H15=0.35, L20H8=0.34
+screen acc: {"none": 0.7820387880007426, "own_hs26_b2": 0.7901759545008341, "rand_hs16_b4": 0.8413627545038859, "rand_hs20_b4": 0.8469403386116028}
+ablate no_ablation: none=0.782 own=0.790 rand=0.841
+ablate readers_own8: none=0.791 own=0.791 rand=0.848
+ablate nbr_base8: none=0.433 own=0.551 rand=0.501
+ablate induction8: none=0.559 own=0.654 rand=0.609
+ablate random8: none=0.809 own=0.801 rand=0.863
+ablate single_26_1: none=0.781 own=0.799
+ablate single_26_2: none=0.782 own=0.793
+ablate single_26_4: none=0.781 own=0.792
+ablate single_26_5: none=0.783 own=0.791
+ablate single_28_10: none=0.783 own=0.784
+ablate single_28_11: none=0.775 own=0.789
+ablate single_28_4: none=0.780 own=0.782
+ablate single_28_8: none=0.794 own=0.791
+port dense none: [100-200]=0.584 [200-600]=0.731 [600-1200]=0.820
+port dense own_hs26_b2: [100-200]=0.685 [200-600]=0.778 [600-1200]=0.828
+port dense rand_hs16_b4: [100-200]=0.623 [200-600]=0.769 [600-1200]=0.859
+port dense rand_hs20_b4: [100-200]=0.637 [200-600]=0.789 [600-1200]=0.869
+port dense port_b1: [100-200]=0.584 [200-600]=0.728 [600-1200]=0.823
+port dense port_b1_hs16: [100-200]=0.584 [200-600]=0.728 [600-1200]=0.823
+port dense port_b2: [100-200]=0.596 [200-600]=0.743 [600-1200]=0.843
+port dense port_b2_hs16: [100-200]=0.596 [200-600]=0.743 [600-1200]=0.843
+port dense port_b4: [100-200]=0.653 [200-600]=0.793 [600-1200]=0.883
+port dense port_b4_hs16: [100-200]=0.653 [200-600]=0.793 [600-1200]=0.883
+port dense port_b8: [100-200]=0.533 [200-600]=0.625 [600-1200]=0.674
+port dense port_b8_hs16: [100-200]=0.533 [200-600]=0.625 [600-1200]=0.674
+port dense anti_b2: [100-200]=0.588 [200-600]=0.739 [600-1200]=0.828
+port dense nonreader_b2: [100-200]=0.589 [200-600]=0.736 [600-1200]=0.828
+port dense plain_b2: [100-200]=0.596 [200-600]=0.739 [600-1200]=0.837
+port dense anti_b4: [100-200]=0.590 [200-600]=0.761 [600-1200]=0.857
+port dense nonreader_b4: [100-200]=0.624 [200-600]=0.769 [600-1200]=0.860
+port dense plain_b4: [100-200]=0.633 [200-600]=0.765 [600-1200]=0.854
+port override port_b2: true-map[200-600]=0.730 injected-map=0.168 (chance 0.163)
+port override port_b4: true-map[200-600]=0.722 injected-map=0.186 (chance 0.163)
+port attn none: L26H2=0.64 L16H13=0.86 L26H4=0.74 L17H4=1.06 L26H5=0.92 L20H8=1.43 L28H11=0.72 L16H14=1.00
+port attn own_hs26_b2: L26H2=1.86 L16H13=0.86 L26H4=1.98 L17H4=1.06 L26H5=2.04 L20H8=1.43 L28H11=1.91 L16H14=1.00
+port attn rand_hs16_b4: L26H2=0.72 L16H13=1.39 L26H4=0.81 L17H4=1.63 L26H5=0.95 L20H8=1.81 L28H11=0.87 L16H14=1.28
+port attn port_b2: L26H2=0.67 L16H13=1.26 L26H4=0.70 L17H4=1.72 L26H5=0.89 L20H8=1.89 L28H11=0.77 L16H14=1.37
+port attn port_b4: L26H2=0.71 L16H13=1.46 L26H4=1.01 L17H4=2.03 L26H5=1.10 L20H8=1.86 L28H11=1.11 L16H14=1.44
+port attn port_b8: L26H2=1.19 L16H13=1.52 L26H4=1.57 L17H4=2.00 L26H5=1.65 L20H8=1.50 L28H11=1.64 L16H14=0.96
+port attn anti_b4: L26H2=0.70 L16H13=0.88 L26H4=0.84 L17H4=1.06 L26H5=1.00 L20H8=1.66 L28H11=0.90 L16H14=0.87
+port attn nonreader_b4: L26H2=0.81 L16H13=1.47 L26H4=0.92 L17H4=1.87 L26H5=1.05 L20H8=1.86 L28H11=0.95 L16H14=1.41
+port unseen none: P_nbrs_X=0.112 P_nbrs_Y=0.130
+port unseen own|trueX: P_nbrs_X=0.174 P_nbrs_Y=0.077
+port unseen own|claimY: P_nbrs_X=0.063 P_nbrs_Y=0.207
+port unseen rand16|trueX: P_nbrs_X=0.135 P_nbrs_Y=0.139
+port unseen rand16|claimY: P_nbrs_X=0.119 P_nbrs_Y=0.173
+port unseen port_b2|trueX: P_nbrs_X=0.140 P_nbrs_Y=0.135
+port unseen port_b2|claimY: P_nbrs_X=0.116 P_nbrs_Y=0.163
+port unseen port_b4|trueX: P_nbrs_X=0.166 P_nbrs_Y=0.127
+port unseen port_b4|claimY: P_nbrs_X=0.091 P_nbrs_Y=0.209
+port unseen port_b8|trueX: P_nbrs_X=0.108 P_nbrs_Y=0.078
+port unseen port_b8|claimY: P_nbrs_X=0.050 P_nbrs_Y=0.133
+port kernel: {"L26H2": {"self": 2.6772608757019043, "nbr": 1.8389750719070435, "other": -0.6828487515449524, "asym": 0.038087621331214905}, "L16H13": {"self": 0.801943302154541, "nbr": 0.5508442521095276, "other": -0.2045397013425827, "asym": 0.15188947319984436}, "L26H4": {"self": 3.601032257080078, "nbr": 2.473501443862915, "other": -0.9184613227844238, "asym": 0.030395330861210823}, "L17H4": {"self": 0.8104449510574341, "nbr": 0.5566839575767517, "other": -0.20670807361602783, "asym": 0.09751840680837631}, "L26H5": {"self": 4.101210594177246, "nbr": 2.8170671463012695, "other": -1.046034336090088, "asym": 0.0019494384760037065}, "L20H8": {"self": 3.4140100479125977, "nbr": 2.3450381755828857, "other": -0.8707602620124817, "asym": 0.0019402579637244344}, "L28H11": {"self": 4.356672286987305, "nbr": 2.9925403594970703, "other": -1.1111911535263062, "asym": 0.046798188239336014}, "L16H14": {"self": 1.9134154319763184, "nbr": 1.3142997026443481, "other": -0.4880262315273285, "asym": 0.012024015188217163}}
+universal set1|none: [200-600]=0.702
+universal set1|port_b4: [200-600]=0.767
+universal set1|rand_hs16_b4: [200-600]=0.723
+universal set2|none: [200-600]=0.693
+universal set2|port_b4: [200-600]=0.753
+universal set2|rand_hs16_b4: [200-600]=0.714
+universal set3|none: [200-600]=0.714
+universal set3|port_b4: [200-600]=0.764
+universal set3|rand_hs16_b4: [200-600]=0.735
+universal unseen none: P_nbrs_X=0.120 P_nbrs_Y=0.135 (n=18)
+universal unseen port|trueX: P_nbrs_X=0.176 P_nbrs_Y=0.134 (n=18)
+universal unseen port|claimY: P_nbrs_X=0.080 P_nbrs_Y=0.227 (n=18)
+port2 dense none: [100-200]=0.584 [200-600]=0.731 [600-1200]=0.820
+port2 dense rand20_b3: [100-200]=0.623 [200-600]=0.777 [600-1200]=0.860
+port2 dense rand20_b4: [100-200]=0.637 [200-600]=0.789 [600-1200]=0.869
+port2 dense rand20_b5: [100-200]=0.641 [200-600]=0.788 [600-1200]=0.866
+port2 dense z2_b3: [100-200]=0.623 [200-600]=0.773 [600-1200]=0.870
+port2 dense z2_b4: [100-200]=0.653 [200-600]=0.793 [600-1200]=0.883
+port2 dense z2_b5: [100-200]=0.666 [200-600]=0.794 [600-1200]=0.880
+port2 dense adj_b2: [100-200]=0.595 [200-600]=0.753 [600-1200]=0.846
+port2 dense adj_b3: [100-200]=0.610 [200-600]=0.772 [600-1200]=0.866
+port2 dense adj_b4: [100-200]=0.634 [200-600]=0.795 [600-1200]=0.885
+port2 dense adj_b6: [100-200]=0.677 [200-600]=0.825 [600-1200]=0.903
+port2 dense adj_b8: [100-200]=0.685 [200-600]=0.817 [600-1200]=0.885
+port2 dense late_b2: [100-200]=0.647 [200-600]=0.764 [600-1200]=0.828
+port2 dense late_b3: [100-200]=0.675 [200-600]=0.767 [600-1200]=0.814
+port2 dense late_b4: [100-200]=0.676 [200-600]=0.748 [600-1200]=0.783
+port2 dense late_b6: [100-200]=0.640 [200-600]=0.671 [600-1200]=0.671
+port2 dense lateadj_b2: [100-200]=0.620 [200-600]=0.754 [600-1200]=0.830
+port2 dense lateadj_b4: [100-200]=0.659 [200-600]=0.771 [600-1200]=0.829
+port2 dense lateadj_b6: [100-200]=0.650 [200-600]=0.732 [600-1200]=0.775
+port2 dense abl|none: [100-200]=0.630 [200-600]=0.790 [600-1200]=0.879
+port2 dense abl|z2_b4: [100-200]=0.671 [200-600]=0.805 [600-1200]=0.885
+port2 dense abl|rand20_b4: [100-200]=0.658 [200-600]=0.818 [600-1200]=0.899
+port2 dense abl|adj_b4: [100-200]=0.669 [200-600]=0.817 [600-1200]=0.897
+port2 dense abl|late_b4: [100-200]=0.722 [200-600]=0.814 [600-1200]=0.852
+port2 override adj_b4: true-map[200-600]=0.739 injected-map=0.180 (chance 0.163)
+port2 override late_b4: true-map[200-600]=0.514 injected-map=0.354 (chance 0.163)
+port2 override z2_b4: true-map[200-600]=0.722 injected-map=0.186 (chance 0.163)
+port2 attn none: L26H2=0.64 L16H13=0.86 L26H4=0.74 L17H4=1.06 L26H5=0.92 L20H8=1.43 L28H11=0.72 L16H14=1.00
+port2 attn z2_b4: L26H2=0.71 L16H13=1.46 L26H4=1.01 L17H4=2.03 L26H5=1.10 L20H8=1.86 L28H11=1.11 L16H14=1.44
+port2 attn adj_b4: L26H2=0.79 L16H13=1.35 L26H4=1.00 L17H4=1.66 L26H5=1.25 L20H8=0.97 L28H11=0.85 L16H14=1.03
+port2 attn adj_b6: L26H2=0.99 L16H13=1.43 L26H4=1.69 L17H4=1.85 L26H5=1.86 L20H8=0.86 L28H11=1.07 L16H14=0.86
+port2 attn late_b4: L26H2=2.07 L16H13=0.86 L26H4=2.03 L17H4=1.06 L26H5=2.06 L20H8=1.43 L28H11=2.01 L16H14=1.00
+port2 attn lateadj_b4: L26H2=4.71 L16H13=0.86 L26H4=4.71 L17H4=1.06 L26H5=4.71 L20H8=1.43 L28H11=2.07 L16H14=1.00
+port2 attn rand20_b4: L26H2=0.76 L16H13=0.86 L26H4=1.07 L17H4=1.06 L26H5=1.12 L20H8=1.53 L28H11=0.89 L16H14=1.00
+port2 unseen none: P_nbrs_X=0.112 P_nbrs_Y=0.130
+port2 unseen rand20_b4|trueX: P_nbrs_X=0.124 P_nbrs_Y=0.133
+port2 unseen rand20_b4|claimY: P_nbrs_X=0.104 P_nbrs_Y=0.155
+port2 unseen z2_b4|trueX: P_nbrs_X=0.166 P_nbrs_Y=0.127
+port2 unseen z2_b4|claimY: P_nbrs_X=0.091 P_nbrs_Y=0.209
+port2 unseen adj_b3|trueX: P_nbrs_X=0.133 P_nbrs_Y=0.131
+port2 unseen adj_b3|claimY: P_nbrs_X=0.117 P_nbrs_Y=0.156
+port2 unseen adj_b4|trueX: P_nbrs_X=0.144 P_nbrs_Y=0.129
+port2 unseen adj_b4|claimY: P_nbrs_X=0.118 P_nbrs_Y=0.177
+port2 unseen adj_b6|trueX: P_nbrs_X=0.157 P_nbrs_Y=0.108
+port2 unseen adj_b6|claimY: P_nbrs_X=0.103 P_nbrs_Y=0.210
+port2 unseen late_b3|trueX: P_nbrs_X=0.194 P_nbrs_Y=0.065
+port2 unseen late_b3|claimY: P_nbrs_X=0.054 P_nbrs_Y=0.218
+port2 unseen late_b4|trueX: P_nbrs_X=0.238 P_nbrs_Y=0.048
+port2 unseen late_b4|claimY: P_nbrs_X=0.032 P_nbrs_Y=0.254
+port2 unseen lateadj_b4|trueX: P_nbrs_X=0.193 P_nbrs_Y=0.110
+port2 unseen lateadj_b4|claimY: P_nbrs_X=0.083 P_nbrs_Y=0.208
+port3 word set 4 (6 seeds) own_b2: Δuptake[100-300]=+0.088±0.006 | override inj-chance=+0.062 true-base=-0.131 | unseen ΔX=+0.081±0.019 ΔY=+0.110±0.022 (n=18)
+port3 word set 4 (6 seeds) rand26_b4: Δuptake[100-300]=+0.015±0.009 | override inj-chance=+0.006 true-base=-0.007 | unseen ΔX=+0.007±0.006 ΔY=+0.004±0.009 (n=18)
+port3 word set 4 (6 seeds) late_b3: Δuptake[100-300]=+0.079±0.008 | override inj-chance=-0.163 true-base=-0.731 | unseen ΔX=+0.103±0.026 ΔY=+0.126±0.022 (n=18)
+port3 word set 4 (6 seeds) late_b4: Δuptake[100-300]=+0.074±0.009 | override inj-chance=+0.191 true-base=-0.216 | unseen ΔX=+0.163±0.038 ΔY=+0.144±0.028 (n=18)
+port3 word set 4 (6 seeds) lateadj_b4: Δuptake[100-300]=+0.066±0.004 | override inj-chance=+0.091 true-base=-0.070 | unseen ΔX=+0.069±0.008 ΔY=+0.133±0.018 (n=18)
+port3 word set 4 (6 seeds) lateanti_b4: Δuptake[100-300]=-0.082±0.004 | override inj-chance=-0.009 true-base=-0.050 | unseen ΔX=-0.013±0.009 ΔY=-0.025±0.014 (n=18)
+port3 word set 4 (6 seeds) latenon_b4: Δuptake[100-300]=+0.096±0.012 | override inj-chance=+0.189 true-base=-0.217 | unseen ΔX=+0.154±0.032 ΔY=+0.139±0.035 (n=18)
+port3 new word sets 1-3 (9 contexts) own_b2: Δuptake[100-300]=+0.062±0.006 | override inj-chance=+0.076 true-base=-0.150 | unseen ΔX=+0.086±0.015 ΔY=+0.108±0.014 (n=27)
+port3 new word sets 1-3 (9 contexts) rand26_b4: Δuptake[100-300]=+0.004±0.005 | override inj-chance=+0.004 true-base=-0.011 | unseen ΔX=+0.031±0.007 ΔY=+0.017±0.009 (n=27)
+port3 new word sets 1-3 (9 contexts) late_b3: Δuptake[100-300]=+0.058±0.006 | override inj-chance=-0.159 true-base=-0.703 | unseen ΔX=+0.081±0.015 ΔY=+0.146±0.012 (n=27)
+port3 new word sets 1-3 (9 contexts) late_b4: Δuptake[100-300]=+0.046±0.009 | override inj-chance=+0.176 true-base=-0.234 | unseen ΔX=+0.134±0.023 ΔY=+0.183±0.020 (n=27)
+port3 new word sets 1-3 (9 contexts) lateadj_b4: Δuptake[100-300]=+0.049±0.005 | override inj-chance=+0.094 true-base=-0.094 | unseen ΔX=+0.091±0.011 ΔY=+0.123±0.013 (n=27)
+port3 new word sets 1-3 (9 contexts) lateanti_b4: Δuptake[100-300]=-0.078±0.005 | override inj-chance=-0.009 true-base=-0.052 | unseen ΔX=-0.004±0.006 ΔY=-0.021±0.009 (n=27)
+port3 new word sets 1-3 (9 contexts) latenon_b4: Δuptake[100-300]=+0.061±0.009 | override inj-chance=+0.168 true-base=-0.230 | unseen ΔX=+0.155±0.022 ΔY=+0.179±0.020 (n=27)

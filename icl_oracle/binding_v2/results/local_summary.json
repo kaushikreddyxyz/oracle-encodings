@@ -1,0 +1,1601 @@
+{
+  "source_paths": [
+    "icl_oracle/binding_v2/results/local_pilot.jsonl",
+    "icl_oracle/binding_v2/results/local_text128.jsonl",
+    "icl_oracle/binding_v2/results/local_codebook_dose.jsonl"
+  ],
+  "duplicates_dropped": 0,
+  "aggregation": "Each task seed has equal weight. Standard error is across seed means; one-seed SE is null. Matched baselines use precisely the observed query subset.",
+  "rows": [
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 1.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.25,
+          "p_correct": 0.21368072630139068,
+          "label_mass": 0.4672448951750994,
+          "full_accuracy": 0.25,
+          "p_full": 0.10856241153669544,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.4375,
+          "p_correct": 0.4413460004143417,
+          "label_mass": 0.36554482858628035,
+          "full_accuracy": 0.4375,
+          "p_full": 0.23268623353214934,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.34375,
+          "se": 0.09374999999999999
+        },
+        "p_correct": {
+          "mean": 0.3275133633578662,
+          "se": 0.1138326370564755
+        },
+        "label_mass": {
+          "mean": 0.41639486188068986,
+          "se": 0.05085003329440951
+        },
+        "full_accuracy": {
+          "mean": 0.34375,
+          "se": 0.09374999999999999
+        },
+        "p_full": {
+          "mean": 0.1706243225344224,
+          "se": 0.06206191099772695
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 2.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.12841920601204038,
+          "label_mass": 0.5534938275814056,
+          "full_accuracy": 0.125,
+          "p_full": 0.07296035802573897,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.125,
+          "p_correct": 0.14216661804130126,
+          "label_mass": 0.23327225726097822,
+          "full_accuracy": 0.125,
+          "p_full": 0.03425193306293295,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.125,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.13529291202667082,
+          "se": 0.006873706014630442
+        },
+        "label_mass": {
+          "mean": 0.39338304242119193,
+          "se": 0.1601107851602137
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.0
+        },
+        "p_full": {
+          "mean": 0.05360614554433596,
+          "se": 0.019354212481403007
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 8,
+      "beta": 0.25,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.4375,
+          "p_correct": 0.4501349763304461,
+          "label_mass": 0.7119002044200897,
+          "full_accuracy": 0.4375,
+          "p_full": 0.34697351609065663,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.625,
+          "p_correct": 0.49748676049057394,
+          "label_mass": 0.17949325824156404,
+          "full_accuracy": 0.375,
+          "p_full": 0.09196068948949687,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.53125,
+          "se": 0.09374999999999999
+        },
+        "p_correct": {
+          "mean": 0.47381086841051,
+          "se": 0.023675892080063928
+        },
+        "label_mass": {
+          "mean": 0.4456967313308269,
+          "se": 0.26620347308926284
+        },
+        "full_accuracy": {
+          "mean": 0.40625,
+          "se": 0.03125
+        },
+        "p_full": {
+          "mean": 0.21946710279007675,
+          "se": 0.12750641330057985
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 8,
+      "beta": 0.5,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.625,
+          "p_correct": 0.5463089205768483,
+          "label_mass": 0.5910433903336525,
+          "full_accuracy": 0.625,
+          "p_full": 0.3730878692749684,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.375,
+          "p_correct": 0.37687883446051273,
+          "label_mass": 0.6478470675647259,
+          "full_accuracy": 0.375,
+          "p_full": 0.29554241276491666,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.5,
+          "se": 0.125
+        },
+        "p_correct": {
+          "mean": 0.46159387751868053,
+          "se": 0.0847150430581678
+        },
+        "label_mass": {
+          "mean": 0.6194452289491892,
+          "se": 0.02840183861553669
+        },
+        "full_accuracy": {
+          "mean": 0.5,
+          "se": 0.125
+        },
+        "p_full": {
+          "mean": 0.33431514101994253,
+          "se": 0.03877272825502587
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 8,
+      "beta": 1.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.0625,
+          "p_correct": 0.14936939275503391,
+          "label_mass": 0.3286799741908908,
+          "full_accuracy": 0.0625,
+          "p_full": 0.04764517913463351,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.25,
+          "p_correct": 0.33581611784757115,
+          "label_mass": 0.2776422151364386,
+          "full_accuracy": 0.25,
+          "p_full": 0.14416154015634675,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.15625,
+          "se": 0.09374999999999999
+        },
+        "p_correct": {
+          "mean": 0.24259275530130253,
+          "se": 0.09322336254626862
+        },
+        "label_mass": {
+          "mean": 0.3031610946636647,
+          "se": 0.02551887952722609
+        },
+        "full_accuracy": {
+          "mean": 0.15625,
+          "se": 0.09374999999999999
+        },
+        "p_full": {
+          "mean": 0.09590335964549013,
+          "se": 0.04825818051085662
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 8,
+      "beta": 2.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.11281157881967374,
+          "label_mass": 0.5673254262655973,
+          "full_accuracy": 0.125,
+          "p_full": 0.057447652321570786,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.0625,
+          "p_correct": 0.10240768799121724,
+          "label_mass": 0.19060127390548587,
+          "full_accuracy": 0.0,
+          "p_full": 0.017991306404837815,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.09375,
+          "se": 0.03125
+        },
+        "p_correct": {
+          "mean": 0.10760963340544549,
+          "se": 0.005201945414228248
+        },
+        "label_mass": {
+          "mean": 0.3789633500855416,
+          "se": 0.18836207618005574
+        },
+        "full_accuracy": {
+          "mean": 0.0625,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.0377194793632043,
+          "se": 0.019728172958366486
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "none",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.12060459607891971,
+          "label_mass": 0.5592260807752609,
+          "full_accuracy": 0.125,
+          "p_full": 0.06617609787645051,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.125,
+          "p_correct": 0.14178770055877976,
+          "label_mass": 0.1939069302752614,
+          "full_accuracy": 0.125,
+          "p_full": 0.02841578220250085,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.125,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.13119614831884974,
+          "se": 0.010591552239930024
+        },
+        "label_mass": {
+          "mean": 0.37656650552526116,
+          "se": 0.18265957524999976
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.0
+        },
+        "p_full": {
+          "mean": 0.04729594003947568,
+          "se": 0.01888015783697483
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "codebook",
+      "shots": 64,
+      "classes": 8,
+      "mode": "token",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": true,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 1.0,
+          "p_correct": 0.9999709092080593,
+          "label_mass": 0.9947504475712776,
+          "full_accuracy": 1.0,
+          "p_full": 0.9947216250002384,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 1.0,
+          "p_correct": 0.9999563656747341,
+          "label_mass": 0.9704365991055965,
+          "full_accuracy": 1.0,
+          "p_full": 0.9703954569995403,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 1.0,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.9999636374413967,
+          "se": 7.271766662597655e-06
+        },
+        "label_mass": {
+          "mean": 0.9825935233384371,
+          "se": 0.012156924232840538
+        },
+        "full_accuracy": {
+          "mean": 1.0,
+          "se": 0.0
+        },
+        "p_full": {
+          "mean": 0.9825585409998894,
+          "se": 0.012163084000349043
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "parity",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 1.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.12840491195674986,
+          "label_mass": 0.27381462417542934,
+          "full_accuracy": 0.125,
+          "p_full": 0.034903891777503304,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.1875,
+          "p_correct": 0.14311144617386162,
+          "label_mass": 0.11271577561274171,
+          "full_accuracy": 0.0,
+          "p_full": 0.015708952629211126,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.15625,
+          "se": 0.03125
+        },
+        "p_correct": {
+          "mean": 0.13575817906530574,
+          "se": 0.007353267108555883
+        },
+        "label_mass": {
+          "mean": 0.19326519989408553,
+          "se": 0.08054942428134382
+        },
+        "full_accuracy": {
+          "mean": 0.0625,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.025306422203357215,
+          "se": 0.009597469574146087
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.4375,
+            "1": 0.3125
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.25,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 0.25,
+            "1": 0.25
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_1",
+          "accuracy": {
+            "mean": 0.15625,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 0.4375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.5,
+            "1": 0.375
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "parity",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 2.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.13421044603455812,
+          "label_mass": 0.31178448908030987,
+          "full_accuracy": 0.125,
+          "p_full": 0.041811923641944304,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.125,
+          "p_correct": 0.13248146540718153,
+          "label_mass": 0.1846377532929182,
+          "full_accuracy": 0.0,
+          "p_full": 0.024259176880150335,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.125,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.13334595572086982,
+          "se": 0.000864490313688293
+        },
+        "label_mass": {
+          "mean": 0.24821112118661404,
+          "se": 0.06357336789369583
+        },
+        "full_accuracy": {
+          "mean": 0.0625,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.03303555026104732,
+          "se": 0.008776373380896985
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.4375,
+            "1": 0.3125
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.25,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 0.25,
+            "1": 0.25
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_1",
+          "accuracy": {
+            "mean": 0.15625,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 0.4375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.5,
+            "1": 0.375
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "parity",
+      "shots": 64,
+      "classes": 8,
+      "mode": "none",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.25,
+          "p_correct": 0.17266708681563614,
+          "label_mass": 0.5026425532996655,
+          "full_accuracy": 0.25,
+          "p_full": 0.08536384460603585,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.125,
+          "p_correct": 0.12833958433475345,
+          "label_mass": 0.0784675411414355,
+          "full_accuracy": 0.0,
+          "p_full": 0.009723321280034725,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.1875,
+          "se": 0.0625
+        },
+        "p_correct": {
+          "mean": 0.1505033355751948,
+          "se": 0.02216375124044134
+        },
+        "label_mass": {
+          "mean": 0.2905550472205505,
+          "se": 0.21208750607911497
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.125
+        },
+        "p_full": {
+          "mean": 0.04754358294303529,
+          "se": 0.03782026166300056
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.4375,
+            "1": 0.3125
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.25,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 0.25,
+            "1": 0.25
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_1",
+          "accuracy": {
+            "mean": 0.15625,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 0.4375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.5,
+            "1": 0.375
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "parity",
+      "shots": 64,
+      "classes": 8,
+      "mode": "token",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.1875,
+          "p_correct": 0.1629596093116561,
+          "label_mass": 0.451129836961627,
+          "full_accuracy": 0.1875,
+          "p_full": 0.07339600798877655,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.1875,
+          "p_correct": 0.14598270109854639,
+          "label_mass": 0.05412458907812834,
+          "full_accuracy": 0.0,
+          "p_full": 0.008094855627859943,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.1875,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.15447115520510124,
+          "se": 0.008488454106554855
+        },
+        "label_mass": {
+          "mean": 0.25262721301987767,
+          "se": 0.1985026239417493
+        },
+        "full_accuracy": {
+          "mean": 0.09375,
+          "se": 0.09374999999999999
+        },
+        "p_full": {
+          "mean": 0.040745431808318244,
+          "se": 0.0326505761804583
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.4375,
+            "1": 0.3125
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.25,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 0.25,
+            "1": 0.25
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_1",
+          "accuracy": {
+            "mean": 0.15625,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 0.4375,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.5,
+            "1": 0.375
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "parity",
+      "shots": 128,
+      "classes": 8,
+      "mode": "token",
+      "layer": 8,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.0625,
+          "p_correct": 0.0871755529078655,
+          "label_mass": 0.7743736319243908,
+          "full_accuracy": 0.0625,
+          "p_full": 0.06579944957775297,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.0625,
+          "p_correct": 0.07689932199309624,
+          "label_mass": 0.7099318243563175,
+          "full_accuracy": 0.0625,
+          "p_full": 0.05507396207201509,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.0625,
+          "se": 0.0
+        },
+        "p_correct": {
+          "mean": 0.08203743745048087,
+          "se": 0.005138115457384628
+        },
+        "label_mass": {
+          "mean": 0.7421527281403542,
+          "se": 0.032220903784036636
+        },
+        "full_accuracy": {
+          "mean": 0.0625,
+          "se": 0.0
+        },
+        "p_full": {
+          "mean": 0.06043670582488403,
+          "se": 0.005362743752868937
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.21875,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.25
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.34375,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.375,
+            "1": 0.3125
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.15625,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.1875,
+            "1": 0.125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 0.53125,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.5625,
+            "1": 0.5
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "selection",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 1.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.125,
+          "p_correct": 0.12023880259403086,
+          "label_mass": 0.5430948343127966,
+          "full_accuracy": 0.125,
+          "p_full": 0.06088764808191627,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.1875,
+          "p_correct": 0.19301020738203079,
+          "label_mass": 0.2976661338470876,
+          "full_accuracy": 0.1875,
+          "p_full": 0.059261586698994506,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.15625,
+          "se": 0.03125
+        },
+        "p_correct": {
+          "mean": 0.15662450498803082,
+          "se": 0.036385702393999964
+        },
+        "label_mass": {
+          "mean": 0.4203804840799421,
+          "se": 0.12271435023285447
+        },
+        "full_accuracy": {
+          "mean": 0.15625,
+          "se": 0.03125
+        },
+        "p_full": {
+          "mean": 0.06007461739045539,
+          "se": 0.0008130306914608809
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.6875,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.625,
+            "1": 0.75
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.03",
+          "accuracy": {
+            "mean": 0.8125,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.75
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.84375,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.8125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.1",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "selection",
+      "shots": 64,
+      "classes": 8,
+      "mode": "inject",
+      "layer": 4,
+      "beta": 2.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.0625,
+          "p_correct": 0.09265835203223105,
+          "label_mass": 0.4919813871383667,
+          "full_accuracy": 0.0625,
+          "p_full": 0.04436608630749106,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.1875,
+          "p_correct": 0.16863463510526344,
+          "label_mass": 0.26479446329176426,
+          "full_accuracy": 0.1875,
+          "p_full": 0.0400222368480172,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.125,
+          "se": 0.0625
+        },
+        "p_correct": {
+          "mean": 0.13064649356874725,
+          "se": 0.037988141536516196
+        },
+        "label_mass": {
+          "mean": 0.3783879252150655,
+          "se": 0.1135934619233012
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.04219416157775413,
+          "se": 0.0021719247297369293
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.6875,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.625,
+            "1": 0.75
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.03",
+          "accuracy": {
+            "mean": 0.8125,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.75
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.84375,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.8125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.1",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "selection",
+      "shots": 64,
+      "classes": 8,
+      "mode": "none",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.0625,
+          "p_correct": 0.08007340302901866,
+          "label_mass": 0.5828794501721859,
+          "full_accuracy": 0.0625,
+          "p_full": 0.04781469276349526,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.25,
+          "p_correct": 0.180069583497243,
+          "label_mass": 0.21519789285957813,
+          "full_accuracy": 0.1875,
+          "p_full": 0.03707459543511504,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.15625,
+          "se": 0.09374999999999999
+        },
+        "p_correct": {
+          "mean": 0.13007149326313083,
+          "se": 0.04999809023411217
+        },
+        "label_mass": {
+          "mean": 0.399038671515882,
+          "se": 0.18384077865630385
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.04244464409930515,
+          "se": 0.005370048664190107
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.6875,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.625,
+            "1": 0.75
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.03",
+          "accuracy": {
+            "mean": 0.8125,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.75
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.84375,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.8125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.1",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "selection",
+      "shots": 64,
+      "classes": 8,
+      "mode": "token",
+      "layer": 4,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.0625,
+          "p_correct": 0.08565647825162159,
+          "label_mass": 0.5372136272490025,
+          "full_accuracy": 0.0625,
+          "p_full": 0.046722493363631656,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.25,
+          "p_correct": 0.21315602301910985,
+          "label_mass": 0.16680798819288611,
+          "full_accuracy": 0.25,
+          "p_full": 0.0339763337324257,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.15625,
+          "se": 0.09374999999999999
+        },
+        "p_correct": {
+          "mean": 0.14940625063536572,
+          "se": 0.06374977238374413
+        },
+        "label_mass": {
+          "mean": 0.3520108077209443,
+          "se": 0.18520281952805817
+        },
+        "full_accuracy": {
+          "mean": 0.15625,
+          "se": 0.09374999999999999
+        },
+        "p_full": {
+          "mean": 0.04034941354802868,
+          "se": 0.006373079815602977
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.6875,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.625,
+            "1": 0.75
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.03",
+          "accuracy": {
+            "mean": 0.8125,
+            "se": 0.0625
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.75
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.84375,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 0.875,
+            "1": 0.8125
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.1",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    },
+    {
+      "model": "Qwen/Qwen3-0.6B-Base",
+      "task": "selection",
+      "shots": 128,
+      "classes": 8,
+      "mode": "token",
+      "layer": 8,
+      "beta": 0.0,
+      "n_queries": 16,
+      "seen": false,
+      "n_seeds": 2,
+      "n_queries_total": 32,
+      "seeds": [
+        0,
+        1
+      ],
+      "seed_metrics": {
+        "0": {
+          "accuracy": 0.1875,
+          "p_correct": 0.14084767848544288,
+          "label_mass": 0.6627890765666962,
+          "full_accuracy": 0.1875,
+          "p_full": 0.0950954936852213,
+          "n_queries": 16
+        },
+        "1": {
+          "accuracy": 0.0625,
+          "p_correct": 0.11088405183278383,
+          "label_mass": 0.7342096455395222,
+          "full_accuracy": 0.0625,
+          "p_full": 0.08620027451456735,
+          "n_queries": 16
+        }
+      },
+      "metrics": {
+        "accuracy": {
+          "mean": 0.125,
+          "se": 0.0625
+        },
+        "p_correct": {
+          "mean": 0.12586586515911335,
+          "se": 0.01498181332632953
+        },
+        "label_mass": {
+          "mean": 0.6984993610531092,
+          "se": 0.035710284486413
+        },
+        "full_accuracy": {
+          "mean": 0.125,
+          "se": 0.0625
+        },
+        "p_full": {
+          "mean": 0.09064788409989433,
+          "se": 0.004447609585326973
+        }
+      },
+      "matched_baselines": {
+        "nearest_cosine": {
+          "selected_setting": "nearest_cosine",
+          "accuracy": {
+            "mean": 0.5625,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 0.5625,
+            "1": 0.5625
+          }
+        },
+        "cosine_vote": {
+          "selected_setting": "cosine_vote_t0.01",
+          "accuracy": {
+            "mean": 0.90625,
+            "se": 0.09374999999999999
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 0.8125
+          }
+        },
+        "linear_ridge": {
+          "selected_setting": "linear_ridge_0.001",
+          "accuracy": {
+            "mean": 0.96875,
+            "se": 0.03125
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 0.9375
+          }
+        },
+        "quadratic_ridge": {
+          "selected_setting": "quadratic_ridge_0.001",
+          "accuracy": {
+            "mean": 1.0,
+            "se": 0.0
+          },
+          "seed_accuracy": {
+            "0": 1.0,
+            "1": 1.0
+          }
+        }
+      }
+    }
+  ]
+}

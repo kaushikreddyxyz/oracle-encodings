@@ -1,0 +1,62 @@
+E1: h_energy=26 h_xfer=8; at h_energy: r2_in=0.334 r2_in_pc=0.725 diff_set cross=-0.336 cross_pc=-0.098 angcos=0.281
+E2 thresholds none: {0.5: 55, 0.6: 151, 0.65: 244, 0.7: 313}
+E2 thresholds native_gt2_b1.0: {0.5: 53, 0.6: 149, 0.65: 235, 0.7: 309}
+E2 thresholds native_gt2_b2.0: {0.5: 51, 0.6: 138, 0.65: 161, 0.7: 259}
+E2 thresholds native_gt2_b3.0: {0.5: 53, 0.6: 111, 0.65: 151, 0.7: 233}
+E2 thresholds native_gt3_b2.0: {0.5: 55, 0.6: 140, 0.65: 206, 0.7: 301}
+E2 thresholds native_gt2_calB_b2.0: {0.5: 50, 0.6: 136, 0.65: 155, 0.7: 238}
+E2 thresholds random_gt2_b2.0_plane123: {0.5: 55, 0.6: 152, 0.65: 238, 0.7: 312}
+E2 thresholds random_gt2_b2.0_plane124: {0.5: 55, 0.6: 150, 0.65: 239, 0.7: 311}
+E2 thresholds random_gt2_b2.0_plane125: {0.5: 55, 0.6: 150, 0.65: 238, 0.7: 311}
+E2 thresholds extracted_b2.0: {0.5: 42, 0.6: 57, 0.65: 82, 0.7: 111}
+E2 thresholds native_gt2_b2.0_hs8: {0.5: 67, 0.6: 155, 0.65: 253, 0.7: 313}
+E2 thresholds native_gt2_b2.0_hs14: {0.5: 67, 0.6: 161, 0.65: 259, 0.7: 314}
+E2 thresholds native_gt2_b2.0_hs20: {0.5: 55, 0.6: 150, 0.65: 237, 0.7: 311}
+E2 unseen none: P_nbrs_X=0.112 P_nbrs_Y=0.130 (n=18)
+E2 unseen ctx+query_trueX: P_nbrs_X=0.137 P_nbrs_Y=0.120 (n=18)
+E2 unseen ctx+query_claimY: P_nbrs_X=0.091 P_nbrs_Y=0.181 (n=18)
+E2 unseen query_only_trueX: P_nbrs_X=0.106 P_nbrs_Y=0.133 (n=18)
+E2b thresholds none: {0.5: 55, 0.6: 151, 0.65: 244, 0.7: 313}
+E2b thresholds extracted_b2.0: {0.5: 42, 0.6: 57, 0.65: 82, 0.7: 111}
+E2b thresholds self_gt2_b1.0: {0.5: 48, 0.6: 91, 0.65: 151, 0.7: 239}
+E2b thresholds self_gt2_b2.0: {0.5: 46, 0.6: 75, 0.65: 122, 0.7: 159}
+E2b thresholds self_gt2_b3.0: {0.5: 44, 0.6: 70, 0.65: 101, 0.7: 151}
+E2b thresholds self_gt3_b2.0: {0.5: 46, 0.6: 75, 0.65: 129, 0.7: 205}
+E2b thresholds analytic_inE_gt2_b1.0: {0.5: 51, 0.6: 139, 0.65: 205, 0.7: 301}
+E2b thresholds analytic_inE_gt2_b2.0: {0.5: 48, 0.6: 137, 0.65: 159, 0.7: 259}
+E2b thresholds analytic_inE_gt2_b3.0: {0.5: 48, 0.6: 136, 0.65: 155, 0.7: 257}
+E2b thresholds analytic_hs26E_gt2_b1.0: {0.5: 55, 0.6: 143, 0.65: 237, 0.7: 308}
+E2b thresholds analytic_hs26E_gt2_b2.0: {0.5: 73, 0.6: 155, 0.65: 257, 0.7: 313}
+E2b thresholds analytic_hs26E_gt2_b3.0: {0.5: 112, 0.6: 247, 0.65: 310, 0.7: 409}
+E2b thresholds shared_top2_gt2_b2.0: {0.5: 55, 0.6: 148, 0.65: 257, 0.7: 313}
+E2b thresholds shared_rand0_gt2_b2.0: {0.5: 81, 0.6: 150, 0.65: 238, 0.7: 317}
+E2b thresholds shared_rand1_gt2_b2.0: {0.5: 73, 0.6: 150, 0.65: 237, 0.7: 320}
+E2b thresholds shared_top2_gt2_b3.0: {0.5: 91, 0.6: 273, 0.65: 323, 0.7: 553}
+E2b thresholds shared_rand0_gt2_b3.0: {0.5: 91, 0.6: 234, 0.65: 315, 0.7: 410}
+E2b thresholds shared_rand1_gt2_b3.0: {0.5: 93, 0.6: 197, 0.65: 312, 0.7: 399}
+E2b diag: self_r2_2=0.330 self_r2_3=0.409 analytic_inE_cos=0.085 analytic_hsE_cos=0.271
+E2b unseen none: P_nbrs_X=0.112 P_nbrs_Y=0.130 (n=18)
+E2b unseen self_trueX: P_nbrs_X=0.174 P_nbrs_Y=0.077 (n=18)
+E2b unseen self_claimY: P_nbrs_X=0.063 P_nbrs_Y=0.207 (n=18)
+E2b unseen self_queryOnly: P_nbrs_X=0.147 P_nbrs_Y=0.099 (n=18)
+E3 query thresholds native_demos0: {0.5: 69, 0.6: 152, 0.65: 166, 0.7: 264}
+E3 query thresholds none_demos0: {0.5: 112, 0.6: 160, 0.65: 189, 0.7: 396}
+E3 query thresholds native_demos1: {0.5: 66, 0.6: 149, 0.65: 166, 0.7: 236}
+E3 query thresholds none_demos1: {0.5: 70, 0.6: 157, 0.65: 174, 0.7: 320}
+E3 query thresholds native_demos2: {0.5: 67, 0.6: 156, 0.65: 171, 0.7: 294}
+E3 query thresholds none_demos2: {0.5: 113, 0.6: 161, 0.65: 189, 0.7: 334}
+E3 query thresholds native_demos3: {0.5: 69, 0.6: 158, 0.65: 178, 0.7: 298}
+E3 query thresholds none_demos3: {0.5: 114, 0.6: 165, 0.65: 235, 0.7: 390}
+E3 query thresholds native_demos3_demoOnly: {0.5: 114, 0.6: 164, 0.65: 235, 0.7: 390}
+E3 query thresholds native_demos3_queryOnly: {0.5: 69, 0.6: 158, 0.65: 179, 0.7: 298}
+E3 query thresholds native_demos3_demoScrambled: {0.5: 69, 0.6: 158, 0.65: 179, 0.7: 298}
+E3 query thresholds random_demos0: {0.5: 112, 0.6: 159, 0.65: 180, 0.7: 333}
+E3 query thresholds random_demos3: {0.5: 116, 0.6: 164, 0.65: 189, 0.7: 334}
+E3 unseen demos=0 none: P_nbrs_X=0.118 P_nbrs_Y=0.118
+E3 unseen demos=0 native_trueX: P_nbrs_X=0.141 P_nbrs_Y=0.103
+E3 unseen demos=0 native_claimY: P_nbrs_X=0.089 P_nbrs_Y=0.173
+E3 unseen demos=0 random_trueX: P_nbrs_X=0.121 P_nbrs_Y=0.109
+E3 unseen demos=3 none: P_nbrs_X=0.122 P_nbrs_Y=0.104
+E3 unseen demos=3 native_trueX: P_nbrs_X=0.133 P_nbrs_Y=0.088
+E3 unseen demos=3 native_claimY: P_nbrs_X=0.083 P_nbrs_Y=0.140
+E3 unseen demos=3 random_trueX: P_nbrs_X=0.125 P_nbrs_Y=0.102

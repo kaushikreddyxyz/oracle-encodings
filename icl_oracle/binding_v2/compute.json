@@ -1,0 +1,31 @@
+{
+  "purpose": "Dedicated binding_v2 experiment; unrelated pods must not be changed",
+  "authorized_hourly_gpu_cost_usd": 3.18,
+  "requested_auto_termination_utc": "2026-09-17T00:56:56Z",
+  "pods": [
+    {
+      "model": "google/gemma-2-2b",
+      "id": "jygni37fzcf8v7",
+      "name": "binding-v2-gemma",
+      "gpu": "A100-SXM4-80GB",
+      "hourly_gpu_cost_usd": 1.59,
+      "created_utc": "2026-09-16T23:57:16Z",
+      "status": "terminated",
+      "termination_verified_utc": "2026-09-17T00:18:08.518153+00:00",
+      "estimated_gpu_cost_usd": 0.553
+    },
+    {
+      "model": "Qwen/Qwen2.5-7B",
+      "id": "chyixfzf6s5xyn",
+      "name": "binding-v2-qwen",
+      "gpu": "A100-SXM4-80GB",
+      "hourly_gpu_cost_usd": 1.59,
+      "created_utc": "2026-09-16T23:57:18Z",
+      "status": "terminated",
+      "termination_verified_utc": "2026-09-17T00:18:08.518153+00:00",
+      "estimated_gpu_cost_usd": 0.552
+    }
+  ],
+  "estimated_total_gpu_cost_usd": 1.105,
+  "cost_note": "Elapsed-time estimate, excludes storage; not an invoice. Both deletes returned deleted=true."
+}

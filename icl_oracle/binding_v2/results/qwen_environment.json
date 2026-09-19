@@ -1,0 +1,1 @@
+{"torch": "2.8.0+cu128", "transformers": "5.10.1", "python": "3.12.3", "gpu": "NVIDIA A100-SXM4-80GB", "revisions": ["d149729398750b98c0af14eb82c78cfe92750796"]}

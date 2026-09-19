@@ -1,0 +1,46 @@
+large-grid replication; deltas paired vs no injection; SEM over contexts (unseen: over items)
+
+N=16 (4x4), T=1200, 6 contexts; baseline early 0.590 late 0.773 unseen-X 0.049; own-plane R2 0.32 (in top-2 PCs 0.92, PC2 var 0.33), energy in cone32 0.55, cos plane 0.22, own norm/nref 1.43; matched beta plane 3.00 adj 6.00; kernel adj self/nbr/d2/d3/other -677.51/2860.58/-757.21/-677.51/-658.69
+  strategy                          early                   late               override               unseen X                claim-Y    self
+  own_b2           +0.041±0.010 p8e-03 -0.029±0.012 p6e-02 +0.065±0.006 p1e-04 +0.008±0.009 p4e-01 +0.015±0.024 p5e-01 +0.049
+  rand_b4          -0.017±0.006 p5e-02 -0.012±0.005 p7e-02 +0.000±0.004 p1e+00 +0.010±0.008 p2e-01 -0.017±0.008 p6e-02 -0.007
+  plane_b3         +0.083±0.010 p4e-04 -0.005±0.012 p7e-01 +0.236±0.020 p7e-05 +0.189±0.044 p1e-03 +0.092±0.045 p7e-02 +0.067
+  plane_matched    +0.083±0.010 p4e-04 -0.005±0.012 p7e-01 +0.236±0.020 p7e-05 +0.189±0.044 p1e-03 +0.092±0.045 p7e-02 +0.067
+  adj_b6           +0.230±0.013 p1e-05 +0.110±0.013 p4e-04 +0.657±0.016 p1e-07 +0.404±0.044 p2e-06 +0.364±0.051 p2e-05 -0.038
+  adj_matched      +0.230±0.013 p1e-05 +0.110±0.013 p4e-04 +0.657±0.016 p1e-07 +0.404±0.044 p2e-06 +0.364±0.051 p2e-05 -0.038
+
+N=25 (5x5), T=2000, 6 contexts; baseline early 0.542 late 0.751 unseen-X 0.044; own-plane R2 0.29 (in top-2 PCs 0.90, PC2 var 0.30), energy in cone32 0.67, cos plane 0.20, own norm/nref 1.46; matched beta plane 3.49 adj 6.47; kernel adj self/nbr/d2/d3/other -396.60/2664.65/-442.98/-427.22/-390.88
+  strategy                          early                   late               override               unseen X                claim-Y    self
+  own_b2           +0.044±0.009 p6e-03 -0.030±0.011 p4e-02 +0.059±0.006 p2e-04 +0.065±0.030 p5e-02 +0.043±0.019 p5e-02 +0.036
+  rand_b4          -0.031±0.005 p2e-03 -0.014±0.006 p5e-02 -0.001±0.004 p9e-01 -0.004±0.007 p6e-01 -0.006±0.004 p1e-01 -0.011
+  plane_b3         +0.060±0.006 p2e-04 -0.027±0.008 p2e-02 +0.208±0.009 p3e-06 +0.197±0.054 p4e-03 +0.145±0.032 p9e-04 +0.046
+  plane_matched    +0.046±0.006 p7e-04 -0.048±0.009 p3e-03 +0.212±0.010 p4e-06 +0.218±0.057 p3e-03 +0.158±0.034 p7e-04 +0.052
+  adj_b6           +0.213±0.014 p2e-05 +0.090±0.010 p3e-04 +0.640±0.023 p1e-06 +0.374±0.046 p5e-06 +0.245±0.059 p2e-03 -0.046
+  adj_matched      +0.206±0.015 p3e-05 +0.083±0.009 p3e-04 +0.639±0.024 p1e-06 +0.364±0.046 p7e-06 +0.215±0.054 p2e-03 -0.046
+
+N=64 (8x8), T=4000, 6 contexts; baseline early 0.513 late 0.727 unseen-X 0.019; own-plane R2 0.20 (in top-2 PCs 0.74, PC2 var 0.22), energy in cone32 0.74, cos plane 0.20, own norm/nref 1.36; matched beta plane 5.01 adj 6.25; kernel adj self/nbr/d2/d3/other -214.23/3098.35/-238.26/253.31/-178.66
+  strategy                          early                   late               override               unseen X                claim-Y    self
+  own_b2           +0.026±0.006 p9e-03 -0.019±0.004 p4e-03 +0.035±0.002 p2e-05 +0.012±0.013 p4e-01 +0.010±0.005 p6e-02 +0.009
+  rand_b4          -0.054±0.003 p1e-05 -0.025±0.003 p7e-04 +0.001±0.002 p7e-01 -0.011±0.008 p2e-01 -0.008±0.007 p3e-01 -0.010
+  plane_b3         +0.030±0.010 p4e-02 -0.027±0.007 p1e-02 +0.126±0.008 p2e-05 +0.090±0.027 p7e-03 +0.036±0.016 p5e-02 +0.005
+  plane_matched    -0.063±0.010 p2e-03 -0.133±0.013 p2e-04 +0.141±0.009 p2e-05 +0.116±0.028 p2e-03 +0.055±0.027 p6e-02 -0.008
+  adj_b6           +0.246±0.008 p5e-07 +0.119±0.010 p9e-05 +0.678±0.009 p8e-09 +0.434±0.053 p5e-06 +0.433±0.054 p6e-06 -0.042
+  adj_matched      +0.241±0.007 p5e-07 +0.115±0.010 p1e-04 +0.683±0.009 p8e-09 +0.447±0.055 p5e-06 +0.431±0.054 p6e-06 -0.042
+
+N=144 (12x12), T=7000, 6 contexts; baseline early 0.488 late 0.403 unseen-X 0.000; own-plane R2 0.09 (in top-2 PCs 0.49, PC2 var 0.13), energy in cone32 0.60, cos plane 0.15, own norm/nref 0.83; matched beta plane 6.78 adj 5.86; kernel adj self/nbr/d2/d3/other -177.68/3596.94/-199.54/1606.46/-93.38
+  strategy                          early                   late               override               unseen X                claim-Y    self
+  own_b2           -0.005±0.004 p2e-01 +0.019±0.003 p2e-03 +0.006±0.001 p4e-03 +0.001±0.001 p1e-01 +0.001±0.001 p9e-02 -0.000
+  rand_b4          -0.048±0.004 p5e-05 -0.081±0.003 p6e-07 +0.001±0.001 p4e-01 -0.000±0.000 p2e-01 -0.000±0.000 p3e-01 -0.005
+  plane_b3         -0.009±0.006 p2e-01 -0.020±0.003 p2e-03 +0.056±0.005 p7e-05 +0.010±0.005 p6e-02 +0.022±0.014 p1e-01 -0.001
+  plane_matched    -0.250±0.013 p6e-06 -0.238±0.007 p3e-07 +0.062±0.006 p1e-04 +0.010±0.005 p8e-02 +0.042±0.023 p9e-02 -0.020
+  adj_b6           +0.223±0.009 p2e-06 +0.214±0.012 p1e-05 +0.554±0.003 p8e-11 +0.255±0.062 p2e-03 +0.276±0.058 p6e-04 -0.020
+  adj_matched      +0.225±0.009 p2e-06 +0.218±0.012 p9e-06 +0.546±0.003 p1e-10 +0.252±0.061 p2e-03 +0.269±0.058 p7e-04 -0.020
+
+N=216 (12x18), T=8000, 6 contexts; baseline early 0.452 late 0.293 unseen-X 0.001; own-plane R2 0.06 (in top-2 PCs 0.29, PC2 var 0.10), energy in cone32 0.51, cos plane 0.11, own norm/nref 0.67; matched beta plane 7.63 adj 5.72; kernel adj self/nbr/d2/d3/other -173.39/3787.56/-191.40/2301.51/-65.91
+  strategy                          early                   late               override               unseen X                claim-Y    self
+  own_b2           -0.002±0.003 p4e-01 +0.017±0.005 p2e-02 +0.002±0.000 p3e-06 +0.002±0.002 p2e-01 +0.001±0.001 p3e-01 -0.002
+  rand_b4          -0.058±0.002 p2e-07 -0.074±0.003 p4e-06 +0.000±0.001 p8e-01 -0.000±0.000 p4e-01 +0.000±0.001 p6e-01 -0.004
+  plane_b3         -0.017±0.003 p2e-03 -0.010±0.004 p6e-02 +0.039±0.002 p1e-05 +0.024±0.021 p3e-01 +0.009±0.005 p7e-02 -0.005
+  plane_matched    -0.325±0.006 p3e-08 -0.235±0.007 p3e-07 +0.026±0.003 p4e-04 +0.003±0.002 p1e-01 +0.006±0.008 p5e-01 -0.021
+  adj_b6           +0.194±0.006 p7e-07 +0.232±0.006 p2e-07 +0.467±0.006 p5e-09 +0.161±0.042 p3e-03 +0.249±0.057 p1e-03 -0.015
+  adj_matched      +0.200±0.006 p5e-07 +0.240±0.006 p2e-07 +0.452±0.005 p4e-09 +0.152±0.041 p3e-03 +0.233±0.056 p2e-03 -0.016

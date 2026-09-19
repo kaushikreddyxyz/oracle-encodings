@@ -1,0 +1,135 @@
+P1 B_ctx_vs_A_ctx: hs16=0.176 hs20=0.177 hs26=0.172 hs30=0.162
+P1 B_alone_vs_A_alone: hs16=0.195 hs20=0.183 hs26=0.201 hs30=0.182
+P1 B_ctx_vs_B_alone: hs16=0.945 hs20=0.960 hs26=0.921 hs30=0.894
+P1 A_ctx_vs_A_alone: hs16=1.000 hs20=1.000 hs26=1.000 hs30=1.000
+P1 same_words B_ctx_vs_A2_ctx: hs16=0.614 hs20=0.376 hs26=0.369 hs30=0.343
+P1 dense none: mass[100-200]=0.591 [200-400]=0.677 [400-600]=0.742
+P1 dense none_ctx: mass[100-200]=0.610 [200-400]=0.694 [400-600]=0.751
+P1 dense M_A_ctx: mass[100-200]=0.635 [200-400]=0.715 [400-600]=0.768
+P1 dense M_A_alone: mass[100-200]=0.635 [200-400]=0.715 [400-600]=0.768
+P1 dense M_B_self: mass[100-200]=0.678 [200-400]=0.730 [400-600]=0.778
+P2 cos(late plane,P) foreign      no seed                      = 0.190 ± 0.026
+P2 cos(late plane,P) rand_shared  no seed                      = 0.138 ± 0.022
+P2 cos(late plane,P) random       no seed                      = 0.026 ± 0.003
+P2 cos(late plane,P) foreign      seed β=2, 200 tok            = 0.190 ± 0.026
+P2 cos(late plane,P) rand_shared  seed β=2, 200 tok            = 0.138 ± 0.022
+P2 cos(late plane,P) random       seed β=2, 200 tok            = 0.026 ± 0.003
+P2 cos(late plane,P) foreign      seed β=2, 400 tok            = 0.190 ± 0.026
+P2 cos(late plane,P) rand_shared  seed β=2, 400 tok            = 0.138 ± 0.022
+P2 cos(late plane,P) random       seed β=2, 400 tok            = 0.026 ± 0.003
+P2 cos(late plane,P) foreign      seed β=4, 200 tok            = 0.190 ± 0.026
+P2 cos(late plane,P) rand_shared  seed β=4, 200 tok            = 0.138 ± 0.022
+P2 cos(late plane,P) random       seed β=4, 200 tok            = 0.026 ± 0.003
+P2 cos(late plane,P) foreign      seed β=4, 400 tok            = 0.190 ± 0.026
+P2 cos(late plane,P) rand_shared  seed β=4, 400 tok            = 0.138 ± 0.022
+P2 cos(late plane,P) random       seed β=4, 400 tok            = 0.026 ± 0.003
+P2 cos(late plane,P) foreign      seed β=4, 200 tok @ hs16     = 0.136 ± 0.023
+P2 cos(late plane,P) rand_shared  seed β=4, 200 tok @ hs16     = 0.120 ± 0.005
+P2 cos(late plane,P) random       seed β=4, 200 tok @ hs16     = 0.030 ± 0.006
+P2 late mass none: 0.820 ± 0.019
+P2 late mass foreign late inject only: 0.807 ± 0.020
+P2 late mass foreign seed β=2 + late inject: 0.818 ± 0.020
+P2 late mass rand_shared late inject only: 0.808 ± 0.019
+P2 late mass rand_shared seed β=2 + late inject: 0.819 ± 0.020
+P2 late mass random late inject only: 0.820 ± 0.019
+P2 late mass random seed β=2 + late inject: 0.821 ± 0.019
+P2 unseen -/none: P_nbrs_X=0.112 P_nbrs_Y=0.130
+P2 unseen foreign/seed_only: P_nbrs_X=0.111 P_nbrs_Y=0.124
+P2 unseen foreign/Xfeat_only: P_nbrs_X=0.106 P_nbrs_Y=0.133
+P2 unseen foreign/seed+Xfeat: P_nbrs_X=0.130 P_nbrs_Y=0.118
+P2 unseen random/seed_only: P_nbrs_X=0.113 P_nbrs_Y=0.132
+P2 unseen random/Xfeat_only: P_nbrs_X=0.111 P_nbrs_Y=0.131
+P2 unseen random/seed+Xfeat: P_nbrs_X=0.116 P_nbrs_Y=0.130
+P4 none: [200-400]=0.689 [400-800]=0.782 [800-1200]=0.834
+P4 self_all: [200-400]=0.753 [400-800]=0.809 [800-1200]=0.835
+P4 self_0_200: [200-400]=0.666 [400-800]=0.774 [800-1200]=0.835
+P4 self_0_400: [200-400]=0.753 [400-800]=0.757 [800-1200]=0.828
+P4 self_0_800: [200-400]=0.753 [400-800]=0.809 [800-1200]=0.796
+P2b cos(late@26,P) foreign: none=0.190 hs4/b2=0.336 hs4/b4=0.243 hs4/b8=0.185 hs8/b2=0.403 hs8/b4=0.270 hs8/b8=0.177 hs16/b2=0.241 hs16/b4=0.128 hs16/b8=0.106
+P2b cos(late@26,none) foreign: hs4/b2=0.795 hs4/b4=0.750 hs4/b8=0.765 hs8/b2=0.785 hs8/b4=0.801 hs8/b8=0.819 hs16/b2=0.916 hs16/b4=0.925 hs16/b8=0.908
+P2b cos(late@26,P) rand_shared: none=0.138 hs4/b2=0.161 hs4/b4=0.130 hs4/b8=0.107 hs8/b2=0.176 hs8/b4=0.135 hs8/b8=0.088 hs16/b2=0.156 hs16/b4=0.120 hs16/b8=0.072
+P2b cos(late@26,none) rand_shared: hs4/b2=0.875 hs4/b4=0.814 hs4/b8=0.778 hs8/b2=0.864 hs8/b4=0.834 hs8/b8=0.815 hs16/b2=0.943 hs16/b4=0.918 hs16/b8=0.877
+P2b cos(late@26,P) random: none=0.026 hs4/b2=0.025 hs4/b4=0.027 hs4/b8=0.025 hs8/b2=0.026 hs8/b4=0.029 hs8/b8=0.025 hs16/b2=0.028 hs16/b4=0.034 hs16/b8=0.033
+P2b cos(late@26,none) random: hs4/b2=0.948 hs4/b4=0.845 hs4/b8=0.821 hs8/b2=0.937 hs8/b4=0.832 hs8/b8=0.814 hs16/b2=0.959 hs16/b4=0.909 hs16/b8=0.897
+P2b late mass none: 0.820 ± 0.019
+P2b late mass foreign late inject only: 0.807 ± 0.020
+P2b late mass foreign seed(hs8,β4)+late inject: 0.802 ± 0.020
+P2b late mass foreign seed(hs8,β4) only: 0.806 ± 0.019
+P2b late mass rand_shared late inject only: 0.808 ± 0.019
+P2b late mass rand_shared seed(hs8,β4)+late inject: 0.809 ± 0.024
+P2b late mass rand_shared seed(hs8,β4) only: 0.815 ± 0.021
+P2b late mass random late inject only: 0.820 ± 0.019
+P2b late mass random seed(hs8,β4)+late inject: 0.784 ± 0.014
+P2b late mass random seed(hs8,β4) only: 0.781 ± 0.015
+P2b unseen -/none: P_nbrs_X=0.112 P_nbrs_Y=0.130
+P2b unseen foreign/seed_only: P_nbrs_X=0.142 P_nbrs_Y=0.144
+P2b unseen foreign/Xfeat_only: P_nbrs_X=0.106 P_nbrs_Y=0.133
+P2b unseen foreign/seed+Xfeat: P_nbrs_X=0.163 P_nbrs_Y=0.138
+P2b unseen foreign/seed+Xfeat@hs8: P_nbrs_X=0.192 P_nbrs_Y=0.162
+P2b unseen random/seed_only: P_nbrs_X=0.112 P_nbrs_Y=0.122
+P2b unseen random/Xfeat_only: P_nbrs_X=0.111 P_nbrs_Y=0.131
+P2b unseen random/seed+Xfeat: P_nbrs_X=0.113 P_nbrs_Y=0.123
+P2b unseen random/seed+Xfeat@hs8: P_nbrs_X=0.124 P_nbrs_Y=0.119
+P3 none_demos3: query mass[100-200]=0.586 [200-400]=0.676 [400-600]=0.741
+P3 none_demos0: query mass[100-200]=0.591 [200-400]=0.677 [400-600]=0.742
+P3 foreign|hs8|b2.0|demos3_all: query mass[100-200]=0.594 [200-400]=0.683 [400-600]=0.744
+P3 foreign|hs8|b2.0|demos3_queryOnly: query mass[100-200]=0.578 [200-400]=0.672 [400-600]=0.737
+P3 foreign|hs8|b2.0|demos0: query mass[100-200]=0.601 [200-400]=0.697 [400-600]=0.761
+P3 foreign|hs8|b4.0|demos3_all: query mass[100-200]=0.512 [200-400]=0.588 [400-600]=0.632
+P3 foreign|hs8|b4.0|demos3_queryOnly: query mass[100-200]=0.486 [200-400]=0.575 [400-600]=0.632
+P3 foreign|hs8|b4.0|demos0: query mass[100-200]=0.536 [200-400]=0.629 [400-600]=0.680
+P3 foreign|hs16|b2.0|demos3_all: query mass[100-200]=0.585 [200-400]=0.674 [400-600]=0.743
+P3 foreign|hs16|b2.0|demos3_queryOnly: query mass[100-200]=0.581 [200-400]=0.672 [400-600]=0.742
+P3 foreign|hs16|b2.0|demos0: query mass[100-200]=0.590 [200-400]=0.680 [400-600]=0.748
+P3 foreign|hs16|b4.0|demos3_all: query mass[100-200]=0.515 [200-400]=0.609 [400-600]=0.666
+P3 foreign|hs16|b4.0|demos3_queryOnly: query mass[100-200]=0.516 [200-400]=0.616 [400-600]=0.683
+P3 foreign|hs16|b4.0|demos0: query mass[100-200]=0.543 [200-400]=0.643 [400-600]=0.707
+P3 random|hs8|b2.0|demos3_all: query mass[100-200]=0.581 [200-400]=0.674 [400-600]=0.740
+P3 random|hs8|b2.0|demos3_queryOnly: query mass[100-200]=0.581 [200-400]=0.674 [400-600]=0.740
+P3 random|hs8|b2.0|demos0: query mass[100-200]=0.584 [200-400]=0.681 [400-600]=0.743
+P3 random|hs8|b4.0|demos3_all: query mass[100-200]=0.571 [200-400]=0.673 [400-600]=0.733
+P3 random|hs8|b4.0|demos3_queryOnly: query mass[100-200]=0.570 [200-400]=0.673 [400-600]=0.735
+P3 random|hs8|b4.0|demos0: query mass[100-200]=0.586 [200-400]=0.689 [400-600]=0.742
+P3 random|hs16|b2.0|demos3_all: query mass[100-200]=0.601 [200-400]=0.691 [400-600]=0.753
+P3 random|hs16|b2.0|demos3_queryOnly: query mass[100-200]=0.597 [200-400]=0.690 [400-600]=0.753
+P3 random|hs16|b2.0|demos0: query mass[100-200]=0.592 [200-400]=0.686 [400-600]=0.750
+P3 random|hs16|b4.0|demos3_all: query mass[100-200]=0.620 [200-400]=0.721 [400-600]=0.784
+P3 random|hs16|b4.0|demos3_queryOnly: query mass[100-200]=0.610 [200-400]=0.715 [400-600]=0.781
+P3 random|hs16|b4.0|demos0: query mass[100-200]=0.599 [200-400]=0.713 [400-600]=0.779
+P5 dense none: [100-200]=0.584 [200-600]=0.731 [600-1200]=0.820
+P5 dense random|hs12|b4: [100-200]=0.574 [200-600]=0.703 [600-1200]=0.795
+P5 dense random|hs12|b8: [100-200]=0.524 [200-600]=0.618 [600-1200]=0.686
+P5 dense random|hs12|b16: [100-200]=0.243 [200-600]=0.251 [600-1200]=0.276
+P5 dense random|hs16|b4: [100-200]=0.623 [200-600]=0.769 [600-1200]=0.859
+P5 dense random|hs16|b8: [100-200]=0.588 [200-600]=0.710 [600-1200]=0.785
+P5 dense random|hs16|b16: [100-200]=0.293 [200-600]=0.305 [600-1200]=0.352
+P5 dense random|hs20|b4: [100-200]=0.637 [200-600]=0.789 [600-1200]=0.869
+P5 dense random|hs20|b8: [100-200]=0.593 [200-600]=0.711 [600-1200]=0.782
+P5 dense random|hs20|b16: [100-200]=0.306 [200-600]=0.297 [600-1200]=0.276
+P5 dense random2|hs12|b4: [100-200]=0.576 [200-600]=0.709 [600-1200]=0.804
+P5 dense random2|hs12|b8: [100-200]=0.495 [200-600]=0.602 [600-1200]=0.693
+P5 dense random2|hs12|b16: [100-200]=0.184 [200-600]=0.205 [600-1200]=0.211
+P5 dense random2|hs16|b4: [100-200]=0.606 [200-600]=0.744 [600-1200]=0.841
+P5 dense random2|hs16|b8: [100-200]=0.548 [200-600]=0.662 [600-1200]=0.745
+P5 dense random2|hs16|b16: [100-200]=0.185 [200-600]=0.213 [600-1200]=0.230
+P5 dense random2|hs20|b4: [100-200]=0.611 [200-600]=0.762 [600-1200]=0.851
+P5 dense random2|hs20|b8: [100-200]=0.576 [200-600]=0.698 [600-1200]=0.778
+P5 dense random2|hs20|b16: [100-200]=0.188 [200-600]=0.218 [600-1200]=0.213
+P5 override random|hs12|b4: true-map[200-600]=0.670 injected-map=0.163 (chance 0.163)
+P5 override random|hs12|b8: true-map[200-600]=0.553 injected-map=0.172 (chance 0.163)
+P5 override random|hs12|b16: true-map[200-600]=0.108 injected-map=0.066 (chance 0.163)
+P5 override random|hs16|b4: true-map[200-600]=0.742 injected-map=0.160 (chance 0.163)
+P5 override random|hs16|b8: true-map[200-600]=0.666 injected-map=0.166 (chance 0.163)
+P5 override random|hs16|b16: true-map[200-600]=0.147 injected-map=0.100 (chance 0.163)
+P5 override random|hs20|b4: true-map[200-600]=0.755 injected-map=0.169 (chance 0.163)
+P5 override random|hs20|b8: true-map[200-600]=0.631 injected-map=0.198 (chance 0.163)
+P5 override random|hs20|b16: true-map[200-600]=0.108 injected-map=0.077 (chance 0.163)
+P5 unseen none: P_nbrs_X=0.112 P_nbrs_Y=0.130
+P5 unseen trueX|hs16|b4: P_nbrs_X=0.135 P_nbrs_Y=0.139
+P5 unseen claimY|hs16|b4: P_nbrs_X=0.119 P_nbrs_Y=0.173
+P5 unseen trueX|hs16|b8: P_nbrs_X=0.139 P_nbrs_Y=0.157
+P5 unseen claimY|hs16|b8: P_nbrs_X=0.112 P_nbrs_Y=0.176
+P5 unseen trueX|hs12|b8: P_nbrs_X=0.177 P_nbrs_Y=0.143
+P5 unseen claimY|hs12|b8: P_nbrs_X=0.120 P_nbrs_Y=0.223
+P5 unseen trueX|hs20|b8: P_nbrs_X=0.145 P_nbrs_Y=0.157
+P5 unseen claimY|hs20|b8: P_nbrs_X=0.115 P_nbrs_Y=0.203

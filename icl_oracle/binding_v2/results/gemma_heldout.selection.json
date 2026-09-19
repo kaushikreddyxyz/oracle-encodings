@@ -1,0 +1,196 @@
+{
+  "arguments": {
+    "development": "results/gemma_development.jsonl",
+    "model": "google/gemma-2-2b",
+    "layer": 8,
+    "output": "results/gemma_heldout.jsonl",
+    "seeds": "100,101,102,103,104,105,106,107",
+    "shots": 128,
+    "queries": 32,
+    "bs": 8,
+    "device": "cuda",
+    "attention": "sdpa"
+  },
+  "development_seeds": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "evaluation_seeds": [
+    100,
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107
+  ],
+  "selection_metric": "mean per-seed within-label argmax accuracy; unseen for feature tasks, seen for codebook; ties choose lower beta",
+  "selected_betas": {
+    "codebook": 2.0,
+    "selection": 2.0,
+    "parity": 2.0
+  },
+  "development_scores": {
+    "codebook": [
+      {
+        "beta": 0.25,
+        "accuracy": 0.125,
+        "seed_accuracies": {
+          "0": 0.125,
+          "1": 0.125,
+          "2": 0.125,
+          "3": 0.125
+        }
+      },
+      {
+        "beta": 0.5,
+        "accuracy": 0.1328125,
+        "seed_accuracies": {
+          "0": 0.125,
+          "1": 0.15625,
+          "2": 0.125,
+          "3": 0.125
+        }
+      },
+      {
+        "beta": 1.0,
+        "accuracy": 0.1484375,
+        "seed_accuracies": {
+          "0": 0.125,
+          "1": 0.15625,
+          "2": 0.1875,
+          "3": 0.125
+        }
+      },
+      {
+        "beta": 2.0,
+        "accuracy": 0.9453125,
+        "seed_accuracies": {
+          "0": 1.0,
+          "1": 0.78125,
+          "2": 1.0,
+          "3": 1.0
+        }
+      }
+    ],
+    "selection": [
+      {
+        "beta": 0.25,
+        "accuracy": 0.1171875,
+        "seed_accuracies": {
+          "0": 0.15625,
+          "1": 0.09375,
+          "2": 0.125,
+          "3": 0.09375
+        }
+      },
+      {
+        "beta": 0.5,
+        "accuracy": 0.125,
+        "seed_accuracies": {
+          "0": 0.1875,
+          "1": 0.09375,
+          "2": 0.125,
+          "3": 0.09375
+        }
+      },
+      {
+        "beta": 1.0,
+        "accuracy": 0.1015625,
+        "seed_accuracies": {
+          "0": 0.125,
+          "1": 0.09375,
+          "2": 0.125,
+          "3": 0.0625
+        }
+      },
+      {
+        "beta": 2.0,
+        "accuracy": 0.140625,
+        "seed_accuracies": {
+          "0": 0.15625,
+          "1": 0.09375,
+          "2": 0.1875,
+          "3": 0.125
+        }
+      }
+    ],
+    "parity": [
+      {
+        "beta": 0.25,
+        "accuracy": 0.125,
+        "seed_accuracies": {
+          "0": 0.09375,
+          "1": 0.25,
+          "2": 0.0625,
+          "3": 0.09375
+        }
+      },
+      {
+        "beta": 0.5,
+        "accuracy": 0.109375,
+        "seed_accuracies": {
+          "0": 0.0625,
+          "1": 0.25,
+          "2": 0.03125,
+          "3": 0.09375
+        }
+      },
+      {
+        "beta": 1.0,
+        "accuracy": 0.1171875,
+        "seed_accuracies": {
+          "0": 0.0625,
+          "1": 0.25,
+          "2": 0.0625,
+          "3": 0.09375
+        }
+      },
+      {
+        "beta": 2.0,
+        "accuracy": 0.140625,
+        "seed_accuracies": {
+          "0": 0.125,
+          "1": 0.25,
+          "2": 0.09375,
+          "3": 0.09375
+        }
+      }
+    ]
+  },
+  "configurations": [
+    {
+      "family": "codebook",
+      "classes": 4,
+      "include_seen": false
+    },
+    {
+      "family": "codebook",
+      "classes": 8,
+      "include_seen": false
+    },
+    {
+      "family": "codebook",
+      "classes": 16,
+      "include_seen": false
+    },
+    {
+      "family": "codebook",
+      "classes": 32,
+      "include_seen": false
+    },
+    {
+      "family": "selection",
+      "classes": 8,
+      "include_seen": true
+    },
+    {
+      "family": "parity",
+      "classes": 8,
+      "include_seen": true
+    }
+  ]
+}

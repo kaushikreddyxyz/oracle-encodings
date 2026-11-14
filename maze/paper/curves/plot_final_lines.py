@@ -4,7 +4,7 @@
 Solve rate of the grafted models comes from the Hamming-distance-stratified set
 (results/distance/, 3,000 mazes per size: grafted maze = prompt maze, or a DFS maze at a
 controlled distance from it). Token probabilities were only measured on the 2,000-maze
-campaign set (all_metrics.csv), where the edited maze is the 2-wall + 2-door phantom edit.
+campaign set (tables/all_metrics.csv), where the edited maze is the 2-wall + 2-door phantom edit.
 """
 import argparse
 import glob
@@ -19,6 +19,8 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent
+FIGS, TABLES = ROOT / 'figures', ROOT / 'tables'
+FIGS.mkdir(exist_ok=True); TABLES.mkdir(exist_ok=True)
 METRICS = [
     ('solved', 'Maze solved without rule breaks'),
     ('p_sp', 'Shortest-path token probability'),
@@ -50,7 +52,7 @@ def stratified_solved(graft):
 
 
 def main(graft='fixed'):
-    data = pd.read_csv(ROOT / 'all_metrics.csv')
+    data = pd.read_csv(TABLES / 'all_metrics.csv')
     data = data[data.final].copy()
     conditions = [('base', 'true'), (graft, 'true'), (graft, 'phantom')]
     data = data[[pair in conditions for pair in zip(data.cond, data.world)]]
@@ -66,7 +68,7 @@ def main(graft='fixed'):
     nseeds = int(counts.iloc[0])
     step = int(data.iteration.dropna().iloc[0])
     summary = data.groupby(['cond', 'world', 'grid'])[[m[0] for m in METRICS]].agg(['mean', 'std', 'count'])
-    summary.to_csv(ROOT / f'final_results_{graft}_summary.csv')
+    summary.to_csv(TABLES / f'final_results_{graft}_summary.csv')
     plt.rcParams.update({
         'font.family': 'sans-serif', 'font.sans-serif': ['Arial', 'DejaVu Sans'],
         'font.size': 9, 'pdf.fonttype': 42, 'svg.fonttype': 'none',
@@ -132,7 +134,7 @@ def main(graft='fixed'):
     fig.text(.085, .012, 'All scales linear; probability axes start at zero. Error bars show SD. Solve rate: edited mazes are DFS mazes at a set Hamming distance\n'
              'from the prompt maze over the 2n(n−1) free wall features, 3,000 mazes per size. Token probabilities: 2,000 mazes per size.',
              fontsize=7.2, color='#666666', va='bottom')
-    stem = ROOT / f'fig_final_{graft}_lines'
+    stem = FIGS / f'fig_final_{graft}_lines'
     for ext in ('pdf', 'svg'):
         fig.savefig(stem.with_suffix('.' + ext), facecolor='white')
     if PREVIEW:

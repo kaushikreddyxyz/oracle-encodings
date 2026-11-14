@@ -2,7 +2,7 @@
 """Next-token probability mass by category: base vs grafted model, true vs
 phantom world, mean ± SD over model seeds (seed points overlaid).
 
-  python plot_next_token.py --results results/results.json --out fig_next_token
+  python plot_next_token.py --results results/results.json --out fig_next_token   # -> figures/
 Model names in results.json are "<cond>-s<seed>", cond in {baseline, fixed, trainable}.
 """
 
@@ -102,10 +102,11 @@ def main(results="results/results.json", out="fig_next_token", split="all", log=
     fig.legend(handles=handles, loc="lower center", ncol=len(handles), frameon=False, fontsize=6.8,
                bbox_to_anchor=(0.5, -0.02), handlelength=1.6, columnspacing=1.6)
     fig.tight_layout(rect=(0, 0.14, 1, 1))
-    here = Path(__file__).parent
-    for ext in ("pdf", "png", "svg"):
-        fig.savefig(here / f"{out}.{ext}", facecolor=SURFACE, bbox_inches="tight")
-    print("wrote", here / f"{out}.{{pdf,png,svg}}")
+    figs = Path(__file__).parent / "figures"
+    figs.mkdir(exist_ok=True)
+    for ext in ("pdf", "svg"):
+        fig.savefig(figs / f"{out}.{ext}", facecolor=SURFACE, bbox_inches="tight")
+    print("wrote", figs / f"{out}.{{pdf,svg}}")
 
 
 if __name__ == "__main__":

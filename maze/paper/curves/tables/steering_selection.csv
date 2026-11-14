@@ -1,0 +1,61 @@
+family,grid,seed,selected_folder,selected,selected_rate,fair_folder,fair_rate,candidate_rates...
+vec,5,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.02125,gs_reg_L0-11_a1_sae,0.02125,0.02125,0.00526
+vec,5,1,gs_reg_L3_a4_sae,"ridge vectors, block 3, alpha 4",0.0434,gs_reg_L0-11_a1_sae,0.02441,0.02441,0.0434
+vec,5,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.05272,gs_reg_L0-11_a1_sae,0.05272,0.05272,0.02358
+vec,5,3,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.02565,gs_reg_L0-11_a1_sae,0.02565,0.02565,0.01505
+vec,5,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.03277,gs_reg_L0-11_a1_sae,0.03277,0.03277,0.01928
+vec,6,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.01005,gs_reg_L0-11_a1_sae,0.01005,0.01005,0.0097
+vec,6,1,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.01138,gs_reg_L0-11_a1_sae,0.01138,0.01138,0.00929
+vec,6,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00926,gs_reg_L0-11_a1_sae,0.00926,0.00926,0.0078
+vec,6,3,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.01436,gs_reg_L0-11_a1_sae,0.01436,0.01436,0.0065
+vec,6,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.01804,gs_reg_L0-11_a1_sae,0.01804,0.01804,0.01186
+vec,7,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.0054,gs_reg_L0-11_a1_sae,0.0054,0.0054,0.00182
+vec,7,1,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00682,gs_reg_L0-11_a1_sae,0.00682,0.00682,0.00333
+vec,7,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00478,gs_reg_L0-11_a1_sae,0.00478,0.00478,0.00204
+vec,7,3,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00358,gs_reg_L0-11_a1_sae,0.00358,0.00358,0.00219
+vec,7,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00515,gs_reg_L0-11_a1_sae,0.00515,0.00515,0.00204
+vec,8,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00324,gs_reg_L0-11_a1_sae,0.00324,0.00324,0.00185
+vec,8,1,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00382,gs_reg_L0-11_a1_sae,0.00382,0.00382,0.00155
+vec,8,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00527,gs_reg_L0-11_a1_sae,0.00527,0.00527,0.00333
+vec,8,3,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00418,gs_reg_L0-11_a1_sae,0.00418,0.00418,0.00203
+vec,8,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00436,gs_reg_L0-11_a1_sae,0.00436,0.00436,0.00239
+vec,9,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00234,gs_reg_L0-11_a1_sae,0.00234,0.00234,0.00183
+vec,9,1,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00293,gs_reg_L0-11_a1_sae,0.00293,0.00293,0.00228
+vec,9,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00287,gs_reg_L0-11_a1_sae,0.00287,0.00287,0.00219
+vec,9,3,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00373,gs_reg_L0-11_a1_sae,0.00373,0.00373,0.00225
+vec,9,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00272,gs_reg_L0-11_a1_sae,0.00272,0.00272,0.00166
+vec,10,0,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00207,gs_reg_L0-11_a1_sae,0.00207,0.00207,0.00166
+vec,10,1,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.0031,gs_reg_L0-11_a1_sae,0.0031,0.0031,0.00283
+vec,10,2,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00336,gs_reg_L0-11_a1_sae,0.00336,0.00336,0.00289
+vec,10,3,gs_reg_L3_a4_sae,"ridge vectors, block 3, alpha 4",0.0026,gs_reg_L0-11_a1_sae,0.00254,0.00254,0.0026
+vec,10,4,gs_reg_L0-11_a1_sae,"ridge vectors, all blocks, alpha 1",0.00298,gs_reg_L0-11_a1_sae,0.00298,0.00298,0.00181
+sae,5,0,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.01852,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00713,0.00789,0.00893,0.00713,0.01852,0.0052,0.01652
+sae,5,1,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.01975,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01312,0.00703,0.01599,0.01312,0.01975,0.00779,0.01765
+sae,5,2,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.0446,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.03794,0.03091,0.0418,0.03794,0.0446,0.02018,0.04313
+sae,5,3,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.03644,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.02338,0.01812,0.02065,0.02338,0.03644,0.00933,0.02858
+sae,5,4,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.02821,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01289,0.01236,0.01232,0.01289,0.02821,0.00983,0.02408
+sae,6,0,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.02083,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01608,0.01332,0.01738,0.01608,0.02083,0.00939,0.01896
+sae,6,1,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.01646,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01103,0.01116,0.00904,0.01103,0.01646,0.00786,0.01468
+sae,6,2,gs_sae_L6_smat-m3-k8_n16_v16_f,Matryoshka,0.02042,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01963,0.01658,0.01478,0.01963,0.02042,0.011,0.0188
+sae,6,3,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.01408,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01408,0.0123,0.01005,0.01408,0.01405,0.00748,0.01145
+sae,6,4,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.01382,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.01382,0.00894,0.00989,0.01382,0.01306,0.00831,0.01208
+sae,7,0,gs_sae_L6_srelu-m3-l0.1_n16_v16_f,ReLU + L1,0.00774,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00534,0.00774,0.00592,0.00534,0.00774,0.00722,0.00543
+sae,7,1,gs_sae_L6_srelu-m3-l0.1_n16_v16_f,ReLU + L1,0.01117,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00756,0.01117,0.00941,0.00756,0.00956,0.01089,0.00892
+sae,7,2,gs_sae_L6_srelu-m3-l0.1_n16_v16_f,ReLU + L1,0.0091,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00275,0.0091,0.00413,0.00275,0.00793,0.00719,0.00774
+sae,7,3,gs_sae_L6_stopk-m3-k8_n16_v16_f,TopK,0.01111,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00657,0.01064,0.01111,0.00657,0.00771,0.00814,0.00799
+sae,7,4,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.01052,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00663,0.00922,0.00845,0.00663,0.00845,0.01052,0.00728
+sae,8,0,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00642,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00227,0.00573,0.00545,0.00227,0.00345,0.00642,0.00406
+sae,8,1,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00473,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00406,0.00333,0.00448,0.00406,0.00397,0.00473,0.00261
+sae,8,2,gs_sae_L6_stopk-m3-k8_n16_v16_f,TopK,0.00818,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00736,0.00718,0.00818,0.00736,0.008,0.00803,0.006
+sae,8,3,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00673,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00233,0.00567,0.00248,0.00233,0.0047,0.00673,0.00464
+sae,8,4,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00564,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00364,0.00539,0.00276,0.00364,0.00467,0.00564,0.00439
+sae,9,0,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.0029,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00198,0.00198,0.00254,0.00198,0.00186,0.0029,0.00145
+sae,9,1,gs_sae_L6_srelu-m3-l0.1_n16_v16_f,ReLU + L1,0.00387,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00251,0.00387,0.00207,0.00251,0.00387,0.0037,0.00328
+sae,9,2,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.00538,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00538,0.00355,0.00358,0.00538,0.00426,0.00455,0.00316
+sae,9,3,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.00556,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00556,0.00408,0.00497,0.00556,0.00399,0.00482,0.00349
+sae,9,4,gs_sae_L6_stopk-m3-k8_n16_v16_f,TopK,0.00559,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00541,0.00278,0.00559,0.00541,0.00293,0.00435,0.00225
+sae,10,0,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.0033,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.0033,0.00219,0.00327,0.0033,0.00181,0.00312,0.0021
+sae,10,1,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00301,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00146,0.00298,0.00164,0.00146,0.00242,0.00301,0.00295
+sae,10,2,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,BatchTopK,0.00388,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00388,0.00318,0.00342,0.00388,0.00301,0.00345,0.00266
+sae,10,3,gs_sae_L6_stopk-m3-k8_n16_v16_f,TopK,0.00312,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.00196,0.00289,0.00312,0.00196,0.00251,0.00207,0.00269
+sae,10,4,gs_sae_L6_smp-m1-k16_n16_v16_f,matching pursuit,0.00348,gs_sae_L6_sbtopk-m3-k8_n16_v16_f,0.0026,0.00333,0.00228,0.0026,0.0026,0.00348,0.00333

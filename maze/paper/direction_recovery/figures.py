@@ -13,7 +13,7 @@ METHODS=['relu','batchtopk','matryoshka','mp','difference_means','ridge','logist
 plt.rcParams.update({'font.family':'DejaVu Sans','font.size':10,'axes.spines.top':False,'axes.spines.right':False,'axes.grid':True,'grid.alpha':.18,'svg.fonttype':'none','savefig.facecolor':'white'})
 
 def save(fig,name):
- fig.savefig(OUT/f'{name}.png',dpi=180,bbox_inches='tight');fig.savefig(OUT/f'{name}.svg',bbox_inches='tight');plt.close(fig)
+ fig.savefig(OUT/f'{name}.pdf',bbox_inches='tight');fig.savefig(OUT/f'{name}.svg',bbox_inches='tight');plt.close(fig)
 
 def data():
  rows=[];ev=[]
@@ -156,4 +156,4 @@ if __name__=='__main__':
  df,ev=data();df.to_csv(ROOT/'direction_metrics.csv',index=False)
  if not ev.empty:ev.to_csv(ROOT/'intervention_trials.csv.gz',index=False,compression='gzip')
  geometry_figs(df);interventions(df,ev);legacy_fig();robustness_fig()
- print('Figures:',len(list(OUT.glob('*.png'))),'direction rows:',len(df),'intervention trials:',len(ev))
+ print('Figures:',len(list(OUT.glob('*.pdf'))),'direction rows:',len(df),'intervention trials:',len(ev))

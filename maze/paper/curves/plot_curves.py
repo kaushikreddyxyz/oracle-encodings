@@ -9,6 +9,10 @@ from pathlib import Path
 
 import pandas as pd
 
+HERE = Path(__file__).resolve().parent
+TABLES = HERE / "tables"          # summary CSVs (figures go to figures/)
+TABLES.mkdir(exist_ok=True)
+
 COND_RE = re.compile(r"fast-(baseline|inj-fixed|inj-trainable)")
 COND_MAP = {"baseline": "base", "inj-fixed": "fixed", "inj-trainable": "trainable"}
 
@@ -68,9 +72,9 @@ def main(results=None):
     if df.empty:
         print("no results yet")
         return
-    df.to_csv(root / "all_metrics.csv", index=False)
+    df.to_csv(TABLES / "all_metrics.csv", index=False)
     tlc = loss_at_checkpoints(tl, sorted(df["iteration"].unique()))
-    tlc.to_csv(root / "train_loss_by_ckpt.csv", index=False)
+    tlc.to_csv(TABLES / "train_loss_by_ckpt.csv", index=False)
     for graft in ("fixed", "trainable"):
         render_curves(graft)
 

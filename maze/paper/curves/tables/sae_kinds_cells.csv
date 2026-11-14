@@ -1,0 +1,97 @@
+setting,method,folder,grid,solved_mean_over_seeds,sd_over_seeds,n_seeds
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,5,0.9584,0.012,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,5,0.7014,0.1475,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,5,0.7086,0.133,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,5,0.7098,0.1258,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,5,0.7077,0.1208,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,5,0.6996,0.1191,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,5,0.7065,0.1299,5
+Steering at the adjacency-list tokens,No steering (floor),none,5,0.0003,0.0002,5
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,6,0.7739,0.0309,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,6,0.5935,0.0431,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,6,0.5418,0.1233,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,6,0.484,0.2104,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,6,0.4507,0.2022,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,6,0.4322,0.1837,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,6,0.4839,0.2033,5
+Steering at the adjacency-list tokens,No steering (floor),none,6,0.0015,0.0007,5
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,7,0.6249,0.0145,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,7,0.6113,0.0217,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,7,0.4982,0.2426,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,7,0.4214,0.2675,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,7,0.4914,0.25,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,7,0.4283,0.2602,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,7,0.4237,0.2658,5
+Steering at the adjacency-list tokens,No steering (floor),none,7,0.0018,0.0003,5
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,8,0.5201,0.0164,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,8,0.5015,0.0415,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,8,0.4288,0.1639,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,8,0.398,0.1902,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,8,0.41,0.1964,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,8,0.3398,0.1864,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,8,0.3454,0.193,5
+Steering at the adjacency-list tokens,No steering (floor),none,8,0.0017,0.0005,5
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,9,0.4481,0.0149,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,9,0.4359,0.0154,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,9,0.329,0.1585,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,9,0.2657,0.163,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,9,0.3223,0.1659,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,9,0.2519,0.1598,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,9,0.24,0.1686,5
+Steering at the adjacency-list tokens,No steering (floor),none,9,0.0017,0.0004,5
+Steering at the adjacency-list tokens,Prompt rewritten (ceiling),oracle,10,0.3659,0.0092,5
+Steering at the adjacency-list tokens,Steering vectors,dom_L0_a1,10,0.3274,0.0538,5
+Steering at the adjacency-list tokens,"SAE, ReLU + L1",sae_L0_srelu-m3-l0.1_n16_v1_f,10,0.2041,0.143,5
+Steering at the adjacency-list tokens,"SAE, TopK",sae_L0_stopk-m3-k8_n16_v1_f,10,0.1641,0.1668,5
+Steering at the adjacency-list tokens,"SAE, BatchTopK",sae_L0_sbtopk-m3-k8_n16_v1_f,10,0.1491,0.1584,5
+Steering at the adjacency-list tokens,"SAE, Matryoshka",sae_L0_smat-m3-k8_n16_v1_f,10,0.1419,0.1536,5
+Steering at the adjacency-list tokens,"SAE, Matching pursuit",sae_L0_smp-m3-k16_n16_v1_f,10,0.1269,0.1367,5
+Steering at the adjacency-list tokens,No steering (floor),none,10,0.0022,0.0007,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,5,0.9211,0.0309,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,5,0.0314,0.0127,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,5,0.0153,0.0098,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,5,0.0199,0.013,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,5,0.0189,0.0122,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,5,0.0295,0.0111,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,5,0.0105,0.0057,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,5,0.0003,0.0002,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,6,0.7162,0.0437,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,6,0.0126,0.0036,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,6,0.0125,0.0028,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,6,0.0122,0.0037,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,6,0.0149,0.0032,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,6,0.017,0.0036,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,6,0.0088,0.0014,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,6,0.0015,0.0007,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,7,0.5376,0.0382,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,7,0.0051,0.0012,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,7,0.0096,0.0014,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,7,0.0078,0.0028,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,7,0.0058,0.0019,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,7,0.0083,0.0008,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,7,0.0088,0.0018,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,7,0.0018,0.0003,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,8,0.4162,0.0274,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,8,0.0042,0.0007,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,8,0.0055,0.0014,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,8,0.0047,0.0023,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,8,0.0039,0.0021,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,8,0.005,0.0018,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,8,0.0063,0.0012,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,8,0.0017,0.0005,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,9,0.3084,0.0233,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,9,0.0029,0.0005,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,9,0.0033,0.0009,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,9,0.0038,0.0015,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,9,0.0042,0.0018,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,9,0.0034,0.001,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,9,0.0041,0.0008,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,9,0.0017,0.0004,5
+Token-matched: steering at the graft's tokens,Fixed graft,graft:fixed,10,0.2419,0.0083,5
+Token-matched: steering at the graft's tokens,Steering vectors,gs_reg_L0-11_a1_sae,10,0.0028,0.0005,5
+Token-matched: steering at the graft's tokens,"SAE, ReLU + L1",gs_sae_L6_srelu-m3-l0.1_n16_v16_f,10,0.0029,0.0004,5
+Token-matched: steering at the graft's tokens,"SAE, TopK",gs_sae_L6_stopk-m3-k8_n16_v16_f,10,0.0027,0.0008,5
+Token-matched: steering at the graft's tokens,"SAE, BatchTopK",gs_sae_L6_sbtopk-m3-k8_n16_v16_f,10,0.0026,0.001,5
+Token-matched: steering at the graft's tokens,"SAE, Matryoshka",gs_sae_L6_smat-m3-k8_n16_v16_f,10,0.0025,0.0004,5
+Token-matched: steering at the graft's tokens,"SAE, Matching pursuit",gs_sae_L6_smp-m1-k16_n16_v16_f,10,0.003,0.0006,5
+Token-matched: steering at the graft's tokens,No steering (floor),none,10,0.0022,0.0007,5

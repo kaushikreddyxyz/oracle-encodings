@@ -2,8 +2,8 @@
 """Aggregate per-run rollout outcomes + the distance sets into long CSVs and heatmaps.
 
   python plot_heatmap.py            (reads results/distance/out/*.npz and results/distance/sets/g*.npz)
-Outputs: distance_items.csv.gz (one row per rollout), distance_cells.csv (per grid x cond x level),
-         fig_distance_heatmap_routechanged.{pdf,svg}
+Outputs: tables/distance_items.csv.gz (one row per rollout), tables/distance_cells.csv (per grid x cond x level),
+         figures/fig_distance_heatmap_routechanged.{pdf,svg}
 """
 import glob, gzip, csv
 from pathlib import Path
@@ -15,6 +15,8 @@ from matplotlib.colors import LinearSegmentedColormap
 from matplotlib.patches import Rectangle
 
 HERE = Path(__file__).resolve().parent
+FIGS, TABLES = HERE / "figures", HERE / "tables"
+FIGS.mkdir(exist_ok=True); TABLES.mkdir(exist_ok=True)
 INK, MUTED, RULE = "#000000", "#000000", "#e1e0d9"
 GRAFT = "#000c7a"
 CMAP = LinearSegmentedColormap.from_list("yellow_red", ["#fcba02", "#dc2625"])
@@ -152,7 +154,7 @@ def heatmap(C, sets, title, fname, note, relative=False):
     cb.ax.set_title("Solved\n(%)" if not relative else "Relative\nsolve rate (%)",
                     fontsize=10, pad=9, color=INK)
     for ext in ("pdf", "svg"):
-        fig.savefig(HERE / f"{fname}.{ext}", dpi=200, facecolor="white")
+        fig.savefig(FIGS / f"{fname}.{ext}", dpi=200, facecolor="white")
     plt.close(fig)
 
 
@@ -160,7 +162,7 @@ def main():
     sets, runs = load()
     print(len(sets), "sets,", len(runs), "runs")
     C = cells(sets, runs)
-    with open(HERE / "distance_cells.csv", "w", newline="") as f:
+    with open(TABLES / "distance_cells.csv", "w", newline="") as f:
         wr = csv.writer(f)
         wr.writerow(["cond", "grid", "level", "bucket_lo_pct", "bucket_hi_pct", "mean_raw_hamming", "solved_mean_over_seeds", "sd_over_seeds",
                      "pooled_rate", "wilson_lo", "wilson_hi", "n_rollouts", "n_mazes", "n_seeds", "solved_vs_token_maze", "frac_route_changed"])
@@ -171,7 +173,7 @@ def main():
             wl, wh = wilson(k, n)
             wr.writerow([cond, g, "fresh" if lv == K + 1 else lv, lo, hi, round(float(S["dist"][m].mean()), 2), round(mu, 4), round(sd, 4), round(k / n, 4),
                          round(wl, 4), round(wh, 4), n, nm, ns, round(Ct[(cond, g, lv)][0], 4), round(float(1 - S["path_same"][m].mean()), 4)])
-    with gzip.open(HERE / "distance_items.csv.gz", "wt", newline="") as f:
+    with gzip.open(TABLES / "distance_items.csv.gz", "wt", newline="") as f:
         wr = csv.writer(f)
         wr.writerow(["grid", "cond", "seed", "maze", "level", "hamming", "hamming_frac", "route_same", "len_token_maze", "len_graft_maze",
                      "solved_graft", "solved_token", "reached", "n_bad_graft", "n_bad_token"])

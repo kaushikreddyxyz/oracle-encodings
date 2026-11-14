@@ -1,6 +1,8 @@
 # Next-token probability mass: base vs grafted models, true vs phantom world
 
-Generated 2026-09-16. Figure: `fig_next_token.{pdf,png,svg}` (linear y; per category: base · true, grafted · true, grafted · phantom; no seed dots; error bars = SD over seeds; the base-model phantom-world control is NOT plotted, since the base model has no channel and the setting is ill-defined, but its numbers remain in results.json), `fig_next_token_log.*` (log-y variant).
+Generated 2026-09-16. Figure: `figures/fig_next_token.{pdf,svg}` (linear y; per category: base · true, grafted · true, grafted · phantom; no seed dots; error bars = SD over seeds; the base-model phantom-world control is NOT plotted, since the base model has no channel and the setting is ill-defined, but its numbers remain in results.json), `figures/fig_next_token_log.{pdf,svg}` (log-y variant), plus the `_s0` and `_smoke` variants. PDF + SVG only, no PNGs.
+Regenerate (from this folder, no GPU): `python plot_next_token.py --results results/results.json --out fig_next_token [--log True]` → `figures/`.
+The committed pairs were rendered with matplotlib 3.11.1; the repo's current venv (3.10.9) reproduces the same content but not byte-identical files.
 Raw: `results/results.json` (per-model summaries incl. first-move / interior / at-target splits),
 `results/recs_<model>_<world>.npy` (one row per scored position: maze, step, path_len, p_correct, p_valid),
 `results/phantom_edits.json` (the edits, identical for every model).

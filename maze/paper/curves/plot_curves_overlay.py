@@ -15,6 +15,8 @@ from matplotlib.ticker import FixedLocator, FuncFormatter, NullLocator
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent
+FIGS, TABLES = ROOT / 'figures', ROOT / 'tables'
+FIGS.mkdir(exist_ok=True); TABLES.mkdir(exist_ok=True)
 # Ordered light-to-dark blue; even the smallest maze remains visible on white.
 COLORS = ['#8AB6CC', '#619DC0', '#3D80B3', '#22629E', '#144581', '#10285F']
 METRICS = [
@@ -27,8 +29,8 @@ METRICS = [
 
 
 def main(graft='fixed'):
-    df = pd.read_csv(ROOT / 'all_metrics.csv')
-    loss = pd.read_csv(ROOT / 'train_loss_by_ckpt.csv')
+    df = pd.read_csv(TABLES / 'all_metrics.csv')
+    loss = pd.read_csv(TABLES / 'train_loss_by_ckpt.csv')
     grids = sorted(df.grid.unique())
     assert len(grids) <= len(COLORS)
     series = [
@@ -92,7 +94,7 @@ def main(graft='fixed'):
                ncol=6, frameon=False, handlelength=2.5, columnspacing=2.2, fontsize=9)
     fig.text(.125, .018, 'Uncertainty bands omitted for readability. All curves use the same scales within each row.',
              fontsize=8, color='#777777')
-    stem = ROOT / f'fig_curves_{graft}_overlay'
+    stem = FIGS / f'fig_curves_{graft}_overlay'
     for ext in ('pdf', 'svg'):
         fig.savefig(stem.with_suffix('.' + ext), facecolor='white')
     plt.close(fig)

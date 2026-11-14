@@ -39,9 +39,8 @@ from maze_dataset import SPECIAL_TOKENS, MazeDataset, MazeDatasetConfig
 from maze_dataset.generation.generators import LatticeMazeGenerators
 from maze_transformer.training.config import ConfigHolder
 
-from maze.core.data import PretokDataset, make_features, pretokenize
-from maze.core.injection import MazeInjector
-from maze.core.model import injection_delta
+from maze.core.data import PretokDataset, pretokenize
+from maze.core.graft import as_graft, load_injector
 from maze.core.tl_bridge import load_torch_ckpt
 
 
@@ -189,6 +188,14 @@ class EvalSet:
             "phantom": [(i, c2, p2) for i, (c2, p2) in sorted(self.phantom.items())],
         }
         self._tf_cache = {}
+        self.semi_id = vocab[SPECIAL_TOKENS.ADJACENCY_ENDLINE]
+
+    def dummify_(self):
+        """`dummy` data variant (maze/core/data.py): blank the adjacency list to `;`
+        so the graft is the only source of connectivity. Call before any scoring."""
+        assert not self._tf_cache
+        for s, e in zip(self.seqs, self.end_pos):
+            s[1: int(e)] = [self.semi_id] * (int(e) - 1)
 
     # ---- teacher-forced batches (built once per world) ----------------------
     def tf_batches(self, world, batch):
@@ -255,8 +262,8 @@ class Scorer:
     def logits(self, toks, attn, conn, end):
         delta = None
         if self.injector is not None:
-            feats = make_features(conn, end, toks.shape[1], attn)
-            delta = injection_delta(self.injector, feats)
+            g = as_graft(self.injector)   # any code: static (edge/onion/vertex) or dynamic (ego)
+            delta = g.delta(g.code.features(toks, attn, conn, end))
         return self.model(toks, attention_mask=attn, inject_delta=delta,
                           inject_layer=self.layer, return_type="logits", padding_mode="right")
 
@@ -358,18 +365,19 @@ def greedy_kv(model, injector, layer, prompt, conn, end_pos, max_new, path_end_i
     dev = prompt.device
     B, P = prompt.shape
     H, dh = model.cfg.n_heads, model.cfg.d_head
-    delta_row = None
-    if injector is not None:
-        signed = conn.float() * 2.0 - 1.0
-        delta_row = injector.scale * (signed.to(injector.W_inj.dtype) @ injector.W_inj)  # [B, d]
+    g = as_graft(injector)
     pos = torch.arange(P + max_new, device=dev)
     resid = model.embed(prompt) + model.pos_embed(pos[:P])[None]
-    if delta_row is not None:
-        active = (pos[None, :P] >= end_pos[:, None]).to(resid.dtype)[:, :, None]
-        delta_full = active * delta_row[:, None, :]
+    if g is not None:
+        # the code decides what each position gets (static: rows(conn) from end_pos on;
+        # dynamic: frame-dependent); the KV loop then extends it one token at a time
+        attn = torch.ones(B, P, dtype=torch.long, device=dev)
+        delta_full = g.delta(g.code.features(prompt, attn, conn, end_pos)).to(resid.dtype)
+        state = g.code.init_state(prompt, attn, conn, end_pos)
+        delta_row = None
     caches = []
     for i, blk in enumerate(model.blocks):
-        if delta_row is not None and i == layer:
+        if g is not None and i == layer:
             resid = resid + delta_full
         x = blk.ln1(resid)
         q, k, v = blk.attn.qkv(x).split(blk.attn.d_inner, dim=-1)
@@ -392,9 +400,12 @@ def greedy_kv(model, injector, layer, prompt, conn, end_pos, max_new, path_end_i
             break
         t = P + step
         resid = model.embed(cur) + model.pos_embed(pos[t])[None]
+        if g is not None:
+            feat, state = g.code.step(state, cur)   # t >= P > end_pos: always active for static codes
+            delta_row = g.delta(feat).to(resid.dtype)
         for i, blk in enumerate(model.blocks):
-            if delta_row is not None and i == layer:
-                resid = resid + delta_row          # t >= P > end_pos: injection always active
+            if g is not None and i == layer:
+                resid = resid + delta_row
             x = blk.ln1(resid)
             q, k, v = blk.attn.qkv(x).split(blk.attn.d_inner, dim=-1)
             K, V = caches[i]
@@ -413,12 +424,8 @@ def load_ckpt(model_path: Path, injector_path: Path | None, device):
     injector = None
     if injector_path is not None and injector_path.exists():
         d = torch.load(injector_path, weights_only=True)
-        w = d["W_inj"]
         assert d.get("mode", "complete") == "complete", "eval_ckpts supports complete mode only"
-        injector = MazeInjector(d_model=w.shape[1], grid_n=int((w.shape[0] // 2) ** 0.5),
-                                layer=int(d.get("layer", 0)), scale=float(d.get("scale", 1.0)))
-        injector.W_inj.data = w
-        injector.to(device)
+        injector = load_injector(injector_path, device)   # legacy W_inj (edge/onion) or GraftInjector (vertex/ego/...)
     return model, injector
 
 
@@ -431,6 +438,10 @@ def main(run_dir: str, grid_n: int, eval_dir: str = "/workspace/evalsets", n_maz
     run = Path(run_dir)
     cfg = ConfigHolder.load(json.load(open(run / "config_holder.json")))
     es = EvalSet(cfg, grid_n, Path(eval_dir), n_mazes, seed, n_walls, n_doors, device)
+    inj_final = run / "injector.final.pt"
+    if inj_final.exists() and torch.load(inj_final, weights_only=True).get("dummy_data", False):
+        es.dummify_()
+        print("dummy-data run: adjacency list blanked in every eval prompt", flush=True)
     if max_new is None:
         max_new = grid_n * grid_n + 2
     ck = run / "checkpoints"

@@ -12,7 +12,7 @@ The maze is a random-DFS spanning tree (the training distribution). Rollouts
 are BFS shortest paths in the world the model is assumed to navigate (the
 true maze in A/B, the grafted maze in C) - an illustration, not a model run.
 
-    python make_fig1.py search  --out contact.png      # browse candidates
+    python make_fig1.py search  --out /tmp/contact.png # browse candidates (scratch raster, not part of the figure set)
     python make_fig1.py render  --seed S --combo K     # final figure
     python make_fig1.py render --from-json fig1.json  # reproduce saved layout
 """
@@ -451,7 +451,7 @@ def render(cand, out_stem, title_size=8.5):
                frameon=False, fontsize=7, handlelength=3.0,
                columnspacing=1.4, bbox_to_anchor=(0.5, 0.0))
 
-    for ext in ("pdf", "png", "svg"):
+    for ext in ("pdf", "svg"):
         fig.savefig(f"{out_stem}.{ext}", facecolor=SURFACE)
     plt.close(fig)
 
@@ -545,10 +545,12 @@ def main():
             cs = candidates_for_seed(a.seed)
             cand = cs[a.combo]
             cand["combo"] = a.combo
-        stem = here / a.out
+        figs = here / "figures"
+        figs.mkdir(exist_ok=True)
+        stem = figs / a.out
         render(cand, stem)
-        dump(cand, f"{stem}.json")
-        print(f"wrote {stem}.{{pdf,png,svg,json}}  "
+        dump(cand, here / f"{a.out}.json")          # layout JSON stays next to the script
+        print(f"wrote figures/{a.out}.{{pdf,svg}} + {a.out}.json  "
               f"L0={len(cand['base'])-1} L1={len(cand['phantom'])-1}")
 
 

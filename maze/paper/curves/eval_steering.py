@@ -33,6 +33,7 @@ from maze_transformer.training.config import ConfigHolder
 from maze.core.data import PretokDataset, pretokenize
 from eval_ckpts import feat_idx, load_ckpt
 import eval_distance as ED
+import sae_lib
 
 WORK = Path("/workspace/steer")
 OFFSETS = (-3, -2, -1, 0)          # chunk tokens relative to the `;`: A, <-->, B, ;
@@ -127,55 +128,7 @@ def load_vocab(run_dir):
     return cfg, vocab, id_to_coord
 
 
-# ----------------------------------------------------------------------------- SAE (as in experiments/07_probes_vs_sae)
-class SAE(torch.nn.Module):
-    def __init__(self, d, n_lat, topk=0):
-        super().__init__()
-        self.enc = torch.nn.Linear(d, n_lat); self.dec = torch.nn.Linear(n_lat, d); self.topk = topk
-        torch.nn.init.kaiming_uniform_(self.dec.weight); self.dec.weight.data /= self.dec.weight.data.norm(dim=0, keepdim=True)
-        self.enc.weight.data = self.dec.weight.data.T.clone(); self.b_pre = torch.nn.Parameter(torch.zeros(d))
-
-    def encode(self, x):
-        a = torch.relu(self.enc(x - self.b_pre))
-        if self.topk > 0:
-            v, i = a.topk(self.topk, dim=-1); a = torch.zeros_like(a).scatter_(-1, i, v)
-        return a
-
-    def decode(self, a): return self.dec(a) + self.b_pre
-    def forward(self, x): a = self.encode(x); return self.decode(a), a
-
-
-def train_sae(X, expansion, l1, topk, steps, seed, device, batch=4096, lr=1e-3):
-    torch.manual_seed(seed)
-    d = X.shape[1]; sae = SAE(d, expansion * d, topk).to(device); opt = torch.optim.Adam(sae.parameters(), lr=lr)
-    if topk > 0: l1 = 0.0
-    scale = float(X.float().norm(dim=1).mean() / np.sqrt(d)); n = X.shape[0]
-    act_count = torch.zeros(expansion * d, device=device); log = []
-    for step in range(steps):
-        xb = X[torch.randint(0, n, (batch,), device=device)].float() / scale; rec, a = sae(xb)
-        mse = ((rec - xb) ** 2).sum(1).mean(); l1_term = (a * sae.dec.weight.norm(dim=0)[None]).sum(1).mean(); loss = mse + l1 * l1_term
-        opt.zero_grad(); loss.backward()
-        with torch.no_grad():   # outside no_grad this puts the grad (and then Adam's moments) on the autograd graph: ~2 MB leaked per step
-            sae.dec.weight.grad -= (sae.dec.weight.grad * sae.dec.weight).sum(0, keepdim=True) * sae.dec.weight
-        opt.step()
-        with torch.no_grad():
-            sae.dec.weight.data /= sae.dec.weight.data.norm(dim=0, keepdim=True)
-            act_count += (a > 0).float().sum(0)
-        if step % 2000 == 1999:
-            dead = (act_count == 0).nonzero().flatten()
-            with torch.no_grad():
-                if len(dead) and step < steps - 3000:
-                    xs = X[torch.randint(0, n, (8192,), device=device)].float() / scale; r, _ = sae(xs); err = ((r - xs) ** 2).sum(1)
-                    pick = torch.multinomial(err / err.sum(), len(dead), replacement=True)
-                    v = xs[pick] - sae.b_pre; v = v / v.norm(dim=1, keepdim=True)
-                    sae.dec.weight.data[:, dead] = v.T; sae.enc.weight.data[dead] = 0.2 * v; sae.enc.bias.data[dead] = 0
-                xs = X[:20000].float() / scale; r, a2 = sae(xs)
-                ev = float(1 - ((r - xs) ** 2).sum() / ((xs - xs.mean(0)) ** 2).sum()); l0 = float((a2 > 0).float().sum(1).mean())
-            log.append(dict(step=step + 1, explained_var=ev, L0=l0, dead=int(len(dead)))); act_count.zero_()
-    sae.eval()
-    return sae, scale, log
-
-
+# ----------------------------------------------------------------------------- SAE latent tables (SAEs themselves: sae_lib.py)
 def sae_tables(sae, scale, Xs, y, n_cls, M, device, n_fit=200000, seed=0, sel_steps=300):
     """Per site: top-M latents per directed class (logistic weight x class-mean activation, active latents only)."""
     g = torch.Generator(device="cpu").manual_seed(seed)
@@ -204,22 +157,23 @@ def sae_tables(sae, scale, Xs, y, n_cls, M, device, n_fit=200000, seed=0, sel_st
 
 
 # ----------------------------------------------------------------------------- prep
-def prep(run_dir: str, layers="0,1", n_train: int = 6000, train_seed: int = 777,
-         saes="l1:0.1,topk:32", expansion: int = 8, sae_steps: int = 20000, n_lat_max: int = 16, sel_steps: int = 300, tag: str = ""):
+def prep(run_dir: str, layers="0", n_train: int = 12000, train_seed: int = 777,
+         saes="relu-m1.5-l0.03", sae_steps: int = 10000, n_lat_max: int = 16, sel_steps: int = 300, tag: str = "", part: str = ""):
     device = torch.device("cuda"); torch.set_float32_matmul_precision("high")
     run = Path(run_dir); n = int(re.search(r"dfs-g(\d+)-", run.name).group(1))
-    out = WORK / run.parent.name / f"stats{tag}.pt"
+    out = WORK / run.parent.name / f"stats{tag}{part}.pt"
     if out.exists():
         return out
     out.parent.mkdir(parents=True, exist_ok=True)
     cfg, vocab, id_to_coord = load_vocab(run)
     layers = [int(x) for x in (layers if isinstance(layers, (list, tuple)) else str(layers).split(","))]
-    sae_specs = [s.split(":") for s in (saes if isinstance(saes, (list, tuple)) else str(saes).split(","))]
+    sae_specs = [x for x in (saes if isinstance(saes, (list, tuple)) else str(saes).split(",")) if x]
+    f_exp = 4 * n * (n - 1) + n * n                                    # directed connections + cell identities expected at this site
     pre = WORK / f"train-g{n}-s{train_seed}-n{n_train}.pt"
     if not pre.exists():
         ds = MazeDataset.from_config(MazeDatasetConfig(name="steertrain", grid_n=n, n_mazes=n_train, maze_ctor=LatticeMazeGenerators.gen_dfs, seed=train_seed),
                                      do_generate=True, load_local=False, save_local=False, gen_parallel=False, verbose=False)
-        pretokenize(ds, cfg.maze_tokenizer, vocab, pre, bos_id=int(cfg.tokenizer.bos_token_id), workers=0)
+        pretokenize(ds, cfg.maze_tokenizer, vocab, pre, bos_id=int(cfg.tokenizer.bos_token_id), workers=8)
     pt = PretokDataset(pre); seqs = [pt[i][0] for i in range(len(pt))]
     pad_id = vocab[SPECIAL_TOKENS.PADDING]; L = max(len(s) for s in seqs)
     toks = torch.full((len(seqs), L), pad_id, dtype=torch.long)
@@ -240,17 +194,22 @@ def prep(run_dir: str, layers="0,1", n_train: int = 6000, train_seed: int = 777,
         mu = torch.stack([torch.where(cnt[:, None] > 0, (onehot.float().T @ X.float()) / cnt.clamp(min=1)[:, None], g[None]) for X, g in zip(site_X, glob)])
         stats["mu"][layer] = mu.cpu()                                                                                       # [4, n_cls, d]
         if layer == layers[0]:
-            Xall = R[real.to(device)]
-            for kind, val in sae_specs:
-                tag = f"{kind}{val}"
-                sae, scale, log = train_sae(Xall, expansion, float(val) if kind == "l1" else 0.0, int(val) if kind == "topk" else 0, sae_steps, 0, device)
-                tabs = [sae_tables(sae, scale, X, y, n_cls, n_lat_max, device, sel_steps=sel_steps) for X in site_X]
-                stats["sae"][tag] = dict(state={k: v.cpu() for k, v in sae.state_dict().items()}, scale=scale, topk=sae.topk, layer=layer, d=R.shape[-1], n_lat=expansion * R.shape[-1],
-                                         lat=torch.stack([t["lat"] for t in tabs]).cpu(), val=torch.stack([t["val"] for t in tabs]).cpu(),
-                                         lat_md=torch.stack([t["lat_md"] for t in tabs]).cpu(), val_md=torch.stack([t["val_md"] for t in tabs]).cpu())
-                stats["log"][tag] = dict(train=log[-1], logit_acc={s: t["acc"] for s, t in zip(SITES, tabs)},
-                                         frac_cls_f1_gt_0p9={s: float((t["best_f1"][cnt > 0] > 0.9).float().mean()) for s, t in zip(SITES, tabs)})
-                print(f"[prep g{n}] SAE {tag}: {log[-1]} | latent logit acc {stats['log'][tag]['logit_acc']}", flush=True)
+            Xall = R[real.to(device)]                                                                                      # rows ordered by maze
+            n_ho = max(100, int(0.05 * len(toks))); tho = toks[-n_ho:].to(device); real_ho = tho != pad_id
+            ps_id = vocab[SPECIAL_TOKENS.PATH_START]; after = (tho == ps_id).cumsum(1) > 0; loss_mask = after & real_ho & torch.roll(real_ho, -1, 1)
+            loss_mask[:, -1] = False
+            for spec in sae_specs:
+                sd = sae_lib.train(Xall, spec, f_exp, device, steps=sae_steps)
+                sae = sae_lib.build(sd, device); scale = sd["scale"]
+                tabs = [sae_tables(sae, scale, X, y, n_cls, min(n_lat_max, sd["n_lat"]), device, sel_steps=sel_steps) for X in site_X]
+                lrec = sae_lib.loss_recovered(model, _block, tho, loss_mask, real_ho, layer + 1, sae, scale)       # resid_post L = resid_pre L+1
+                stats["sae"][spec] = dict(sd=sd, layer=layer, lat=torch.stack([t["lat"] for t in tabs]).cpu(), val=torch.stack([t["val"] for t in tabs]).cpu())
+                stats["log"][spec] = dict(n_lat=sd["n_lat"], f_exp=f_exp, heldout=sd["heldout"], converged_ratio=sd["converged_ratio"], curve=sd["curve"], **lrec,
+                                          logit_acc={s_: t["acc"] for s_, t in zip(SITES, tabs)},
+                                          frac_cls_f1_gt_0p9={s_: float((t["best_f1"][cnt > 0] > 0.9).float().mean()) for s_, t in zip(SITES, tabs)})
+                print(f"[prep g{n}] SAE {spec}: n_lat {sd['n_lat']} heldout {sd['heldout']} loss_recovered {lrec['loss_recovered']:.3f} "
+                      f"| connection decodable at B {stats['log'][spec]['logit_acc']['B']:.2f}", flush=True)
+                del sae
             del Xall
         del R, site_X
     stats["log"]["min_class_count"] = int(cnt[cnt > 0].min()); stats["log"]["seconds"] = time.time() - t0
@@ -292,9 +251,9 @@ def make_hook(cond, stats, bi, pos, src, tgt, device):
             return resid
         return layer, hook
     if kind == "sae":
-        sd = stats["sae"][args.get("s", "l10.1")]; assert sd["layer"] == layer
-        sae = SAE(sd["d"], sd["n_lat"], int(sd["topk"])).to(device); sae.load_state_dict(sd["state"]); sae.eval()
-        nlat = int(args.get("n", "4")); value = float(args.get("v", "2")); scale = sd["scale"]
+        sd = stats["sae"][args.get("s", "relu-m1.5-l0.03")]; assert sd["layer"] == layer
+        sae = sae_lib.build(sd["sd"], device)
+        nlat = int(args.get("n", "16")); value = float(args.get("v", "1")); scale = sd["sd"]["scale"]
         md = "_md" if args.get("t", "logit") == "md" else ""                     # latent table: logistic (default) or mean-difference
         lat = sd["lat" + md][:, :, :nlat].to(device); val = sd["val" + md][:, :, :nlat].to(device)
         sites = [SITES.index(x) for x in ("A", "B")] if args.get("o", "all") == "AB" else range(4)
@@ -304,20 +263,20 @@ def make_hook(cond, stats, bi, pos, src, tgt, device):
                 o = OFFSETS[s]; x = resid[bi, pos + o] / scale; a = sae.encode(x); a2 = a.clone()
                 a2[ar, lat[s][src]] = 0.0
                 a2[ar, lat[s][tgt]] = value * val[s][tgt]
-                resid[bi, pos + o] = (x + (a2 - a) @ sae.dec.weight.T) * scale
+                resid[bi, pos + o] = (x + (a2 - a) @ sae.W_dec) * scale
             return resid
         return layer, hook
     raise ValueError(kind)
 
 
 def run(run_dir: str, conds: str, tune: bool = False, out_dir: str = "/workspace/steer_out", batch: int = 1000,
-        n_mazes: int = 3000, seed: int = 4321, tune_mazes: int = 300, tune_seed: int = 999, tag: str = "", saes: str = "l1:0.1,topk:32", sel_steps: int = 300, expansion: int = 8):
+        n_mazes: int = 3000, seed: int = 4321, tune_mazes: int = 300, tune_seed: int = 999, tag: str = "", saes: str = "", sel_steps: int = 300, n_train: int = 12000, part: str = ""):
     device = torch.device("cuda"); torch.set_float32_matmul_precision("high")
     run_ = Path(run_dir); n = int(re.search(r"dfs-g(\d+)-", run_.name).group(1)); seed_tag = run_.parent.name
     cfg, vocab, id_to_coord = load_vocab(run_)
     set_path = ED.build(n, str(run_ / "config_holder.json"), n_mazes=tune_mazes if tune else n_mazes, seed=tune_seed if tune else seed)
     S = dict(np.load(set_path)); sha = str(S["sha"])
-    stats = torch.load(prep(run_dir, saes=saes, sel_steps=sel_steps, tag=tag, expansion=expansion), weights_only=False)
+    stats = torch.load(prep(run_dir, saes=saes, sel_steps=sel_steps, tag=tag, part=part, n_train=n_train), weights_only=False)
     model, _ = load_ckpt(run_ / "model.final.pt", None, device)
     semis, cls = chunk_table(S["prompts"], vocab[SPECIAL_TOKENS.ADJACENCY_ENDLINE], vocab[SPECIAL_TOKENS.CONNECTOR], id_to_coord, n)
     item, ppos, src, tgt = build_pairs(S, semis, cls, n, seed)
@@ -325,6 +284,9 @@ def run(run_dir: str, conds: str, tune: bool = False, out_dir: str = "/workspace
     pe_id, pad_id = int(S["path_end_id"]), int(S["pad_id"]); maze, conn_a, conn_b = S["maze"], S["conn_a"], S["conn_b"]
     origin_c, target_c, lv = S["origin"], S["target"], S["level"]; N = len(maze); max_new = n * n + 2
     starts = np.searchsorted(item, np.arange(0, N + 1))                                  # item is sorted
+    # KV cache is 12 layers x 2 x 256 floats per position per item: cap the batch to ~45% of this GPU's memory
+    per_item = 12 * 2 * 256 * 4 * (int(S["prompts"].shape[1]) + max_new) * 1.6
+    batch = max(200, min(int(batch), int(0.45 * torch.cuda.get_device_properties(0).total_memory / per_item)))
     conds = conds if isinstance(conds, (list, tuple)) else str(conds).split(",")
     for cname in conds:
         out = Path(out_dir) / ("tune" if tune else "eval") / (cname.replace(":", "_") + tag) / f"g{n}__base__{seed_tag}.npz"
